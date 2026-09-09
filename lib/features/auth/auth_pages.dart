@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../app/theme/tokens.dart';
 import '../../core/auth.dart';
+import '../../shared/brand.dart';
 import '../../shared/language_switch.dart';
 import '../../shared/widgets.dart';
 import '../../core/format.dart';
@@ -233,18 +234,7 @@ class AuthScaffold extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Row(
-                children: [
-                  Icon(LucideIcons.activity, size: 22, color: Tokens.accent),
-                  Gap(8),
-                  Text(
-                    'sightpane',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: Tokens.textStrong,
-                    ),
-                  ),
-                ],
+                children: [SightpaneLockup(markSize: 26, fontSize: 20)],
               ),
               const Gap(24),
               Text(

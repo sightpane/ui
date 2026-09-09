@@ -6,6 +6,7 @@ import '../app/theme/tokens.dart';
 import '../core/auth.dart';
 import '../core/format.dart';
 import '../core/providers.dart';
+import '../shared/brand.dart';
 import '../shared/language_switch.dart';
 import '../l10n/gen/app_localizations.dart';
 
@@ -72,21 +73,7 @@ class TopBar extends ConsumerWidget {
           GhostButton(
             density: ButtonDensity.compact,
             onPressed: () => context.go('/projects'),
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(LucideIcons.activity, size: 16, color: Tokens.accent),
-                Gap(8),
-                Text(
-                  'sightpane',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Tokens.textStrong,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-              ],
-            ),
+            child: const SightpaneLockup(markSize: 18, fontSize: 15),
           ),
           if (project != null) ...[
             const Gap(6),

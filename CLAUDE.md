@@ -9,7 +9,7 @@ replay. It is split across three repositories that release independently:
 
 | Repository | What it is | Licence |
 |---|---|---|
-| [sightpane/sightpane](https://github.com/sightpane/sightpane) | Go backend on Fiber v3 + SQLite, the Docker deployment, the product roadmap under `future-todo-files/` | AGPL-3.0-or-later |
+| [sightpane/sightpane](https://github.com/sightpane/sightpane) | Go backend on Fiber v3 + TimescaleDB, the Docker deployment, the product roadmap under `future-todo-files/` | AGPL-3.0-or-later |
 | [sightpane/ui](https://github.com/sightpane/ui) | the Flutter web dashboard the backend serves | AGPL-3.0-or-later |
 | [sightpane/flutter](https://github.com/sightpane/flutter) | the Dart/Flutter SDK, `sightpane` on pub.dev | Apache-2.0 |
 
@@ -27,6 +27,7 @@ its strings live in `lib/l10n/` in the ui repository.
 flutter analyze && flutter test
 flutter test test/auth_pages_test.dart
 python3 tool/gen_arb.py && flutter gen-l10n                # after editing UI strings
+python3 tool/gen_icons.py                                  # after changing the mark
 ./run.sh                                                   # flutter run -d chrome
 flutter build web --dart-define-from-file=config.json
 ```
@@ -85,6 +86,12 @@ table of `key: (tr, en, placeholders)` that emits `lib/l10n/app_tr.arb` (templat
 - `.claude/skills/` carries `shadcn-flutter` (the UI kit — consult it before writing a widget), `flutter-chart` (the `graphic` package, not yet a dependency), and the shared workflow skills. Provenance of the vendored ones is in `SOURCE-vendored-skills.md`.
 - The official `dart-flutter` plugin is enabled at project scope in `.claude/settings.json`. Its skills are generic Flutter guidance; where they conflict with this repository (Material widgets vs shadcn_flutter, `pumpWidget(MaterialApp(...))` vs `pumpApp`/`FakeApi`), this repository wins.
 - `lib/l10n/gen/` is generated but committed, so a fresh clone analyzes without a build step. Regenerate whenever `tool/gen_arb.py` changes.
+- The brand mark is drawn, not an asset: `lib/shared/brand.dart` has the
+  CustomPainter (a 64-unit grid, four shapes) and `tool/gen_icons.py` redraws the
+  favicon and PWA icons from the same numbers. Change one and rerun the other,
+  or they drift. Below 20 logical pixels the mark drops its horizontal mullion
+  by itself; the top bar relies on that. The wordmark is two weights in one
+  `Text.rich`, so `find.text('sightpane')` still matches it.
 - `lib/main.dart` carries the AGPL SPDX header. AGPL §13: the sign-in page and the top bar show the source address — keep them when touching either screen.
 - Tests assert against the **Turkish** locale (`find.text('Projeler')`); `testContainer(api, locale: …)` pins the language and `test/i18n_test.dart` is where English is exercised. Translating one side of such an assertion breaks the test.
 - The roadmap for all three repositories lives in [sightpane/sightpane](https://github.com/sightpane/sightpane) under `future-todo-files/`.

@@ -1,12 +1,12 @@
 {
-    "name": "sightpane_dashboard",
-    "short_name": "sightpane_dashboard",
+    "name": "sightpane",
+    "short_name": "sightpane",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
+    "background_color": "#0E0D0B",
+    "theme_color": "#0E0D0B",
+    "description": "Self-hosted error tracking, product analytics and session replay.",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
