@@ -10,7 +10,7 @@ import '../../core/format.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../shared/widgets.dart';
-import '../sessions/session_detail_page.dart' show CodeBlock;
+import '../sessions/session_detail_page.dart' show StackTraceView;
 
 class IssueDetailPage extends ConsumerWidget {
   const IssueDetailPage({
@@ -34,9 +34,8 @@ class IssueDetailPage extends ConsumerWidget {
         ),
         data: (d) {
           final i = d.issue;
-          final first = d.occurrences.isEmpty
-              ? const <String, Object?>{}
-              : d.occurrences.first.body;
+          final firstItem = d.occurrences.isEmpty ? null : d.occurrences.first;
+          final first = firstItem?.body ?? const <String, Object?>{};
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -89,8 +88,11 @@ class IssueDetailPage extends ConsumerWidget {
                 subtitle: i.exception,
                 child: Padding(
                   padding: const EdgeInsets.all(14),
-                  child: CodeBlock(
-                    text: '${first['stack'] ?? context.l10n.issueNoStack}',
+                  child: StackTraceView(
+                    stack: '${first['stack'] ?? ''}',
+                    // The newest occurrence is the one shown, so its frames are
+                    // the ones the map resolved.
+                    frames: firstItem?.frames ?? const [],
                   ),
                 ),
               ),

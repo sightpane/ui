@@ -79,6 +79,15 @@ table of `key: (tr, en, placeholders)` that emits `lib/l10n/app_tr.arb` (templat
 - `AppConfig.apiUrl`: `SIGHTPANE_API_URL` dart-define; empty on web = page origin (how the Docker image is built), otherwise `http://localhost:8790`.
 - UI is shadcn_flutter, not Material: `Select(adaptiveOverlay: false)`, `showOverlay` + `DialogConfiguration`, `Card(filled: true)`; colors from `app/theme/tokens.dart`; `withValues(alpha:)` not `withOpacity`. The locale is chosen at runtime, so use `context.fmt.upper` rather than `toUpperCase()`, which turns `i` into `I` instead of `İ`.
 - Overview page invalidates `liveProvider`/`statsProvider` every second — use `skipLoadingOnReload: true` on `.when` and keep `build` cheap.
+- **Stack traces** (`StackTraceView`, in `session_detail_page.dart` next to
+  `CodeBlock`, used by both the issue page and the item detail): a release web
+  build's stack is minified JavaScript, and the backend resolves it against an
+  uploaded source map. `TimelineItem.frames` comes from `symbolicated`, which
+  sits **beside** `body` in the JSON — the body is what the SDK sent and the
+  backend hands it back untouched. With frames the resolved list is shown and
+  the raw text goes behind a fold; with none, the stack is rendered as before,
+  plus a hint to upload a map when it looks minified (`.js:` and no `package:`).
+  An unresolved frame is kept and marked rather than dropped.
 - Replay player (`features/sessions/session_detail_page.dart`): `ReplayController` owns position/timers; `FramePrefetcher` precaches the first 10 frames then slides one per cursor step, and a failed frame must not block readiness. Fullscreen (`browser_fullscreen*.dart`, conditional import) reuses the same controller so position and buffer survive.
 
 ## Repo conventions

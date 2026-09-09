@@ -551,6 +551,19 @@ class LEn extends L {
   String get issueNoStack => '(no stack trace)';
 
   @override
+  String get issueStackSymbolicated => 'Mapped to source';
+
+  @override
+  String get issueStackRaw => 'Raw stack trace';
+
+  @override
+  String get issueStackUnresolved => 'not mapped';
+
+  @override
+  String get issueStackMinifiedHint =>
+      'Minified build — upload a source map for this release';
+
+  @override
   String get issueOccurrences => 'Occurrences';
 
   @override

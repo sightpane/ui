@@ -367,6 +367,10 @@
   "issueResolvedToastNote": "Yeniden görülürse otomatik açılır.",
   "issueStack": "Yığın",
   "issueNoStack": "(yığın yok)",
+  "issueStackSymbolicated": "Kaynak eşlendi",
+  "issueStackRaw": "Ham yığın",
+  "issueStackUnresolved": "eşlenmedi",
+  "issueStackMinifiedHint": "Küçültülmüş yapı — bu sürüm için kaynak haritası yükleyin",
   "issueOccurrences": "Oluşumlar",
   "issueOccurrencesNote": "son {count}",
   "@issueOccurrencesNote": {

@@ -503,6 +503,19 @@ class LTr extends L {
   String get issueNoStack => '(yığın yok)';
 
   @override
+  String get issueStackSymbolicated => 'Kaynak eşlendi';
+
+  @override
+  String get issueStackRaw => 'Ham yığın';
+
+  @override
+  String get issueStackUnresolved => 'eşlenmedi';
+
+  @override
+  String get issueStackMinifiedHint =>
+      'Küçültülmüş yapı — bu sürüm için kaynak haritası yükleyin';
+
+  @override
   String get issueOccurrences => 'Oluşumlar';
 
   @override

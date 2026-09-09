@@ -967,6 +967,30 @@ abstract class L {
   /// **'(yığın yok)'**
   String get issueNoStack;
 
+  /// No description provided for @issueStackSymbolicated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaynak eşlendi'**
+  String get issueStackSymbolicated;
+
+  /// No description provided for @issueStackRaw.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ham yığın'**
+  String get issueStackRaw;
+
+  /// No description provided for @issueStackUnresolved.
+  ///
+  /// In tr, this message translates to:
+  /// **'eşlenmedi'**
+  String get issueStackUnresolved;
+
+  /// No description provided for @issueStackMinifiedHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Küçültülmüş yapı — bu sürüm için kaynak haritası yükleyin'**
+  String get issueStackMinifiedHint;
+
   /// No description provided for @issueOccurrences.
   ///
   /// In tr, this message translates to:

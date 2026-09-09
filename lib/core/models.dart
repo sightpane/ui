@@ -238,6 +238,37 @@ class Session {
   );
 }
 
+/// One line of a stack trace after the backend resolved it against the release's
+/// source map. [resolved] is false for a frame no map covered — those are kept
+/// rather than dropped, because a stack with a hole in it reads worse than one
+/// with a minified line in it.
+class SourceFrame {
+  const SourceFrame({
+    required this.file,
+    required this.line,
+    required this.column,
+    required this.function,
+    required this.minified,
+    required this.resolved,
+  });
+  final String file, function, minified;
+  final int line, column;
+  final bool resolved;
+
+  /// `lib/cashier.dart:120` — what the dashboard shows instead of
+  /// `main.dart.js:12345`.
+  String get location => line > 0 ? '$file:$line' : file;
+
+  factory SourceFrame.fromJson(Map<String, Object?> j) => SourceFrame(
+    file: _s(j['file']),
+    line: _i(j['line']),
+    column: _i(j['column']),
+    function: _s(j['function']),
+    minified: _s(j['minified']),
+    resolved: j['resolved'] == true,
+  );
+}
+
 /// A timeline item: breadcrumb | event | error.
 class TimelineItem {
   const TimelineItem({
@@ -248,12 +279,17 @@ class TimelineItem {
     required this.body,
     this.issueId,
     this.sessionId = '',
+    this.frames = const [],
   });
   final int id;
   final DateTime ts;
   final String type, name, sessionId;
   final Map<String, Object?> body;
   final int? issueId;
+  /// The stack resolved against a source map, when one was uploaded for the
+  /// release this error came from. Empty otherwise, which is every native build
+  /// and any web build without a map.
+  final List<SourceFrame> frames;
   String get message => switch (type) {
     'error' => '${_s(body['exception'])}: ${_s(body['message'])}',
     'event' =>
@@ -269,6 +305,12 @@ class TimelineItem {
     body: _m(j['body']),
     issueId: j['issue_id'] == null ? null : _i(j['issue_id']),
     sessionId: _s(j['session_id']),
+    // `symbolicated` sits beside `body` rather than inside it: the body is what
+    // the SDK sent and the backend hands it back untouched.
+    frames: [
+      for (final f in (_m(j['symbolicated'])['frames'] as List?) ?? const [])
+        if (f is Map) SourceFrame.fromJson(f.cast<String, Object?>()),
+    ],
   );
 }
 

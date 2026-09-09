@@ -929,7 +929,10 @@ class ItemDetail extends StatelessWidget {
                   style: AppTheme.mono(size: 11, color: Tokens.textDim),
                 ),
               const Gap(8),
-              CodeBlock(text: '${b['stack'] ?? context.l10n.issueNoStack}'),
+              StackTraceView(
+                stack: '${b['stack'] ?? ''}',
+                frames: item.frames,
+              ),
               if (crumbs.isNotEmpty) ...[
                 const Gap(10),
                 Text(
@@ -973,6 +976,143 @@ class ItemDetail extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// An error's stack trace.
+///
+/// A release web build sends minified JavaScript positions, and the backend
+/// resolves them against the source map uploaded for that release. When it did,
+/// this shows the resolved frames — the readable half — and keeps the raw text
+/// behind a fold, because a wrong map is otherwise invisible. With no frames it
+/// is what it always was: the stack as it arrived.
+class StackTraceView extends StatefulWidget {
+  const StackTraceView({super.key, required this.stack, this.frames = const []});
+  final String stack;
+  final List<SourceFrame> frames;
+
+  /// Whether [stack] looks like a minified web build — JavaScript positions and
+  /// not a single Dart library. That is the case worth pointing at: the stack is
+  /// unreadable and one upload fixes it.
+  static bool looksMinified(String stack) =>
+      stack.contains('.js:') && !stack.contains('package:');
+
+  @override
+  State<StackTraceView> createState() => _StackTraceViewState();
+}
+
+class _StackTraceViewState extends State<StackTraceView> {
+  bool _rawOpen = false;
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.frames.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CodeBlock(
+            text: widget.stack.isEmpty ? context.l10n.issueNoStack : widget.stack,
+          ),
+          if (StackTraceView.looksMinified(widget.stack)) ...[
+            const Gap(6),
+            Text(
+              context.l10n.issueStackMinifiedHint,
+              style: const TextStyle(fontSize: 11, color: Tokens.textDim),
+            ),
+          ],
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          context.l10n.issueStackSymbolicated,
+          style: const TextStyle(fontSize: 11, color: Tokens.textDim),
+        ),
+        const Gap(6),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: BoxDecoration(
+            color: Tokens.surface,
+            border: Border.all(color: Tokens.border),
+            borderRadius: BorderRadius.circular(Tokens.radius),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [for (final f in widget.frames) _FrameRow(frame: f)],
+          ),
+        ),
+        const Gap(6),
+        GhostButton(
+          size: ButtonSize.small,
+          density: ButtonDensity.compact,
+          leading: Icon(
+            _rawOpen ? LucideIcons.chevronDown : LucideIcons.chevronRight,
+            size: 13,
+          ),
+          onPressed: () => setState(() => _rawOpen = !_rawOpen),
+          child: Text(context.l10n.issueStackRaw),
+        ),
+        if (_rawOpen) ...[const Gap(4), CodeBlock(text: widget.stack)],
+      ],
+    );
+  }
+}
+
+class _FrameRow extends StatelessWidget {
+  const _FrameRow({required this.frame});
+  final SourceFrame frame;
+
+  @override
+  Widget build(BuildContext context) {
+    // An unresolved frame keeps its minified text: dropping it would leave a
+    // hole in the stack, which reads worse than a line nobody can decode.
+    if (!frame.resolved) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                frame.minified.isEmpty ? frame.location : frame.minified,
+                style: AppTheme.mono(size: 11, color: Tokens.textFaint),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const Gap(8),
+            Text(
+              context.l10n.issueStackUnresolved,
+              style: const TextStyle(fontSize: 10, color: Tokens.textFaint),
+            ),
+          ],
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: SelectableText(
+              frame.function,
+              style: AppTheme.mono(size: 11, color: Tokens.text),
+            ),
+          ),
+          const Gap(10),
+          Expanded(
+            flex: 3,
+            child: SelectableText(
+              frame.location,
+              style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+            ),
+          ),
+        ],
       ),
     );
   }

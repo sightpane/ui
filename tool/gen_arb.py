@@ -171,6 +171,12 @@ k('issueResolvedToast', 'Çözüldü olarak işaretlendi', 'Marked as resolved')
 k('issueResolvedToastNote', 'Yeniden görülürse otomatik açılır.', 'It reopens automatically if seen again.')
 k('issueStack', 'Yığın', 'Stack trace')
 k('issueNoStack', '(yığın yok)', '(no stack trace)')
+# A release build's stack is minified JavaScript until a source map is uploaded
+# for it; these label the two states and the raw text behind the resolved list.
+k('issueStackSymbolicated', 'Kaynak eşlendi', 'Mapped to source')
+k('issueStackRaw', 'Ham yığın', 'Raw stack trace')
+k('issueStackUnresolved', 'eşlenmedi', 'not mapped')
+k('issueStackMinifiedHint', 'Küçültülmüş yapı — bu sürüm için kaynak haritası yükleyin', 'Minified build — upload a source map for this release')
 k('issueOccurrences', 'Oluşumlar', 'Occurrences')
 k('issueOccurrencesNote', 'son {count}', 'last {count}', {'count': 'int'})
 k('colTime', 'Zaman', 'Time')

@@ -84,6 +84,27 @@ Future<GoRouter> pumpApp(
   return router;
 }
 
+/// Pumps a single widget with the delegates the app uses, for a test about a
+/// widget rather than a page. Anything with a route goes through pumpApp.
+Future<void> pumpWidgetWithL10n(WidgetTester tester, Widget child) async {
+  await tester.pumpWidget(
+    ShadcnApp(
+      theme: testTheme,
+      locale: testLocale,
+      supportedLocales: L.supportedLocales,
+      localizationsDelegates: const [
+        L.delegate,
+        FallbackShadcnLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: Scaffold(child: SingleChildScrollView(child: child)),
+    ),
+  );
+  await settle(tester);
+}
+
 /// The test counterpart of the app root: the same router, the same locale
 /// provider, the same localization delegates — only the theme is pinned.
 /// It builds the same tree as `SightpaneApp` so language switching can be tested too.
