@@ -1,0 +1,731 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Turkish (`tr`).
+class LTr extends L {
+  LTr([String locale = 'tr']) : super(locale);
+
+  @override
+  String get commonRefresh => 'Yenile';
+
+  @override
+  String get commonCancel => 'Vazgeç';
+
+  @override
+  String get commonClose => 'Kapat';
+
+  @override
+  String get commonSave => 'Kaydet';
+
+  @override
+  String get commonDelete => 'Sil';
+
+  @override
+  String get commonCreate => 'Oluştur';
+
+  @override
+  String get commonLoading => 'Yükleniyor';
+
+  @override
+  String get commonCopied => 'Kopyalandı';
+
+  @override
+  String get commonAll => 'Tümü';
+
+  @override
+  String get commonNoRecords => 'Kayıt yok.';
+
+  @override
+  String get commonNoData => 'Veri yok.';
+
+  @override
+  String get commonAnonymous => 'anonim';
+
+  @override
+  String get commonError => 'Hata';
+
+  @override
+  String get commonOwner => 'sahip';
+
+  @override
+  String get commonMember => 'üye';
+
+  @override
+  String get commonOpen => 'açık';
+
+  @override
+  String get commonResolved => 'çözüldü';
+
+  @override
+  String get commonEnded => 'bitti';
+
+  @override
+  String get commonEmpty => '—';
+
+  @override
+  String errNetwork(String endpoint) {
+    return 'Sunucuya ulaşılamıyor ($endpoint).';
+  }
+
+  @override
+  String get errInvalidCredentials => 'E-posta veya şifre hatalı.';
+
+  @override
+  String get errSessionExpired => 'Oturum geçersiz; yeniden giriş yapın.';
+
+  @override
+  String get errOwnerRequired => 'Bu işlem için proje sahibi olmalısınız.';
+
+  @override
+  String get errNotFound => 'Bulunamadı.';
+
+  @override
+  String get errEmailTaken => 'Bu e-posta zaten kayıtlı.';
+
+  @override
+  String get errPasswordTooShort => 'Şifre en az 6 karakter olmalı.';
+
+  @override
+  String get errInvalidEmail => 'Geçerli bir e-posta girin.';
+
+  @override
+  String get errUnknownMember =>
+      'Bu e-postayla kayıtlı kullanıcı yok; önce kayıt olmalı.';
+
+  @override
+  String get errSelfRemove => 'Kendinizi projeden çıkaramazsınız.';
+
+  @override
+  String get errProjectNameRequired => 'Proje adı gerekli.';
+
+  @override
+  String get errUnsupportedLocale => 'Bu dil desteklenmiyor.';
+
+  @override
+  String get fmtJustNow => 'az önce';
+
+  @override
+  String fmtMinutesAgo(int count) {
+    return '$count dk önce';
+  }
+
+  @override
+  String fmtHoursAgo(int count) {
+    return '$count sa önce';
+  }
+
+  @override
+  String fmtDaysAgo(int count) {
+    return '$count gün önce';
+  }
+
+  @override
+  String fmtSeconds(int count) {
+    return '$count sn';
+  }
+
+  @override
+  String fmtMinutes(int count) {
+    return '$count dk';
+  }
+
+  @override
+  String fmtHours(String hours) {
+    return '$hours sa';
+  }
+
+  @override
+  String get fmtDateTimePattern => 'dd.MM.yyyy HH:mm';
+
+  @override
+  String get fmtDayPattern => 'dd MMM';
+
+  @override
+  String get fmtClockPattern => 'HH:mm:ss';
+
+  @override
+  String get navOverview => 'Genel bakış';
+
+  @override
+  String get navIssues => 'Hatalar';
+
+  @override
+  String get navSessions => 'Oturumlar';
+
+  @override
+  String get navEvents => 'Olaylar';
+
+  @override
+  String get navSettings => 'Ayarlar';
+
+  @override
+  String shellSourceTooltip(String url) {
+    return 'Kaynak kodu: $url';
+  }
+
+  @override
+  String get shellSignOut => 'Çıkış';
+
+  @override
+  String get shellLanguage => 'Dil';
+
+  @override
+  String get languageTurkish => 'Türkçe';
+
+  @override
+  String get languageEnglish => 'English';
+
+  @override
+  String get authSignIn => 'Giriş yap';
+
+  @override
+  String get authSignInSubtitle => 'sightpane panosuna hesabınızla devam edin.';
+
+  @override
+  String get authNoAccount => 'Hesabınız yok mu?';
+
+  @override
+  String get authGoRegister => 'Kayıt olun';
+
+  @override
+  String get authRegisterTitle => 'Hesap oluştur';
+
+  @override
+  String get authRegisterSubtitle =>
+      'Kayıt olun, ilk projenizi açın, anahtarınızı SDK’ya verin.';
+
+  @override
+  String get authHaveAccount => 'Zaten hesabınız var mı?';
+
+  @override
+  String get authGoSignIn => 'Giriş yapın';
+
+  @override
+  String get authRegister => 'Kayıt ol';
+
+  @override
+  String get authEmail => 'E-posta';
+
+  @override
+  String get authEmailHint => 'ad@sirket.com';
+
+  @override
+  String get authPassword => 'Şifre';
+
+  @override
+  String get authPasswordRepeat => 'Şifre (tekrar)';
+
+  @override
+  String get authFullName => 'Ad Soyad';
+
+  @override
+  String get authFullNameHint => 'Ayşe Yılmaz';
+
+  @override
+  String get authPasswordHint => 'en az 6 karakter';
+
+  @override
+  String get authInvalidEmail => 'Geçerli bir e-posta girin';
+
+  @override
+  String get authPasswordRequired => 'Şifre gerekli';
+
+  @override
+  String get authPasswordTooShort => 'Şifre en az 6 karakter olmalı';
+
+  @override
+  String get authPasswordMismatch => 'Şifreler eşleşmiyor';
+
+  @override
+  String get projectsTitle => 'Projeler';
+
+  @override
+  String projectsCount(int count) {
+    return '$count proje';
+  }
+
+  @override
+  String get projectsNew => 'Yeni proje';
+
+  @override
+  String get projectsLoading => 'Projeler yükleniyor';
+
+  @override
+  String projectsLoadFailed(String error) {
+    return 'Projeler alınamadı: $error';
+  }
+
+  @override
+  String get projectsEmptyTitle => 'Henüz projeniz yok.';
+
+  @override
+  String get projectsEmptyBody =>
+      'Bir proje açın; anahtarını ve adresini SDK’ya verin.';
+
+  @override
+  String get projectsCreateFirst => 'İlk projeyi oluştur';
+
+  @override
+  String projectKeyAndAge(String key, String age) {
+    return 'anahtar $key · $age';
+  }
+
+  @override
+  String get projectStatSessions24h => 'Oturum 24s';
+
+  @override
+  String get projectStatErrors24h => 'Hata 24s';
+
+  @override
+  String get projectStatOpenIssues => 'Açık grup';
+
+  @override
+  String projectCreated(String name) {
+    return '$name oluşturuldu';
+  }
+
+  @override
+  String get projectGoTo => 'Projeye git';
+
+  @override
+  String get projectName => 'Proje adı';
+
+  @override
+  String get projectNameRequired => 'Proje adı gerekli';
+
+  @override
+  String get projectNameHint => 'Kasa uygulaması';
+
+  @override
+  String get projectPlatform => 'Platform';
+
+  @override
+  String get setupAddress => 'Adres';
+
+  @override
+  String get setupApiKey => 'API anahtarı';
+
+  @override
+  String get setupTitle => 'Kurulum';
+
+  @override
+  String overviewSubtitle(int days) {
+    return 'son $days gün';
+  }
+
+  @override
+  String overviewDaysShort(int days) {
+    return '$days g';
+  }
+
+  @override
+  String get overviewStatsLoading => 'İstatistikler yükleniyor';
+
+  @override
+  String overviewStatsFailed(String error) {
+    return 'İstatistikler alınamadı: $error';
+  }
+
+  @override
+  String get overviewSessionsAndErrors => 'Oturumlar ve hatalar';
+
+  @override
+  String get overviewSessionsAndErrorsNote =>
+      'gün bazında · amber oturum, kırmızı hata';
+
+  @override
+  String get overviewEvents => 'Olaylar';
+
+  @override
+  String get overviewByDay => 'gün bazında';
+
+  @override
+  String get overviewTopIssues => 'En sık hatalar';
+
+  @override
+  String get overviewNoOpenIssues => 'Açık hata yok.';
+
+  @override
+  String get overviewPlatforms => 'Platformlar';
+
+  @override
+  String get overviewReleases => 'Sürümler';
+
+  @override
+  String get overviewTopEvents => 'En sık olaylar';
+
+  @override
+  String get kpiSessions => 'Oturum';
+
+  @override
+  String kpiVisitorsNote(String count) {
+    return '$count ziyaretçi (kullanıcı + IP + tarayıcı)';
+  }
+
+  @override
+  String get kpiErrors => 'Hata';
+
+  @override
+  String kpiOpenGroupsNote(String count) {
+    return '$count açık grup';
+  }
+
+  @override
+  String get kpiCrashFree => 'Hatasız oturum';
+
+  @override
+  String get kpiEvents => 'Olay';
+
+  @override
+  String kpiFramesNote(String count) {
+    return '$count kayıt karesi';
+  }
+
+  @override
+  String get livePages => 'Sayfalar';
+
+  @override
+  String liveRouteCount(int count) {
+    return '$count rota';
+  }
+
+  @override
+  String get liveNoPages => 'Şu anda görüntülenen sayfa yok.';
+
+  @override
+  String get liveNoRoute => '(rota yok)';
+
+  @override
+  String livePeopleCount(int count) {
+    return '$count kişi';
+  }
+
+  @override
+  String get liveViewers => 'Görüntüleyenler';
+
+  @override
+  String liveWindow(int seconds) {
+    return 'son $seconds sn';
+  }
+
+  @override
+  String get liveNoOpenSessions => 'Açık oturum yok.';
+
+  @override
+  String liveMore(int count) {
+    return '+$count daha';
+  }
+
+  @override
+  String get liveWaiting => 'Canlı veri bekleniyor';
+
+  @override
+  String liveSummary(int people, int visitors) {
+    return '$people kişi şu anda çevrimiçi · $visitors ziyaretçi';
+  }
+
+  @override
+  String get liveRefreshNote => 'saniyede bir yenilenir';
+
+  @override
+  String get issuesTitle => 'Hatalar';
+
+  @override
+  String issuesOpenCount(int count) {
+    return '$count açık grup';
+  }
+
+  @override
+  String get issuesShowResolved => 'Çözülenleri göster';
+
+  @override
+  String get issuesGroups => 'Hata grupları';
+
+  @override
+  String get issuesGroupingNote => 'aynı istisna + aynı yığın karesi tek grup';
+
+  @override
+  String issuesLoadFailed(String error) {
+    return 'Hatalar alınamadı: $error';
+  }
+
+  @override
+  String get issuesEmpty => 'Hata yok.';
+
+  @override
+  String get colError => 'Hata';
+
+  @override
+  String get colException => 'İstisna';
+
+  @override
+  String get colCount => 'Sayı';
+
+  @override
+  String get colFirst => 'İlk';
+
+  @override
+  String get colLast => 'Son';
+
+  @override
+  String get colStatus => 'Durum';
+
+  @override
+  String issueDetailFailed(String error) {
+    return 'Hata grubu alınamadı: $error';
+  }
+
+  @override
+  String issueSeenSummary(String count, String first, String last) {
+    return '$count kez · ilk $first · son $last';
+  }
+
+  @override
+  String get issueReopen => 'Yeniden aç';
+
+  @override
+  String get issueResolve => 'Çözüldü';
+
+  @override
+  String get issueResolvedToast => 'Çözüldü olarak işaretlendi';
+
+  @override
+  String get issueResolvedToastNote => 'Yeniden görülürse otomatik açılır.';
+
+  @override
+  String get issueStack => 'Yığın';
+
+  @override
+  String get issueNoStack => '(yığın yok)';
+
+  @override
+  String get issueOccurrences => 'Oluşumlar';
+
+  @override
+  String issueOccurrencesNote(int count) {
+    return 'son $count';
+  }
+
+  @override
+  String get colTime => 'Zaman';
+
+  @override
+  String get colSession => 'Oturum';
+
+  @override
+  String get colRoute => 'Rota';
+
+  @override
+  String get colFrame => 'Kare';
+
+  @override
+  String get colMessage => 'Mesaj';
+
+  @override
+  String get sessionsTitle => 'Oturumlar';
+
+  @override
+  String sessionsCount(int count) {
+    return '$count oturum';
+  }
+
+  @override
+  String get sessionsUserFilterHint => 'kullanıcı kimliği';
+
+  @override
+  String get sessionsOnlyErrors => 'Yalnızca hatalı';
+
+  @override
+  String get sessionsRecent => 'Son oturumlar';
+
+  @override
+  String sessionsLoadFailed(String error) {
+    return 'Oturumlar alınamadı: $error';
+  }
+
+  @override
+  String get sessionsEmpty =>
+      'Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.';
+
+  @override
+  String get colUser => 'Kullanıcı';
+
+  @override
+  String get colIp => 'IP';
+
+  @override
+  String get colPlatform => 'Platform';
+
+  @override
+  String get colRelease => 'Sürüm';
+
+  @override
+  String get colStart => 'Başlangıç';
+
+  @override
+  String get colDuration => 'Süre';
+
+  @override
+  String get colEvent => 'Olay';
+
+  @override
+  String get sessionLoading => 'Oturum yükleniyor';
+
+  @override
+  String sessionLoadFailed(String error) {
+    return 'Oturum alınamadı: $error';
+  }
+
+  @override
+  String get sessionReplay => 'Kayıt';
+
+  @override
+  String sessionFramesAndDuration(int frames, String duration) {
+    return '$frames kare · $duration';
+  }
+
+  @override
+  String get sessionTimeline => 'Zaman çizgisi';
+
+  @override
+  String sessionItemCount(int count) {
+    return '$count öğe';
+  }
+
+  @override
+  String get sessionNoItems => 'Öğe yok.';
+
+  @override
+  String sessionHeader(String id) {
+    return 'Oturum $id';
+  }
+
+  @override
+  String sessionFullscreenTitle(String id, String user) {
+    return 'Oturum $id · $user';
+  }
+
+  @override
+  String get replayNoFrames =>
+      'Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).';
+
+  @override
+  String replayPosition(String position, String total) {
+    return '$position / $total sn';
+  }
+
+  @override
+  String replayBuffer(int done, int total) {
+    return 'önbellek $done/$total';
+  }
+
+  @override
+  String get replayFullscreenHint => 'ESC kapatır · boşluk oynat/duraklat';
+
+  @override
+  String itemIssueLink(int id) {
+    return 'Hata grubu #$id';
+  }
+
+  @override
+  String itemRoute(String route) {
+    return 'rota $route';
+  }
+
+  @override
+  String get itemBreadcrumbsBefore => 'Hata öncesi adımlar';
+
+  @override
+  String get eventsTitle => 'Olaylar';
+
+  @override
+  String get eventsSubtitle => 'son 30 gün';
+
+  @override
+  String get eventsTypes => 'Olay türleri';
+
+  @override
+  String eventsLoadFailed(String error) {
+    return 'Olaylar alınamadı: $error';
+  }
+
+  @override
+  String get eventsEmpty => 'Olay yok. SDK’da Hog.capture(’olay’) çağırın.';
+
+  @override
+  String get colTotal => 'Toplam';
+
+  @override
+  String get settingsTitle => 'Ayarlar';
+
+  @override
+  String settingsProjectLoadFailed(String error) {
+    return 'Proje alınamadı: $error';
+  }
+
+  @override
+  String get settingsProject => 'Proje';
+
+  @override
+  String get settingsMemberReadOnly => 'üye · yalnızca görüntüleme';
+
+  @override
+  String get settingsProjectNameLabel => 'Ad';
+
+  @override
+  String get settingsSaved => 'Kaydedildi';
+
+  @override
+  String get settingsRotateKey => 'Anahtarı döndür';
+
+  @override
+  String get settingsRotateKeyBody =>
+      'Eski anahtarla gönderen uygulamalar reddedilecek. Yeni anahtarı SDK yapılandırmasına işlemeniz gerekir.';
+
+  @override
+  String get settingsRotate => 'Döndür';
+
+  @override
+  String get settingsSdkSetup => 'SDK kurulumu';
+
+  @override
+  String get settingsSdkSetupNote =>
+      'endpoint ve apiKey init sırasında verilir';
+
+  @override
+  String get settingsMembers => 'Üyeler';
+
+  @override
+  String get settingsMemberRemoved => 'Üye çıkarıldı';
+
+  @override
+  String get settingsMemberAdded => 'Üye eklendi';
+
+  @override
+  String get settingsAddMember => 'Üye ekle';
+
+  @override
+  String get settingsMemberEmailHint => 'uye@sirket.com (kayıtlı olmalı)';
+
+  @override
+  String get settingsDangerZone => 'Tehlikeli bölge';
+
+  @override
+  String get settingsDeleteBody =>
+      'Projeyi ve tüm oturum, hata, kare verisini kalıcı olarak siler.';
+
+  @override
+  String get settingsDeleteProject => 'Projeyi sil';
+
+  @override
+  String settingsDeleteConfirmTitle(String name) {
+    return '\"$name\" silinsin mi?';
+  }
+
+  @override
+  String get settingsDeleteConfirmBody => 'Bu işlem geri alınamaz.';
+}

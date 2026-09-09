@@ -1,0 +1,267 @@
+# -*- coding: utf-8 -*-
+"""Generates app_tr.arb + app_en.arb. The table below is the single source.
+Turkish is the template language (the one the app was written in); English is
+the translation."""
+import json, collections
+
+# key: (tr, en, {placeholder: type}) — a type of None means no placeholders
+K = collections.OrderedDict()
+def k(name, tr, en, ph=None, desc=None):
+    K[name] = (tr, en, ph, desc)
+
+# ---------------- common ----------------
+k('commonRefresh', 'Yenile', 'Refresh')
+k('commonCancel', 'Vazgeç', 'Cancel')
+k('commonClose', 'Kapat', 'Close')
+k('commonSave', 'Kaydet', 'Save')
+k('commonDelete', 'Sil', 'Delete')
+k('commonCreate', 'Oluştur', 'Create')
+k('commonLoading', 'Yükleniyor', 'Loading')
+k('commonCopied', 'Kopyalandı', 'Copied')
+k('commonAll', 'Tümü', 'All')
+k('commonNoRecords', 'Kayıt yok.', 'No records.')
+k('commonNoData', 'Veri yok.', 'No data.')
+k('commonAnonymous', 'anonim', 'anonymous')
+k('commonError', 'Hata', 'Error')
+k('commonOwner', 'sahip', 'owner')
+k('commonMember', 'üye', 'member')
+k('commonOpen', 'açık', 'open')
+k('commonResolved', 'çözüldü', 'resolved')
+k('commonEnded', 'bitti', 'ended')
+k('commonEmpty', '—', '—', None, 'The no-value marker; the same dash in every language')
+
+# ---------------- error texts (keyed on the backend `code` field) ----------------
+k('errNetwork', 'Sunucuya ulaşılamıyor ({endpoint}).', 'Cannot reach the server ({endpoint}).', {'endpoint': 'String'})
+k('errInvalidCredentials', 'E-posta veya şifre hatalı.', 'Wrong email or password.')
+k('errSessionExpired', 'Oturum geçersiz; yeniden giriş yapın.', 'Your session has expired, please sign in again.')
+k('errOwnerRequired', 'Bu işlem için proje sahibi olmalısınız.', 'You must be the project owner to do that.')
+k('errNotFound', 'Bulunamadı.', 'Not found.')
+k('errEmailTaken', 'Bu e-posta zaten kayıtlı.', 'That email address is already registered.')
+k('errPasswordTooShort', 'Şifre en az 6 karakter olmalı.', 'The password must be at least 6 characters.')
+k('errInvalidEmail', 'Geçerli bir e-posta girin.', 'Enter a valid email address.')
+k('errUnknownMember', 'Bu e-postayla kayıtlı kullanıcı yok; önce kayıt olmalı.', 'Nobody is registered with that email address; they must sign up first.')
+k('errSelfRemove', 'Kendinizi projeden çıkaramazsınız.', 'You cannot remove yourself from the project.')
+k('errProjectNameRequired', 'Proje adı gerekli.', 'A project name is required.')
+k('errUnsupportedLocale', 'Bu dil desteklenmiyor.', 'That language is not supported.')
+
+# ---------------- formatting ----------------
+k('fmtJustNow', 'az önce', 'just now')
+k('fmtMinutesAgo', '{count} dk önce', '{count, plural, =1{1 minute ago} other{{count} minutes ago}}', {'count': 'int'})
+k('fmtHoursAgo', '{count} sa önce', '{count, plural, =1{1 hour ago} other{{count} hours ago}}', {'count': 'int'})
+k('fmtDaysAgo', '{count} gün önce', '{count, plural, =1{1 day ago} other{{count} days ago}}', {'count': 'int'})
+k('fmtSeconds', '{count} sn', '{count}s', {'count': 'int'})
+k('fmtMinutes', '{count} dk', '{count}m', {'count': 'int'})
+k('fmtHours', '{hours} sa', '{hours}h', {'hours': 'String'})
+k('fmtDateTimePattern', 'dd.MM.yyyy HH:mm', 'MMM d, yyyy HH:mm', None,
+  'intl DateFormat pattern — not a translation but how that language writes dates')
+k('fmtDayPattern', 'dd MMM', 'MMM dd', None, 'Short day pattern for chart and column labels')
+k('fmtClockPattern', 'HH:mm:ss', 'HH:mm:ss', None, 'Clock pattern for the replay player')
+
+# ---------------- shell / navigation ----------------
+k('navOverview', 'Genel bakış', 'Overview')
+k('navIssues', 'Hatalar', 'Issues')
+k('navSessions', 'Oturumlar', 'Sessions')
+k('navEvents', 'Olaylar', 'Events')
+k('navSettings', 'Ayarlar', 'Settings')
+k('shellSourceTooltip', 'Kaynak kodu: {url}', 'Source code: {url}', {'url': 'String'})
+k('shellSignOut', 'Çıkış', 'Sign out')
+k('shellLanguage', 'Dil', 'Language')
+k('languageTurkish', 'Türkçe', 'Türkçe', None, 'A language name is written in its own language')
+k('languageEnglish', 'English', 'English', None, 'A language name is written in its own language')
+
+# ---------------- sign in / sign up ----------------
+k('authSignIn', 'Giriş yap', 'Sign in')
+k('authSignInSubtitle', 'sightpane panosuna hesabınızla devam edin.', 'Continue to the sightpane dashboard with your account.')
+k('authNoAccount', 'Hesabınız yok mu?', 'No account yet?')
+k('authGoRegister', 'Kayıt olun', 'Sign up')
+k('authRegisterTitle', 'Hesap oluştur', 'Create an account')
+k('authRegisterSubtitle', 'Kayıt olun, ilk projenizi açın, anahtarınızı SDK’ya verin.', 'Sign up, create your first project, hand the key to the SDK.')
+k('authHaveAccount', 'Zaten hesabınız var mı?', 'Already have an account?')
+k('authGoSignIn', 'Giriş yapın', 'Sign in')
+k('authRegister', 'Kayıt ol', 'Sign up')
+k('authEmail', 'E-posta', 'Email')
+k('authEmailHint', 'ad@sirket.com', 'name@company.com')
+k('authPassword', 'Şifre', 'Password')
+k('authPasswordRepeat', 'Şifre (tekrar)', 'Password (again)')
+k('authFullName', 'Ad Soyad', 'Full name')
+k('authFullNameHint', 'Ayşe Yılmaz', 'Jane Doe')
+k('authPasswordHint', 'en az 6 karakter', 'at least 6 characters')
+k('authInvalidEmail', 'Geçerli bir e-posta girin', 'Enter a valid email address')
+k('authPasswordRequired', 'Şifre gerekli', 'A password is required')
+k('authPasswordTooShort', 'Şifre en az 6 karakter olmalı', 'The password must be at least 6 characters')
+k('authPasswordMismatch', 'Şifreler eşleşmiyor', 'The passwords do not match')
+
+# ---------------- projects ----------------
+k('projectsTitle', 'Projeler', 'Projects')
+k('projectsCount', '{count} proje', '{count, plural, =1{1 project} other{{count} projects}}', {'count': 'int'})
+k('projectsNew', 'Yeni proje', 'New project')
+k('projectsLoading', 'Projeler yükleniyor', 'Loading projects')
+k('projectsLoadFailed', 'Projeler alınamadı: {error}', 'Could not load projects: {error}', {'error': 'String'})
+k('projectsEmptyTitle', 'Henüz projeniz yok.', 'You have no projects yet.')
+k('projectsEmptyBody', 'Bir proje açın; anahtarını ve adresini SDK’ya verin.', 'Create a project, then hand its key and address to the SDK.')
+k('projectsCreateFirst', 'İlk projeyi oluştur', 'Create the first project')
+k('projectKeyAndAge', 'anahtar {key} · {age}', 'key {key} · {age}', {'key': 'String', 'age': 'String'})
+k('projectStatSessions24h', 'Oturum 24s', 'Sessions 24h')
+k('projectStatErrors24h', 'Hata 24s', 'Errors 24h')
+k('projectStatOpenIssues', 'Açık grup', 'Open groups')
+k('projectCreated', '{name} oluşturuldu', '{name} created', {'name': 'String'})
+k('projectGoTo', 'Projeye git', 'Go to project')
+k('projectName', 'Proje adı', 'Project name')
+k('projectNameRequired', 'Proje adı gerekli', 'A project name is required', None,
+  'Inline form warning, no full stop — errProjectNameRequired is the server error')
+k('projectNameHint', 'Kasa uygulaması', 'Checkout app')
+k('projectPlatform', 'Platform', 'Platform')
+k('setupAddress', 'Adres', 'Address')
+k('setupApiKey', 'API anahtarı', 'API key')
+k('setupTitle', 'Kurulum', 'Setup')
+
+# ---------------- overview ----------------
+k('overviewSubtitle', 'son {days} gün', 'last {days} days', {'days': 'int'})
+k('overviewDaysShort', '{days} g', '{days}d', {'days': 'int'})
+k('overviewStatsLoading', 'İstatistikler yükleniyor', 'Loading statistics')
+k('overviewStatsFailed', 'İstatistikler alınamadı: {error}', 'Could not load statistics: {error}', {'error': 'String'})
+k('overviewSessionsAndErrors', 'Oturumlar ve hatalar', 'Sessions and errors')
+k('overviewSessionsAndErrorsNote', 'gün bazında · amber oturum, kırmızı hata', 'by day · amber sessions, red errors')
+k('overviewEvents', 'Olaylar', 'Events')
+k('overviewByDay', 'gün bazında', 'by day')
+k('overviewTopIssues', 'En sık hatalar', 'Most frequent errors')
+k('overviewNoOpenIssues', 'Açık hata yok.', 'No open errors.')
+k('overviewPlatforms', 'Platformlar', 'Platforms')
+k('overviewReleases', 'Sürümler', 'Releases')
+k('overviewTopEvents', 'En sık olaylar', 'Most frequent events')
+k('kpiSessions', 'Oturum', 'Sessions')
+k('kpiVisitorsNote', '{count} ziyaretçi (kullanıcı + IP + tarayıcı)', '{count} visitors (user + IP + browser)', {'count': 'String'})
+k('kpiErrors', 'Hata', 'Errors')
+k('kpiOpenGroupsNote', '{count} açık grup', '{count} open groups', {'count': 'String'})
+k('kpiCrashFree', 'Hatasız oturum', 'Crash-free sessions')
+k('kpiEvents', 'Olay', 'Events')
+k('kpiFramesNote', '{count} kayıt karesi', '{count} replay frames', {'count': 'String'})
+k('livePages', 'Sayfalar', 'Pages')
+k('liveRouteCount', '{count} rota', '{count, plural, =1{1 route} other{{count} routes}}', {'count': 'int'})
+k('liveNoPages', 'Şu anda görüntülenen sayfa yok.', 'No page is being viewed right now.')
+k('liveNoRoute', '(rota yok)', '(no route)')
+k('livePeopleCount', '{count} kişi', '{count, plural, =1{1 person} other{{count} people}}', {'count': 'int'})
+k('liveViewers', 'Görüntüleyenler', 'Viewers')
+k('liveWindow', 'son {seconds} sn', 'last {seconds}s', {'seconds': 'int'})
+k('liveNoOpenSessions', 'Açık oturum yok.', 'No open sessions.')
+k('liveMore', '+{count} daha', '+{count} more', {'count': 'int'})
+k('liveWaiting', 'Canlı veri bekleniyor', 'Waiting for live data')
+k('liveSummary', '{people} kişi şu anda çevrimiçi · {visitors} ziyaretçi', '{people} online right now · {visitors} visitors', {'people': 'int', 'visitors': 'int'})
+k('liveRefreshNote', 'saniyede bir yenilenir', 'refreshes every second')
+
+# ---------------- issues ----------------
+k('issuesTitle', 'Hatalar', 'Issues')
+k('issuesOpenCount', '{count} açık grup', '{count, plural, =1{1 open group} other{{count} open groups}}', {'count': 'int'})
+k('issuesShowResolved', 'Çözülenleri göster', 'Show resolved')
+k('issuesGroups', 'Hata grupları', 'Error groups')
+k('issuesGroupingNote', 'aynı istisna + aynı yığın karesi tek grup', 'same exception + same stack frames means one group')
+k('issuesLoadFailed', 'Hatalar alınamadı: {error}', 'Could not load errors: {error}', {'error': 'String'})
+k('issuesEmpty', 'Hata yok.', 'No errors.')
+k('colError', 'Hata', 'Error')
+k('colException', 'İstisna', 'Exception')
+k('colCount', 'Sayı', 'Count')
+k('colFirst', 'İlk', 'First')
+k('colLast', 'Son', 'Last')
+k('colStatus', 'Durum', 'Status')
+k('issueDetailFailed', 'Hata grubu alınamadı: {error}', 'Could not load the error group: {error}', {'error': 'String'})
+k('issueSeenSummary', '{count} kez · ilk {first} · son {last}', '{count} times · first {first} · last {last}', {'count': 'String', 'first': 'String', 'last': 'String'})
+k('issueReopen', 'Yeniden aç', 'Reopen')
+k('issueResolve', 'Çözüldü', 'Resolve')
+k('issueResolvedToast', 'Çözüldü olarak işaretlendi', 'Marked as resolved')
+k('issueResolvedToastNote', 'Yeniden görülürse otomatik açılır.', 'It reopens automatically if seen again.')
+k('issueStack', 'Yığın', 'Stack trace')
+k('issueNoStack', '(yığın yok)', '(no stack trace)')
+k('issueOccurrences', 'Oluşumlar', 'Occurrences')
+k('issueOccurrencesNote', 'son {count}', 'last {count}', {'count': 'int'})
+k('colTime', 'Zaman', 'Time')
+k('colSession', 'Oturum', 'Session')
+k('colRoute', 'Rota', 'Route')
+k('colFrame', 'Kare', 'Frame')
+k('colMessage', 'Mesaj', 'Message')
+
+# ---------------- sessions ----------------
+k('sessionsTitle', 'Oturumlar', 'Sessions')
+k('sessionsCount', '{count} oturum', '{count, plural, =1{1 session} other{{count} sessions}}', {'count': 'int'})
+k('sessionsUserFilterHint', 'kullanıcı kimliği', 'user id')
+k('sessionsOnlyErrors', 'Yalnızca hatalı', 'Only with errors')
+k('sessionsRecent', 'Son oturumlar', 'Recent sessions')
+k('sessionsLoadFailed', 'Oturumlar alınamadı: {error}', 'Could not load sessions: {error}', {'error': 'String'})
+k('sessionsEmpty', 'Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.', 'No session matches this filter. If the SDK is connected, sessions appear here within seconds.')
+k('colUser', 'Kullanıcı', 'User')
+k('colIp', 'IP', 'IP')
+k('colPlatform', 'Platform', 'Platform')
+k('colRelease', 'Sürüm', 'Release')
+k('colStart', 'Başlangıç', 'Started')
+k('colDuration', 'Süre', 'Duration')
+k('colEvent', 'Olay', 'Event')
+
+# ---------------- session detail / player ----------------
+k('sessionLoading', 'Oturum yükleniyor', 'Loading session')
+k('sessionLoadFailed', 'Oturum alınamadı: {error}', 'Could not load the session: {error}', {'error': 'String'})
+k('sessionReplay', 'Kayıt', 'Replay')
+k('sessionFramesAndDuration', '{frames} kare · {duration}', '{frames} frames · {duration}', {'frames': 'int', 'duration': 'String'})
+k('sessionTimeline', 'Zaman çizgisi', 'Timeline')
+k('sessionItemCount', '{count} öğe', '{count, plural, =1{1 item} other{{count} items}}', {'count': 'int'})
+k('sessionNoItems', 'Öğe yok.', 'No items.')
+k('sessionHeader', 'Oturum {id}', 'Session {id}', {'id': 'String'})
+k('sessionFullscreenTitle', 'Oturum {id} · {user}', 'Session {id} · {user}', {'id': 'String', 'user': 'String'})
+k('replayNoFrames', 'Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).', 'This session has no frames (SightpaneReplay is not wrapped, or replay is off).')
+k('replayPosition', '{position} / {total} sn', '{position} / {total}s', {'position': 'String', 'total': 'String'})
+k('replayBuffer', 'önbellek {done}/{total}', 'buffer {done}/{total}', {'done': 'int', 'total': 'int'})
+k('replayFullscreenHint', 'ESC kapatır · boşluk oynat/duraklat', 'ESC closes · space plays/pauses')
+k('itemIssueLink', 'Hata grubu #{id}', 'Error group #{id}', {'id': 'int'})
+k('itemRoute', 'rota {route}', 'route {route}', {'route': 'String'})
+k('itemBreadcrumbsBefore', 'Hata öncesi adımlar', 'Steps before the error')
+
+# ---------------- events ----------------
+k('eventsTitle', 'Olaylar', 'Events')
+k('eventsSubtitle', 'son 30 gün', 'last 30 days')
+k('eventsTypes', 'Olay türleri', 'Event types')
+k('eventsLoadFailed', 'Olaylar alınamadı: {error}', 'Could not load events: {error}', {'error': 'String'})
+k('eventsEmpty', 'Olay yok. SDK’da Hog.capture(’olay’) çağırın.', 'No events. Call Hog.capture(’event’) in the SDK.')
+k('colTotal', 'Toplam', 'Total')
+
+# ---------------- settings ----------------
+k('settingsTitle', 'Ayarlar', 'Settings')
+k('settingsProjectLoadFailed', 'Proje alınamadı: {error}', 'Could not load the project: {error}', {'error': 'String'})
+k('settingsProject', 'Proje', 'Project')
+k('settingsMemberReadOnly', 'üye · yalnızca görüntüleme', 'member · read only')
+k('settingsProjectNameLabel', 'Ad', 'Name')
+k('settingsSaved', 'Kaydedildi', 'Saved')
+k('settingsRotateKey', 'Anahtarı döndür', 'Rotate the key')
+k('settingsRotateKeyBody', 'Eski anahtarla gönderen uygulamalar reddedilecek. Yeni anahtarı SDK yapılandırmasına işlemeniz gerekir.', 'Apps still sending the old key will be rejected. You must put the new key into the SDK configuration.')
+k('settingsRotate', 'Döndür', 'Rotate')
+k('settingsSdkSetup', 'SDK kurulumu', 'SDK setup')
+k('settingsSdkSetupNote', 'endpoint ve apiKey init sırasında verilir', 'endpoint and apiKey are passed at init')
+k('settingsMembers', 'Üyeler', 'Members')
+k('settingsMemberRemoved', 'Üye çıkarıldı', 'Member removed')
+k('settingsMemberAdded', 'Üye eklendi', 'Member added')
+k('settingsAddMember', 'Üye ekle', 'Add member')
+k('settingsMemberEmailHint', 'uye@sirket.com (kayıtlı olmalı)', 'member@company.com (must be registered)')
+k('settingsDangerZone', 'Tehlikeli bölge', 'Danger zone')
+k('settingsDeleteBody', 'Projeyi ve tüm oturum, hata, kare verisini kalıcı olarak siler.', 'Permanently deletes the project and all its session, error and frame data.')
+k('settingsDeleteProject', 'Projeyi sil', 'Delete project')
+k('settingsDeleteConfirmTitle', '"{name}" silinsin mi?', 'Delete "{name}"?', {'name': 'String'})
+k('settingsDeleteConfirmBody', 'Bu işlem geri alınamaz.', 'This cannot be undone.')
+
+def arb(lang, idx):
+    out = collections.OrderedDict()
+    out['@@locale'] = lang
+    for name, (tr, en, ph, desc) in K.items():
+        out[name] = (tr, en)[idx]
+        meta = {}
+        if desc and idx == 0:
+            meta['description'] = desc
+        if ph:
+            meta['placeholders'] = {p: {'type': t} for p, t in ph.items()}
+        # Metadata is written in the template language (tr); gen-l10n builds the
+        # signatures from there.
+        if meta and idx == 0:
+            out['@' + name] = meta
+    return out
+
+for lang, idx in (('tr', 0), ('en', 1)):
+    with open('lib/l10n/app_%s.arb' % lang, 'w', encoding='utf-8') as f:
+        json.dump(arb(lang, idx), f, ensure_ascii=False, indent=2)
+        f.write('\n')
+print('keys:', len(K))

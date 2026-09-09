@@ -1,0 +1,29 @@
+name: sightpane_dashboard
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  flutter_riverpod: ^3.1.0
+  go_router: ^18.0.0
+  http: ^1.6.0
+  intl: any
+  shadcn_flutter: ^0.0.54
+  shared_preferences: ^2.5.5
+  web: ^1.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true # lib/l10n/*.arb → lib/l10n/gen/app_localizations.dart (flutter gen-l10n)

@@ -1,0 +1,551 @@
+{
+  "@@locale": "tr",
+  "commonRefresh": "Yenile",
+  "commonCancel": "Vazgeç",
+  "commonClose": "Kapat",
+  "commonSave": "Kaydet",
+  "commonDelete": "Sil",
+  "commonCreate": "Oluştur",
+  "commonLoading": "Yükleniyor",
+  "commonCopied": "Kopyalandı",
+  "commonAll": "Tümü",
+  "commonNoRecords": "Kayıt yok.",
+  "commonNoData": "Veri yok.",
+  "commonAnonymous": "anonim",
+  "commonError": "Hata",
+  "commonOwner": "sahip",
+  "commonMember": "üye",
+  "commonOpen": "açık",
+  "commonResolved": "çözüldü",
+  "commonEnded": "bitti",
+  "commonEmpty": "—",
+  "@commonEmpty": {
+    "description": "The no-value marker; the same dash in every language"
+  },
+  "errNetwork": "Sunucuya ulaşılamıyor ({endpoint}).",
+  "@errNetwork": {
+    "placeholders": {
+      "endpoint": {
+        "type": "String"
+      }
+    }
+  },
+  "errInvalidCredentials": "E-posta veya şifre hatalı.",
+  "errSessionExpired": "Oturum geçersiz; yeniden giriş yapın.",
+  "errOwnerRequired": "Bu işlem için proje sahibi olmalısınız.",
+  "errNotFound": "Bulunamadı.",
+  "errEmailTaken": "Bu e-posta zaten kayıtlı.",
+  "errPasswordTooShort": "Şifre en az 6 karakter olmalı.",
+  "errInvalidEmail": "Geçerli bir e-posta girin.",
+  "errUnknownMember": "Bu e-postayla kayıtlı kullanıcı yok; önce kayıt olmalı.",
+  "errSelfRemove": "Kendinizi projeden çıkaramazsınız.",
+  "errProjectNameRequired": "Proje adı gerekli.",
+  "errUnsupportedLocale": "Bu dil desteklenmiyor.",
+  "fmtJustNow": "az önce",
+  "fmtMinutesAgo": "{count} dk önce",
+  "@fmtMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtHoursAgo": "{count} sa önce",
+  "@fmtHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtDaysAgo": "{count} gün önce",
+  "@fmtDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtSeconds": "{count} sn",
+  "@fmtSeconds": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtMinutes": "{count} dk",
+  "@fmtMinutes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "fmtHours": "{hours} sa",
+  "@fmtHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "fmtDateTimePattern": "dd.MM.yyyy HH:mm",
+  "@fmtDateTimePattern": {
+    "description": "intl DateFormat pattern — not a translation but how that language writes dates"
+  },
+  "fmtDayPattern": "dd MMM",
+  "@fmtDayPattern": {
+    "description": "Short day pattern for chart and column labels"
+  },
+  "fmtClockPattern": "HH:mm:ss",
+  "@fmtClockPattern": {
+    "description": "Clock pattern for the replay player"
+  },
+  "navOverview": "Genel bakış",
+  "navIssues": "Hatalar",
+  "navSessions": "Oturumlar",
+  "navEvents": "Olaylar",
+  "navSettings": "Ayarlar",
+  "shellSourceTooltip": "Kaynak kodu: {url}",
+  "@shellSourceTooltip": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "shellSignOut": "Çıkış",
+  "shellLanguage": "Dil",
+  "languageTurkish": "Türkçe",
+  "@languageTurkish": {
+    "description": "A language name is written in its own language"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "A language name is written in its own language"
+  },
+  "authSignIn": "Giriş yap",
+  "authSignInSubtitle": "sightpane panosuna hesabınızla devam edin.",
+  "authNoAccount": "Hesabınız yok mu?",
+  "authGoRegister": "Kayıt olun",
+  "authRegisterTitle": "Hesap oluştur",
+  "authRegisterSubtitle": "Kayıt olun, ilk projenizi açın, anahtarınızı SDK’ya verin.",
+  "authHaveAccount": "Zaten hesabınız var mı?",
+  "authGoSignIn": "Giriş yapın",
+  "authRegister": "Kayıt ol",
+  "authEmail": "E-posta",
+  "authEmailHint": "ad@sirket.com",
+  "authPassword": "Şifre",
+  "authPasswordRepeat": "Şifre (tekrar)",
+  "authFullName": "Ad Soyad",
+  "authFullNameHint": "Ayşe Yılmaz",
+  "authPasswordHint": "en az 6 karakter",
+  "authInvalidEmail": "Geçerli bir e-posta girin",
+  "authPasswordRequired": "Şifre gerekli",
+  "authPasswordTooShort": "Şifre en az 6 karakter olmalı",
+  "authPasswordMismatch": "Şifreler eşleşmiyor",
+  "projectsTitle": "Projeler",
+  "projectsCount": "{count} proje",
+  "@projectsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectsNew": "Yeni proje",
+  "projectsLoading": "Projeler yükleniyor",
+  "projectsLoadFailed": "Projeler alınamadı: {error}",
+  "@projectsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "projectsEmptyTitle": "Henüz projeniz yok.",
+  "projectsEmptyBody": "Bir proje açın; anahtarını ve adresini SDK’ya verin.",
+  "projectsCreateFirst": "İlk projeyi oluştur",
+  "projectKeyAndAge": "anahtar {key} · {age}",
+  "@projectKeyAndAge": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      },
+      "age": {
+        "type": "String"
+      }
+    }
+  },
+  "projectStatSessions24h": "Oturum 24s",
+  "projectStatErrors24h": "Hata 24s",
+  "projectStatOpenIssues": "Açık grup",
+  "projectCreated": "{name} oluşturuldu",
+  "@projectCreated": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "projectGoTo": "Projeye git",
+  "projectName": "Proje adı",
+  "projectNameRequired": "Proje adı gerekli",
+  "@projectNameRequired": {
+    "description": "Inline form warning, no full stop — errProjectNameRequired is the server error"
+  },
+  "projectNameHint": "Kasa uygulaması",
+  "projectPlatform": "Platform",
+  "setupAddress": "Adres",
+  "setupApiKey": "API anahtarı",
+  "setupTitle": "Kurulum",
+  "overviewSubtitle": "son {days} gün",
+  "@overviewSubtitle": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewDaysShort": "{days} g",
+  "@overviewDaysShort": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewStatsLoading": "İstatistikler yükleniyor",
+  "overviewStatsFailed": "İstatistikler alınamadı: {error}",
+  "@overviewStatsFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "overviewSessionsAndErrors": "Oturumlar ve hatalar",
+  "overviewSessionsAndErrorsNote": "gün bazında · amber oturum, kırmızı hata",
+  "overviewEvents": "Olaylar",
+  "overviewByDay": "gün bazında",
+  "overviewTopIssues": "En sık hatalar",
+  "overviewNoOpenIssues": "Açık hata yok.",
+  "overviewPlatforms": "Platformlar",
+  "overviewReleases": "Sürümler",
+  "overviewTopEvents": "En sık olaylar",
+  "kpiSessions": "Oturum",
+  "kpiVisitorsNote": "{count} ziyaretçi (kullanıcı + IP + tarayıcı)",
+  "@kpiVisitorsNote": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "kpiErrors": "Hata",
+  "kpiOpenGroupsNote": "{count} açık grup",
+  "@kpiOpenGroupsNote": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "kpiCrashFree": "Hatasız oturum",
+  "kpiEvents": "Olay",
+  "kpiFramesNote": "{count} kayıt karesi",
+  "@kpiFramesNote": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "livePages": "Sayfalar",
+  "liveRouteCount": "{count} rota",
+  "@liveRouteCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "liveNoPages": "Şu anda görüntülenen sayfa yok.",
+  "liveNoRoute": "(rota yok)",
+  "livePeopleCount": "{count} kişi",
+  "@livePeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "liveViewers": "Görüntüleyenler",
+  "liveWindow": "son {seconds} sn",
+  "@liveWindow": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "liveNoOpenSessions": "Açık oturum yok.",
+  "liveMore": "+{count} daha",
+  "@liveMore": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "liveWaiting": "Canlı veri bekleniyor",
+  "liveSummary": "{people} kişi şu anda çevrimiçi · {visitors} ziyaretçi",
+  "@liveSummary": {
+    "placeholders": {
+      "people": {
+        "type": "int"
+      },
+      "visitors": {
+        "type": "int"
+      }
+    }
+  },
+  "liveRefreshNote": "saniyede bir yenilenir",
+  "issuesTitle": "Hatalar",
+  "issuesOpenCount": "{count} açık grup",
+  "@issuesOpenCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "issuesShowResolved": "Çözülenleri göster",
+  "issuesGroups": "Hata grupları",
+  "issuesGroupingNote": "aynı istisna + aynı yığın karesi tek grup",
+  "issuesLoadFailed": "Hatalar alınamadı: {error}",
+  "@issuesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "issuesEmpty": "Hata yok.",
+  "colError": "Hata",
+  "colException": "İstisna",
+  "colCount": "Sayı",
+  "colFirst": "İlk",
+  "colLast": "Son",
+  "colStatus": "Durum",
+  "issueDetailFailed": "Hata grubu alınamadı: {error}",
+  "@issueDetailFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "issueSeenSummary": "{count} kez · ilk {first} · son {last}",
+  "@issueSeenSummary": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "first": {
+        "type": "String"
+      },
+      "last": {
+        "type": "String"
+      }
+    }
+  },
+  "issueReopen": "Yeniden aç",
+  "issueResolve": "Çözüldü",
+  "issueResolvedToast": "Çözüldü olarak işaretlendi",
+  "issueResolvedToastNote": "Yeniden görülürse otomatik açılır.",
+  "issueStack": "Yığın",
+  "issueNoStack": "(yığın yok)",
+  "issueOccurrences": "Oluşumlar",
+  "issueOccurrencesNote": "son {count}",
+  "@issueOccurrencesNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "colTime": "Zaman",
+  "colSession": "Oturum",
+  "colRoute": "Rota",
+  "colFrame": "Kare",
+  "colMessage": "Mesaj",
+  "sessionsTitle": "Oturumlar",
+  "sessionsCount": "{count} oturum",
+  "@sessionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionsUserFilterHint": "kullanıcı kimliği",
+  "sessionsOnlyErrors": "Yalnızca hatalı",
+  "sessionsRecent": "Son oturumlar",
+  "sessionsLoadFailed": "Oturumlar alınamadı: {error}",
+  "@sessionsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionsEmpty": "Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.",
+  "colUser": "Kullanıcı",
+  "colIp": "IP",
+  "colPlatform": "Platform",
+  "colRelease": "Sürüm",
+  "colStart": "Başlangıç",
+  "colDuration": "Süre",
+  "colEvent": "Olay",
+  "sessionLoading": "Oturum yükleniyor",
+  "sessionLoadFailed": "Oturum alınamadı: {error}",
+  "@sessionLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionReplay": "Kayıt",
+  "sessionFramesAndDuration": "{frames} kare · {duration}",
+  "@sessionFramesAndDuration": {
+    "placeholders": {
+      "frames": {
+        "type": "int"
+      },
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionTimeline": "Zaman çizgisi",
+  "sessionItemCount": "{count} öğe",
+  "@sessionItemCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionNoItems": "Öğe yok.",
+  "sessionHeader": "Oturum {id}",
+  "@sessionHeader": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "sessionFullscreenTitle": "Oturum {id} · {user}",
+  "@sessionFullscreenTitle": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      },
+      "user": {
+        "type": "String"
+      }
+    }
+  },
+  "replayNoFrames": "Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).",
+  "replayPosition": "{position} / {total} sn",
+  "@replayPosition": {
+    "placeholders": {
+      "position": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  },
+  "replayBuffer": "önbellek {done}/{total}",
+  "@replayBuffer": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "replayFullscreenHint": "ESC kapatır · boşluk oynat/duraklat",
+  "itemIssueLink": "Hata grubu #{id}",
+  "@itemIssueLink": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "itemRoute": "rota {route}",
+  "@itemRoute": {
+    "placeholders": {
+      "route": {
+        "type": "String"
+      }
+    }
+  },
+  "itemBreadcrumbsBefore": "Hata öncesi adımlar",
+  "eventsTitle": "Olaylar",
+  "eventsSubtitle": "son 30 gün",
+  "eventsTypes": "Olay türleri",
+  "eventsLoadFailed": "Olaylar alınamadı: {error}",
+  "@eventsLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "eventsEmpty": "Olay yok. SDK’da Hog.capture(’olay’) çağırın.",
+  "colTotal": "Toplam",
+  "settingsTitle": "Ayarlar",
+  "settingsProjectLoadFailed": "Proje alınamadı: {error}",
+  "@settingsProjectLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsProject": "Proje",
+  "settingsMemberReadOnly": "üye · yalnızca görüntüleme",
+  "settingsProjectNameLabel": "Ad",
+  "settingsSaved": "Kaydedildi",
+  "settingsRotateKey": "Anahtarı döndür",
+  "settingsRotateKeyBody": "Eski anahtarla gönderen uygulamalar reddedilecek. Yeni anahtarı SDK yapılandırmasına işlemeniz gerekir.",
+  "settingsRotate": "Döndür",
+  "settingsSdkSetup": "SDK kurulumu",
+  "settingsSdkSetupNote": "endpoint ve apiKey init sırasında verilir",
+  "settingsMembers": "Üyeler",
+  "settingsMemberRemoved": "Üye çıkarıldı",
+  "settingsMemberAdded": "Üye eklendi",
+  "settingsAddMember": "Üye ekle",
+  "settingsMemberEmailHint": "uye@sirket.com (kayıtlı olmalı)",
+  "settingsDangerZone": "Tehlikeli bölge",
+  "settingsDeleteBody": "Projeyi ve tüm oturum, hata, kare verisini kalıcı olarak siler.",
+  "settingsDeleteProject": "Projeyi sil",
+  "settingsDeleteConfirmTitle": "\"{name}\" silinsin mi?",
+  "@settingsDeleteConfirmTitle": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "settingsDeleteConfirmBody": "Bu işlem geri alınamaz."
+}

@@ -1,0 +1,102 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+
+import '../core/auth.dart';
+import '../features/auth/auth_pages.dart';
+import '../features/events/events_page.dart';
+import '../features/issues/issue_detail_page.dart';
+import '../features/issues/issues_page.dart';
+import '../features/projects/overview_page.dart';
+import '../features/projects/projects_page.dart';
+import '../features/projects/settings_page.dart';
+import '../features/sessions/session_detail_page.dart';
+import '../features/sessions/sessions_page.dart';
+import '../shell/app_shell.dart';
+
+final _authRefreshProvider = Provider<Listenable>((ref) {
+  final n = ValueNotifier<int>(0);
+  ref.listen(authControllerProvider, (_, _) => n.value++);
+  ref.onDispose(n.dispose);
+  return n;
+});
+
+/// Routes that need no authentication.
+const publicPaths = {'/login', '/register'};
+
+final routerProvider = Provider<GoRouter>((ref) {
+  final refresh = ref.watch(_authRefreshProvider);
+  return GoRouter(
+    initialLocation: '/projects',
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      final auth = ref.read(authControllerProvider);
+      if (auth.isLoading && !auth.hasValue) return null;
+      final loggedIn = auth.value != null;
+      final public = publicPaths.contains(state.uri.path);
+      if (!loggedIn && !public) {
+        return '/login?next=${Uri.encodeComponent(state.uri.toString())}';
+      }
+      if (loggedIn && public) {
+        return state.uri.queryParameters['next'] ?? '/projects';
+      }
+      return null;
+    },
+    routes: [
+      GoRoute(path: '/login', builder: (_, _) => const LoginPage()),
+      GoRoute(path: '/register', builder: (_, _) => const RegisterPage()),
+      GoRoute(path: '/', redirect: (_, _) => '/projects'),
+      ShellRoute(
+        builder: (context, state, child) => AppShell(child: child),
+        routes: [
+          GoRoute(path: '/projects', builder: (_, _) => const ProjectsPage()),
+          GoRoute(
+            path: '/projects/:id',
+            builder: (_, s) => OverviewPage(projectId: _id(s)),
+            routes: [
+              GoRoute(
+                path: 'sessions',
+                builder: (_, s) => SessionsPage(
+                  projectId: _id(s),
+                  onlyErrors: s.uri.queryParameters['errors'] == '1',
+                  user: s.uri.queryParameters['user'] ?? '',
+                ),
+              ),
+              GoRoute(
+                path: 'sessions/:sid',
+                builder: (_, s) => SessionDetailPage(
+                  projectId: _id(s),
+                  sessionId: s.pathParameters['sid']!,
+                ),
+              ),
+              GoRoute(
+                path: 'issues',
+                builder: (_, s) => IssuesPage(
+                  projectId: _id(s),
+                  includeResolved: s.uri.queryParameters['resolved'] == '1',
+                ),
+              ),
+              GoRoute(
+                path: 'issues/:iid',
+                builder: (_, s) => IssueDetailPage(
+                  projectId: _id(s),
+                  issueId: int.parse(s.pathParameters['iid']!),
+                ),
+              ),
+              GoRoute(
+                path: 'events',
+                builder: (_, s) => EventsPage(projectId: _id(s)),
+              ),
+              GoRoute(
+                path: 'settings',
+                builder: (_, s) => SettingsPage(projectId: _id(s)),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+});
+
+int _id(GoRouterState s) => int.tryParse(s.pathParameters['id'] ?? '') ?? 0;
