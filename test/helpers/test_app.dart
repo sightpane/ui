@@ -383,10 +383,20 @@ class FakeApi implements SightpaneApi {
     String platform = 'flutter',
     int? retentionDays,
     int? quotaItemsPerMinute,
+    String? storeIp,
+    String? scrubRulesJson,
   }) async {
     calls.add('update $id $name');
     return projectList.first;
   }
+
+  @override
+  Future<void> deleteUserData(int projectId, String userId) async =>
+      calls.add('deleteUserData $projectId $userId');
+
+  @override
+  String userExportUrl(int projectId, String userId) =>
+      '/api/v1/projects/$projectId/users/$userId/export';
 
   @override
   Future<void> deleteProject(int id) async => calls.add('delete $id');

@@ -10,6 +10,7 @@ import '../../core/providers.dart';
 import '../../shared/widgets.dart';
 import 'projects_page.dart' show SetupSnippet;
 import '../../core/format.dart';
+import 'export_downloader.dart';
 
 /// Project settings: name, API key (rotation), setup snippet, members,
 /// deletion.
@@ -312,6 +313,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             children: [
                               Expanded(
                                 child: TextField(
+                                  key: const Key('member-email-input'),
                                   controller: _memberEmail,
                                   enabled: !_busy,
                                   placeholder: Text(
@@ -358,6 +360,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   const Gap(12),
                   _AlertRulesPanel(
                     projectId: pid,
+                    busy: _busy,
+                    onRun: _run,
+                  ),
+                  const Gap(12),
+                  _PrivacyPanel(
+                    project: p,
                     busy: _busy,
                     onRun: _run,
                   ),
@@ -899,6 +907,7 @@ class _RuleRow extends StatelessWidget {
         ),
         const Gap(8),
         IconButton.ghost(
+          key: Key('delete-alert-rule-${rule.id}'),
           size: ButtonSize.small,
           icon: const Icon(LucideIcons.trash2, size: 14),
           onPressed: busy ? null : onDelete,
@@ -1118,6 +1127,178 @@ class _CreateRuleDialogState extends ConsumerState<_CreateRuleDialog> {
               : Text(context.l10n.commonCreate),
         ),
       ],
+    );
+  }
+}
+
+class _PrivacyPanel extends StatefulWidget {
+  const _PrivacyPanel({
+    required this.project,
+    required this.busy,
+    required this.onRun,
+  });
+
+  final Project project;
+  final bool busy;
+  final Future<void> Function(Future<void> Function() f, {String? done}) onRun;
+
+  @override
+  State<_PrivacyPanel> createState() => _PrivacyPanelState();
+}
+
+class _PrivacyPanelState extends State<_PrivacyPanel> {
+  late String _storeIp;
+  final _userId = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _storeIp = widget.project.storeIp;
+  }
+
+  @override
+  void didUpdateWidget(covariant _PrivacyPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.project.storeIp != widget.project.storeIp) {
+      _storeIp = widget.project.storeIp;
+    }
+  }
+
+  @override
+  void dispose() {
+    _userId.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final owner = widget.project.isOwner;
+    return Consumer(
+      builder: (context, ref, _) {
+        final api = ref.read(apiProvider);
+        final pid = widget.project.id;
+        final ipModes = [
+          ('full', 'Full IP', 'Store full client IP address'),
+          ('anonymized', 'Anonymized (/24)', 'Zero out last octet (e.g. 192.168.1.0)'),
+          ('none', 'Do Not Store', 'Completely discard client IP addresses'),
+        ];
+
+        return PanelCard(
+          title: 'Privacy & KVKK / GDPR',
+          subtitle: 'IP address retention policies and per-user data deletion/export.',
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const FieldLabel('Client IP Storage Policy'),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final (mode, label, _) in ipModes)
+                      _storeIp == mode
+                          ? SecondaryButton(
+                              size: ButtonSize.small,
+                              onPressed: () {},
+                              child: Text(label),
+                            )
+                          : GhostButton(
+                              size: ButtonSize.small,
+                              onPressed: owner && !widget.busy
+                                  ? () {
+                                      setState(() => _storeIp = mode);
+                                      widget.onRun(() async {
+                                        await api.updateProject(
+                                          pid,
+                                          name: widget.project.name,
+                                          platform: widget.project.platform,
+                                          retentionDays: widget.project.retentionDays,
+                                          quotaItemsPerMinute: widget.project.quotaItemsPerMinute,
+                                          storeIp: mode,
+                                        );
+                                        ref.invalidate(projectProvider(pid));
+                                      }, done: 'IP storage policy updated');
+                                    }
+                                  : null,
+                              child: Text(label),
+                            ),
+                  ],
+                ),
+                const Gap(6),
+                Text(
+                  ipModes.firstWhere((m) => m.$1 == _storeIp).$3,
+                  style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+                ),
+                const Gap(18),
+                const FieldLabel('User Data Management (Right to be Forgotten / Export)'),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _userId,
+                        enabled: !widget.busy,
+                        placeholder: const Text('Enter user ID (e.g. user_123)'),
+                      ),
+                    ),
+                    const Gap(8),
+                    OutlineButton(
+                      size: ButtonSize.small,
+                      leading: const Icon(LucideIcons.download, size: 14),
+                      onPressed: widget.busy
+                          ? null
+                          : () {
+                              final uid = _userId.text.trim();
+                              if (uid.isEmpty) {
+                                toast(context, 'User ID is required');
+                                return;
+                              }
+                              final url = api.userExportUrl(pid, uid);
+                              downloadExportUrl(url);
+                              toast(context, 'Exporting data for $uid');
+                            },
+                      child: const Text('Export (.zip)'),
+                    ),
+                    if (owner) ...[
+                      const Gap(8),
+                      DestructiveButton(
+                        size: ButtonSize.small,
+                        leading: const Icon(LucideIcons.trash2, size: 14),
+                        onPressed: widget.busy
+                            ? null
+                            : () {
+                                final uid = _userId.text.trim();
+                                if (uid.isEmpty) {
+                                  toast(context, 'User ID is required');
+                                  return;
+                                }
+                                showAppDialog(
+                                  context,
+                                  ConfirmDialog(
+                                    title: 'Delete User Data',
+                                    message:
+                                        'All sessions, items, spans, and frame recordings for user "$uid" will be permanently deleted. This cannot be undone.',
+                                    confirmLabel: 'Delete',
+                                    destructive: true,
+                                    onConfirm: () => widget.onRun(() async {
+                                      await api.deleteUserData(pid, uid);
+                                      _userId.clear();
+                                      ref.invalidate(projectProvider(pid));
+                                      ref.invalidate(projectsProvider);
+                                    }, done: 'User data deleted'),
+                                  ),
+                                );
+                              },
+                        child: const Text('Delete Data'),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

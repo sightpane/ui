@@ -49,7 +49,11 @@ abstract class SightpaneApi {
     String platform = 'flutter',
     int? retentionDays,
     int? quotaItemsPerMinute,
+    String? storeIp,
+    String? scrubRulesJson,
   });
+  Future<void> deleteUserData(int projectId, String userId);
+  String userExportUrl(int projectId, String userId);
   Future<void> deleteProject(int id);
   Future<String> rotateKey(int id);
   Future<List<Member>> members(int id);
@@ -278,6 +282,8 @@ class HttpSightpaneApi implements SightpaneApi {
     String platform = 'flutter',
     int? retentionDays,
     int? quotaItemsPerMinute,
+    String? storeIp,
+    String? scrubRulesJson,
   }) async => Project.fromJson(
     _map(
       await _send(
@@ -289,10 +295,20 @@ class HttpSightpaneApi implements SightpaneApi {
           if (retentionDays != null) 'retention_days': retentionDays,
           if (quotaItemsPerMinute != null)
             'quota_items_per_minute': quotaItemsPerMinute,
+          if (storeIp != null) 'store_ip': storeIp,
+          if (scrubRulesJson != null) 'scrub_rules_json': scrubRulesJson,
         },
       ),
     ),
   );
+
+  @override
+  Future<void> deleteUserData(int projectId, String userId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/users/$userId');
+
+  @override
+  String userExportUrl(int projectId, String userId) =>
+      '$baseUrl/api/v1/projects/$projectId/users/$userId/export';
   @override
   Future<void> deleteProject(int id) => _send('DELETE', '/api/v1/projects/$id');
   @override

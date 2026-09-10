@@ -66,6 +66,8 @@ class Project {
     this.createdAt,
     this.retentionDays = 30,
     this.quotaItemsPerMinute = 0,
+    this.storeIp = 'full',
+    this.scrubRulesJson = '[]',
     this.sessions24h = 0,
     this.errors24h = 0,
     this.openIssues = 0,
@@ -74,6 +76,7 @@ class Project {
   final String name, apiKey, platform, role;
   final DateTime? createdAt;
   final int retentionDays, quotaItemsPerMinute;
+  final String storeIp, scrubRulesJson;
   final int sessions24h, errors24h, openIssues;
   bool get isOwner => role == 'owner';
   factory Project.fromJson(Map<String, Object?> j) => Project(
@@ -85,6 +88,8 @@ class Project {
     createdAt: _t(j['created_at']),
     retentionDays: j.containsKey('retention_days') ? _i(j['retention_days']) : 30,
     quotaItemsPerMinute: _i(j['quota_items_per_minute']),
+    storeIp: _s(j['store_ip']).isEmpty ? 'full' : _s(j['store_ip']),
+    scrubRulesJson: _s(j['scrub_rules_json']).isEmpty ? '[]' : _s(j['scrub_rules_json']),
     sessions24h: _i(j['sessions_24h']),
     errors24h: _i(j['errors_24h']),
     openIssues: _i(j['open_issues']),

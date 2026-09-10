@@ -98,7 +98,10 @@ void main() {
       await tester.tap(inDialog(find.text('Döndür')));
       await settle(tester);
       expect(api.calls, contains('rotate 1'));
-      await tester.enterText(find.byType(TextField).last, 'yeni@x.io');
+      await tester.enterText(
+        find.byKey(const Key('member-email-input')),
+        'yeni@x.io',
+      );
       await tester.tap(find.text('Üye ekle'));
       await settle(tester);
       expect(api.calls, contains('addMember yeni@x.io'));
@@ -187,11 +190,36 @@ void main() {
       expect(api.calls, contains('createAlertRule 1 Critical Spike rate_spike'));
 
       // Delete rule
-      await tester.tap(find.byIcon(LucideIcons.trash2).last);
+      await tester.tap(find.byKey(const Key('delete-alert-rule-2')));
       await settle(tester);
       await tester.tap(inDialog(find.text('Sil')));
       await settle(tester);
       expect(api.calls, contains('deleteAlertRule 1 2'));
+
+      await dismissToasts(tester);
+    },
+  );
+
+  testWidgets(
+    'settings: privacy and pii compliance settings and user data deletion',
+    (tester) async {
+      await go(tester, '/projects/1/settings', size: tallDesktopSize);
+      await settle(tester);
+
+      expect(find.text('Privacy & KVKK / GDPR'), findsOneWidget);
+      expect(find.text('Client IP Storage Policy'), findsOneWidget);
+
+      // Enter user id and delete
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Enter user ID (e.g. user_123)'),
+        'user_456',
+      );
+      await tester.tap(find.text('Delete Data'));
+      await settle(tester);
+      expect(find.text('Delete User Data'), findsOneWidget);
+      await tester.tap(inDialog(find.text('Delete')));
+      await settle(tester);
+      expect(api.calls, contains('deleteUserData 1 user_456'));
 
       await dismissToasts(tester);
     },
