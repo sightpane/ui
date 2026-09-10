@@ -47,6 +47,8 @@ abstract class SightpaneApi {
     int id, {
     required String name,
     String platform = 'flutter',
+    int? retentionDays,
+    int? quotaItemsPerMinute,
   });
   Future<void> deleteProject(int id);
   Future<String> rotateKey(int id);
@@ -274,12 +276,20 @@ class HttpSightpaneApi implements SightpaneApi {
     int id, {
     required String name,
     String platform = 'flutter',
+    int? retentionDays,
+    int? quotaItemsPerMinute,
   }) async => Project.fromJson(
     _map(
       await _send(
         'PATCH',
         '/api/v1/projects/$id',
-        body: {'name': name, 'platform': platform},
+        body: {
+          'name': name,
+          'platform': platform,
+          if (retentionDays != null) 'retention_days': retentionDays,
+          if (quotaItemsPerMinute != null)
+            'quota_items_per_minute': quotaItemsPerMinute,
+        },
       ),
     ),
   );

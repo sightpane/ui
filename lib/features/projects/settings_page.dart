@@ -23,6 +23,8 @@ class SettingsPage extends ConsumerStatefulWidget {
 class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _name = TextEditingController();
   final _memberEmail = TextEditingController();
+  final _retention = TextEditingController();
+  final _quota = TextEditingController();
   bool _busy = false;
   String? _loadedFor;
 
@@ -30,6 +32,8 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   void dispose() {
     _name.dispose();
     _memberEmail.dispose();
+    _retention.dispose();
+    _quota.dispose();
     super.dispose();
   }
 
@@ -69,9 +73,11 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           color: Tokens.danger,
         ),
         data: (p) {
-          if (_loadedFor != '${p.id}:${p.name}') {
-            _loadedFor = '${p.id}:${p.name}';
+          if (_loadedFor != '${p.id}:${p.name}:${p.retentionDays}:${p.quotaItemsPerMinute}') {
+            _loadedFor = '${p.id}:${p.name}:${p.retentionDays}:${p.quotaItemsPerMinute}';
             _name.text = p.name;
+            _retention.text = '${p.retentionDays}';
+            _quota.text = '${p.quotaItemsPerMinute}';
           }
           final owner = p.isOwner;
           return ConstrainedBox(
@@ -100,23 +106,71 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 enabled: owner && !_busy,
                               ),
                             ),
-                            const Gap(8),
-                            PrimaryButton(
-                              size: ButtonSize.small,
-                              onPressed: owner && !_busy
-                                  ? () => _run(() async {
-                                      await api.updateProject(
-                                        pid,
-                                        name: _name.text.trim(),
-                                        platform: p.platform,
-                                      );
-                                      ref.invalidate(projectProvider(pid));
-                                      ref.invalidate(projectsProvider);
-                                    }, done: context.l10n.settingsSaved)
-                                  : null,
-                              child: Text(context.l10n.commonSave),
+                          ],
+                        ),
+                        const Gap(14),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const FieldLabel('Retention Period (Days)'),
+                                  TextField(
+                                    controller: _retention,
+                                    enabled: owner && !_busy,
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  const Gap(4),
+                                  const Text(
+                                    'Sessions older than this are purged daily. 0 = keep forever.',
+                                    style: TextStyle(fontSize: 11, color: Tokens.textMuted),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Gap(14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  const FieldLabel('Ingest Quota (items/min)'),
+                                  TextField(
+                                    controller: _quota,
+                                    enabled: owner && !_busy,
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  const Gap(4),
+                                  const Text(
+                                    'Limit per-minute item volume. 0 = unlimited.',
+                                    style: TextStyle(fontSize: 11, color: Tokens.textMuted),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
+                        ),
+                        const Gap(14),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: PrimaryButton(
+                            size: ButtonSize.small,
+                            onPressed: owner && !_busy
+                                ? () => _run(() async {
+                                    await api.updateProject(
+                                      pid,
+                                      name: _name.text.trim(),
+                                      platform: p.platform,
+                                      retentionDays: int.tryParse(_retention.text.trim()),
+                                      quotaItemsPerMinute: int.tryParse(_quota.text.trim()),
+                                    );
+                                    ref.invalidate(projectProvider(pid));
+                                    ref.invalidate(projectsProvider);
+                                  }, done: context.l10n.settingsSaved)
+                                : null,
+                            child: Text(context.l10n.commonSave),
+                          ),
                         ),
                         const Gap(14),
                         FieldLabel(context.l10n.setupApiKey),

@@ -18,6 +18,7 @@ abstract final class Tokens {
   static const accent = brand;
   static const accentSoft = Color(0xFFFFC24D);
   static const accentInk = Color(0xFF2A1B00);
+  static const warning = accentSoft;
   static const info = Color(0xFF38BDF8);
   static const ok = Color(0xFF4ADE80);
   static const danger = Color(0xFFF87171);

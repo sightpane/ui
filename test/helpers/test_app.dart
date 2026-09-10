@@ -381,6 +381,8 @@ class FakeApi implements SightpaneApi {
     int id, {
     required String name,
     String platform = 'flutter',
+    int? retentionDays,
+    int? quotaItemsPerMinute,
   }) async {
     calls.add('update $id $name');
     return projectList.first;

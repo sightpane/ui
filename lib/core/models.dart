@@ -64,6 +64,8 @@ class Project {
     this.platform = 'flutter',
     this.role = '',
     this.createdAt,
+    this.retentionDays = 30,
+    this.quotaItemsPerMinute = 0,
     this.sessions24h = 0,
     this.errors24h = 0,
     this.openIssues = 0,
@@ -71,6 +73,7 @@ class Project {
   final int id;
   final String name, apiKey, platform, role;
   final DateTime? createdAt;
+  final int retentionDays, quotaItemsPerMinute;
   final int sessions24h, errors24h, openIssues;
   bool get isOwner => role == 'owner';
   factory Project.fromJson(Map<String, Object?> j) => Project(
@@ -80,6 +83,8 @@ class Project {
     platform: _s(j['platform']),
     role: _s(j['role']),
     createdAt: _t(j['created_at']),
+    retentionDays: j.containsKey('retention_days') ? _i(j['retention_days']) : 30,
+    quotaItemsPerMinute: _i(j['quota_items_per_minute']),
     sessions24h: _i(j['sessions_24h']),
     errors24h: _i(j['errors_24h']),
     openIssues: _i(j['open_issues']),
@@ -139,6 +144,7 @@ class ProjectStats {
     this.events = 0,
     this.frames = 0,
     this.openIssues = 0,
+    this.dropped = 0,
     this.crashFree = 1,
     this.daily = const [],
     this.platforms = const [],
@@ -146,7 +152,7 @@ class ProjectStats {
     this.topIssues = const [],
     this.topEvents = const [],
   });
-  final int days, sessions, users, errors, events, frames, openIssues;
+  final int days, sessions, users, errors, events, frames, openIssues, dropped;
   final double crashFree;
   final List<DayStat> daily;
   final List<NameCount> platforms, releases, topEvents;
@@ -159,6 +165,7 @@ class ProjectStats {
     events: _i(j['events']),
     frames: _i(j['frames']),
     openIssues: _i(j['open_issues']),
+    dropped: _i(j['dropped']),
     crashFree: _d(j['crash_free']),
     daily: [
       for (final d in (j['daily'] as List? ?? const []))

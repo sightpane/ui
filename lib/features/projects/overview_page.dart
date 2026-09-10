@@ -207,6 +207,29 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
       children: [
         LivePanel(live: live, projectId: pid),
         const Gap(14),
+        if (s.dropped > 0) ...[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: Tokens.warning.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(Tokens.radius),
+              border: Border.all(color: Tokens.warning.withValues(alpha: 0.4)),
+            ),
+            child: Row(
+              children: [
+                const Icon(LucideIcons.triangleAlert, size: 16, color: Tokens.warning),
+                const Gap(8),
+                Expanded(
+                  child: Text(
+                    'Ingest quota exceeded: ${context.fmt.integer(s.dropped)} items dropped due to rate limit.',
+                    style: const TextStyle(fontSize: 13, color: Tokens.warning),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Gap(14),
+        ],
         KpiRow([
           KpiTile(
             label: context.l10n.kpiSessions,
