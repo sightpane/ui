@@ -149,6 +149,8 @@ class NavEntry {
 String _navOverview(L l) => l.navOverview;
 String _navIssues(L l) => l.navIssues;
 String _navSessions(L l) => l.navSessions;
+String _navPerformance(L l) => l.performanceTitle;
+String _navReleases(L l) => l.navReleases;
 String _navEvents(L l) => l.navEvents;
 String _navSettings(L l) => l.navSettings;
 
@@ -156,9 +158,13 @@ const projectNavEntries = [
   NavEntry(_navOverview, LucideIcons.layoutDashboard, ''),
   NavEntry(_navIssues, LucideIcons.bug, '/issues'),
   NavEntry(_navSessions, LucideIcons.video, '/sessions'),
+  NavEntry(_navPerformance, LucideIcons.gauge, '/performance'),
+  NavEntry(_navReleases, LucideIcons.tag, '/releases'),
   NavEntry(_navEvents, LucideIcons.chartBar, '/events'),
   NavEntry(_navSettings, LucideIcons.settings, '/settings'),
 ];
+
+
 
 class ProjectNav extends StatelessWidget {
   const ProjectNav({

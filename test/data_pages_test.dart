@@ -36,6 +36,14 @@ void main() {
     expect(find.byType(SessionDetailPage), findsOneWidget);
   });
 
+  testWidgets('sessions search query and filter chips', (tester) async {
+    final r = await go(tester, '/projects/1/sessions');
+    expect(find.text('Hızlı Filtreler'), findsOneWidget);
+    await tester.tap(find.text('browser:Chrome'));
+    await settle(tester);
+    expect(r.state.uri.toString(), contains('q=browser%3AChrome'));
+  });
+
   testWidgets(
     'session detail: player, timeline seek, error detail with breadcrumbs, issue link',
     (tester) async {
@@ -131,6 +139,51 @@ void main() {
     await dismissToasts(tester);
   });
 
+  testWidgets('issue detail assignment, snooze, ignore and comments workflow', (
+    tester,
+  ) async {
+    await go(tester, '/projects/1/issues/7');
+    expect(find.byType(IssueDetailPage), findsOneWidget);
+
+    // 1. Comments
+    expect(find.text('Looking into this crash'), findsOneWidget);
+    await tester.enterText(find.byType(TextField).last, 'Fix in progress');
+    await tester.tap(find.text('Gönder'));
+    await settle(tester);
+    expect(api.calls, contains('addIssueComment 7 Fix in progress'));
+    expect(find.text('Fix in progress'), findsOneWidget);
+
+    // 2. Assignment
+    expect(find.text('Atanmamış'), findsOneWidget);
+    await tester.tap(find.text('Atanmamış'));
+    await settle(tester);
+    expect(find.text('Ayşe Yılmaz (ayse@x.io)'), findsOneWidget);
+    await tester.tap(find.text('Ayşe Yılmaz (ayse@x.io)'));
+    await settle(tester);
+    expect(api.calls, contains('assignIssue 7 1'));
+
+    // 3. Snooze
+    expect(find.text('Ertele'), findsOneWidget);
+    await tester.tap(find.text('Ertele'));
+    await settle(tester);
+    expect(find.text('24 saat'), findsOneWidget);
+    await tester.tap(find.text('24 saat'));
+    await settle(tester);
+    expect(api.calls, anyElement(contains('snoozeIssue 7')));
+    await dismissToasts(tester);
+
+    // 4. Reopen and Ignore
+    expect(find.text('Yeniden aç'), findsOneWidget);
+    await tester.tap(find.text('Yeniden aç'));
+    await settle(tester);
+    expect(find.text('Göz ardı et'), findsOneWidget);
+    await tester.tap(find.text('Göz ardı et'));
+    await settle(tester);
+    expect(api.calls, contains('setIssueStatus 7 ignored'));
+    await dismissToasts(tester);
+  });
+
+
   testWidgets('events page aggregates per name with day columns', (
     tester,
   ) async {
@@ -141,9 +194,44 @@ void main() {
     expect(find.text('login'), findsOneWidget);
   });
 
+  testWidgets('releases page renders release health table with crash-free rate', (
+    tester,
+  ) async {
+    await go(tester, '/projects/1/releases');
+    expect(find.text('Sürümler'), findsWidgets);
+    expect(find.text('1.0.0'), findsOneWidget);
+    expect(find.text('90.0%'), findsOneWidget);
+    expect(find.text('0.9.0'), findsOneWidget);
+    expect(find.text('100.0%'), findsOneWidget);
+    expect(api.calls, contains('releases 1'));
+  });
+
+  testWidgets('performance page renders transactions, filter and detail modal with slowest samples', (tester) async {
+    await go(tester, '/projects/1/performance');
+    expect(find.text('Performans'), findsWidgets);
+    expect(find.text('route:/dashboard'), findsOneWidget);
+    expect(find.text('GET /api/v1/sessions'), findsOneWidget);
+    expect(api.calls, contains('performance 1 days=14 op='));
+
+    // Tap on transaction to open detail dialog
+    await tester.tap(find.text('route:/dashboard'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('En Yavaş Örnekler'), findsOneWidget);
+    expect(find.text('Kaydı Aç'), findsOneWidget);
+    expect(api.calls, contains('transactionDetail 1 name=route:/dashboard op=navigation days=14'));
+
+    // Tap "Kaydı Aç" to navigate to session
+    await tester.tap(find.text('Kaydı Aç'));
+    await tester.pumpAndSettle();
+    expect(find.byType(SessionDetailPage), findsOneWidget);
+  });
+
   testWidgets('mobile layout shows the horizontal project nav', (tester) async {
     await go(tester, '/projects/1/issues', size: mobileSize);
     expect(find.text('Hatalar'), findsWidgets);
     expect(find.text('Oturumlar'), findsOneWidget);
   });
 }
+
+

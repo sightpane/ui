@@ -108,6 +108,15 @@ class LEn extends L {
   String get errUnsupportedLocale => 'That language is not supported.';
 
   @override
+  String get errAlertChannelInvalid => 'Invalid notification channel details.';
+
+  @override
+  String get errAlertRuleInvalid => 'Invalid alert rule details.';
+
+  @override
+  String get errAlertSendFailed => 'Failed to send alert notification.';
+
+  @override
   String get fmtJustNow => 'just now';
 
   @override
@@ -177,10 +186,53 @@ class LEn extends L {
   String get navSessions => 'Sessions';
 
   @override
+  String get navReleases => 'Releases';
+
+  @override
   String get navEvents => 'Events';
 
   @override
   String get navSettings => 'Settings';
+
+  @override
+  String get releasesTitle => 'Releases';
+
+  @override
+  String releasesCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count releases',
+      one: '1 release',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String releasesLoadFailed(String error) {
+    return 'Could not load releases: $error';
+  }
+
+  @override
+  String get releasesEmpty => 'No release data yet.';
+
+  @override
+  String get colCrashFreeRate => 'Crash-Free %';
+
+  @override
+  String get colAdoption => 'Adoption %';
+
+  @override
+  String get colErrorSessions => 'Error Sessions';
+
+  @override
+  String get issueReleaseFirst => 'First release';
+
+  @override
+  String get issueReleaseLast => 'Last release';
+
+  @override
+  String get issueReleaseResolvedIn => 'Resolved in release';
 
   @override
   String shellSourceTooltip(String url) {
@@ -545,6 +597,78 @@ class LEn extends L {
       'It reopens automatically if seen again.';
 
   @override
+  String get issueAssignee => 'Assignee';
+
+  @override
+  String get issueUnassigned => 'Unassigned';
+
+  @override
+  String get issueStatus => 'Status';
+
+  @override
+  String get issueStatusOpen => 'Open';
+
+  @override
+  String get issueStatusResolved => 'Resolved';
+
+  @override
+  String get issueStatusIgnored => 'Ignored';
+
+  @override
+  String get issueStatusSnoozed => 'Snoozed';
+
+  @override
+  String get issueActionIgnore => 'Ignore';
+
+  @override
+  String get issueActionSnooze => 'Snooze';
+
+  @override
+  String get issueSnoozeTitle => 'Snooze issue';
+
+  @override
+  String get issueSnoozeDuration => 'By duration';
+
+  @override
+  String get issueSnooze1Hour => '1 hour';
+
+  @override
+  String get issueSnooze24Hours => '24 hours';
+
+  @override
+  String get issueSnooze7Days => '7 days';
+
+  @override
+  String get issueSnoozeCount => 'By occurrence count';
+
+  @override
+  String get issueSnoozeCount10 => 'After 10 more occurrences';
+
+  @override
+  String get issueSnoozeCount50 => 'After 50 more occurrences';
+
+  @override
+  String get issueSnoozeCount100 => 'After 100 more occurrences';
+
+  @override
+  String get issueComments => 'Comments';
+
+  @override
+  String get issueCommentsEmpty => 'No comments yet.';
+
+  @override
+  String get issueCommentAdd => 'Add a comment...';
+
+  @override
+  String get issueCommentSend => 'Send';
+
+  @override
+  String get issueIgnoredToast => 'Issue marked as ignored';
+
+  @override
+  String get issueSnoozedToast => 'Issue snoozed';
+
+  @override
   String get issueStack => 'Stack trace';
 
   @override
@@ -617,6 +741,25 @@ class LEn extends L {
   @override
   String get sessionsEmpty =>
       'No session matches this filter. If the SDK is connected, sessions appear here within seconds.';
+
+  @override
+  String get searchHint =>
+      'e.g. release:1.0 browser:Chrome route:/pay props.plan:pro errors:true';
+
+  @override
+  String get searchFilterQuick => 'Quick Filters';
+
+  @override
+  String get searchClear => 'Clear';
+
+  @override
+  String searchInvalid(String error) {
+    return 'Search query invalid: $error';
+  }
+
+  @override
+  String get searchPlaceholderIssues =>
+      'Search issues (e.g. title:boom resolved:false)';
 
   @override
   String get colUser => 'User';
@@ -785,6 +928,96 @@ class LEn extends L {
       'member@company.com (must be registered)';
 
   @override
+  String get settingsAlertsTitle => 'Alerts & Notifications';
+
+  @override
+  String get settingsAlertChannels => 'Notification Channels';
+
+  @override
+  String get settingsAlertChannelsEmpty =>
+      'No notification channels added yet.';
+
+  @override
+  String get settingsAlertChannelAdd => 'Add channel';
+
+  @override
+  String get settingsAlertChannelName => 'Channel name';
+
+  @override
+  String get settingsAlertChannelKind => 'Channel kind';
+
+  @override
+  String get settingsAlertChannelTarget => 'Target';
+
+  @override
+  String get settingsAlertChannelTargetHint => 'Email, Slack, or Webhook URL';
+
+  @override
+  String get settingsAlertChannelSecret => 'Secret key';
+
+  @override
+  String get settingsAlertChannelSecretHint =>
+      'Optional HMAC secret for webhooks';
+
+  @override
+  String get settingsAlertChannelTest => 'Send test';
+
+  @override
+  String get settingsAlertChannelTestSuccess =>
+      'Test notification sent successfully.';
+
+  @override
+  String get settingsAlertChannelDeleteConfirm =>
+      'Are you sure you want to delete this notification channel?';
+
+  @override
+  String get settingsAlertRules => 'Alert Rules';
+
+  @override
+  String get settingsAlertRulesEmpty => 'No alert rules added yet.';
+
+  @override
+  String get settingsAlertRuleAdd => 'Add rule';
+
+  @override
+  String get settingsAlertRuleName => 'Rule name';
+
+  @override
+  String get settingsAlertRuleKind => 'Event kind';
+
+  @override
+  String get settingsAlertRuleKindNewIssue => 'New issue';
+
+  @override
+  String get settingsAlertRuleKindRegression => 'Regressed issue';
+
+  @override
+  String get settingsAlertRuleKindRateSpike => 'Error rate spike';
+
+  @override
+  String get settingsAlertRuleKindCrashFree => 'Crash-free rate drop';
+
+  @override
+  String get settingsAlertRuleChannels => 'Channels';
+
+  @override
+  String get settingsAlertRuleChannelsSelectHint =>
+      'Select at least one channel';
+
+  @override
+  String get settingsAlertRuleThreshold => 'Threshold';
+
+  @override
+  String get settingsAlertRuleWindow => 'Time window (minutes)';
+
+  @override
+  String get settingsAlertRuleEnabled => 'Enabled';
+
+  @override
+  String get settingsAlertRuleDeleteConfirm =>
+      'Are you sure you want to delete this alert rule?';
+
+  @override
   String get settingsDangerZone => 'Danger zone';
 
   @override
@@ -801,4 +1034,56 @@ class LEn extends L {
 
   @override
   String get settingsDeleteConfirmBody => 'This cannot be undone.';
+
+  @override
+  String get performanceTitle => 'Performance';
+
+  @override
+  String performanceSubtitle(int count) {
+    return '$count operations tracked';
+  }
+
+  @override
+  String get performanceEmpty => 'No performance data yet.';
+
+  @override
+  String performanceLoadFailed(String error) {
+    return 'Failed to load performance data: $error';
+  }
+
+  @override
+  String get colOperation => 'Operation';
+
+  @override
+  String get colTransaction => 'Transaction';
+
+  @override
+  String get colP50 => 'p50';
+
+  @override
+  String get colP95 => 'p95';
+
+  @override
+  String get colAvg => 'Avg';
+
+  @override
+  String get colCalls => 'Calls';
+
+  @override
+  String get colErrorRate => 'Error %';
+
+  @override
+  String get performanceSlowestSamples => 'Slowest Samples';
+
+  @override
+  String get performanceViewReplay => 'View Replay';
+
+  @override
+  String get performanceDays7 => 'Last 7 Days';
+
+  @override
+  String get performanceDays14 => 'Last 14 Days';
+
+  @override
+  String get performanceDays30 => 'Last 30 Days';
 }

@@ -16,27 +16,46 @@ class SessionsPage extends ConsumerStatefulWidget {
     required this.projectId,
     this.onlyErrors = false,
     this.user = '',
+    this.query = '',
   });
   final int projectId;
   final bool onlyErrors;
   final String user;
+  final String query;
   @override
   ConsumerState<SessionsPage> createState() => _SessionsPageState();
 }
 
 class _SessionsPageState extends ConsumerState<SessionsPage> {
-  late final _user = TextEditingController(text: widget.user);
+  late final _query = TextEditingController(
+    text: widget.query.isNotEmpty
+        ? widget.query
+        : (widget.user.isNotEmpty ? 'user:${widget.user}' : ''),
+  );
+
+  @override
+  void didUpdateWidget(SessionsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final expected = widget.query.isNotEmpty
+        ? widget.query
+        : (widget.user.isNotEmpty ? 'user:${widget.user}' : '');
+    if (_query.text != expected) {
+      _query.text = expected;
+    }
+  }
 
   @override
   void dispose() {
-    _user.dispose();
+    _query.dispose();
     super.dispose();
   }
 
-  void _go({bool? onlyErrors, String? user}) {
+  void _go({bool? onlyErrors, String? query}) {
+    final q = query ?? _query.text.trim();
+    final errs = onlyErrors ?? widget.onlyErrors;
     final qp = <String, String>{
-      if (onlyErrors ?? widget.onlyErrors) 'errors': '1',
-      if ((user ?? widget.user).isNotEmpty) 'user': user ?? widget.user,
+      if (errs) 'errors': '1',
+      if (q.isNotEmpty) 'q': q,
     };
     context.go(
       Uri(
@@ -46,12 +65,24 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
     );
   }
 
+  void _addFilter(String token) {
+    final cur = _query.text.trim();
+    if (cur.contains(token)) return;
+    final updated = cur.isEmpty ? token : '$cur $token';
+    _query.text = updated;
+    _go(query: updated);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final effectiveQuery = widget.query.isNotEmpty
+        ? widget.query
+        : (widget.user.isNotEmpty ? 'user:${widget.user}' : '');
     final key = (
       project: widget.projectId,
       onlyErrors: widget.onlyErrors,
       user: widget.user,
+      query: effectiveQuery,
     );
     final sessions = ref.watch(sessionsProvider(key));
     return Padding(
@@ -66,13 +97,25 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                 : context.l10n.sessionsCount(sessions.value!.length),
             actions: [
               SizedBox(
-                width: 220,
+                width: 320,
                 child: TextField(
-                  controller: _user,
-                  placeholder: Text(context.l10n.sessionsUserFilterHint),
-                  onSubmitted: (v) => _go(user: v.trim()),
-                  features: const [
-                    InputFeature.leading(Icon(LucideIcons.search, size: 14)),
+                  controller: _query,
+                  placeholder: Text(context.l10n.searchHint),
+                  onSubmitted: (v) => _go(query: v.trim()),
+                  features: [
+                    const InputFeature.leading(Icon(LucideIcons.search, size: 14)),
+                    if (_query.text.isNotEmpty)
+                      InputFeature.trailing(
+                        GhostButton(
+                          density: ButtonDensity.compact,
+                          size: ButtonSize.xSmall,
+                          onPressed: () {
+                            _query.clear();
+                            _go(query: '');
+                          },
+                          child: const Icon(LucideIcons.x, size: 12),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -87,6 +130,52 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                 onPressed: () => ref.invalidate(sessionsProvider(key)),
                 child: Text(context.l10n.commonRefresh),
               ),
+            ],
+          ),
+          const Gap(10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                context.l10n.searchFilterQuick,
+                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('browser:Chrome'),
+                child: const Text('browser:Chrome'),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('platform:web'),
+                child: const Text('platform:web'),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('release:1.0'),
+                child: const Text('release:1.0'),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('route:/cashier'),
+                child: const Text('route:/cashier'),
+              ),
+              if (_query.text.isNotEmpty)
+                GhostButton(
+                  size: ButtonSize.xSmall,
+                  density: ButtonDensity.compact,
+                  onPressed: () {
+                    _query.clear();
+                    _go(query: '');
+                  },
+                  child: Text(context.l10n.searchClear),
+                ),
             ],
           ),
           const Gap(14),

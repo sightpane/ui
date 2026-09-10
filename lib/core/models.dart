@@ -421,20 +421,144 @@ class Issue {
     this.lastSeen,
     this.count = 0,
     this.resolved = false,
+    this.status = 'open',
+    this.assigneeUserId,
+    this.assigneeEmail,
+    this.snoozeUntil,
+    this.snoozeCountThreshold,
+    this.mergedInto,
+    this.firstRelease = '',
+    this.lastRelease = '',
+    this.resolvedInRelease = '',
   });
   final int id;
   final String title, exception;
   final DateTime? firstSeen, lastSeen;
   final int count;
   final bool resolved;
-  factory Issue.fromJson(Map<String, Object?> j) => Issue(
+  final String status;
+  final int? assigneeUserId;
+  final String? assigneeEmail;
+  final DateTime? snoozeUntil;
+  final int? snoozeCountThreshold;
+  final int? mergedInto;
+  final String firstRelease, lastRelease, resolvedInRelease;
+
+  factory Issue.fromJson(Map<String, Object?> j) {
+    final res = j['resolved'] == true || j['resolved'] == 1;
+    final st = _s(j['status']);
+    final effectiveStatus = st.isNotEmpty ? st : (res ? 'resolved' : 'open');
+    return Issue(
+      id: _i(j['id']),
+      title: _s(j['title']),
+      exception: _s(j['exception']),
+      firstSeen: _t(j['first_seen']),
+      lastSeen: _t(j['last_seen']),
+      count: _i(j['count']),
+      resolved: res || effectiveStatus == 'resolved',
+      status: effectiveStatus,
+      assigneeUserId:
+          j['assignee_user_id'] == null ? null : _i(j['assignee_user_id']),
+      assigneeEmail:
+          j['assignee_email'] == null ? null : _s(j['assignee_email']),
+      snoozeUntil: _t(j['snooze_until']),
+      snoozeCountThreshold: j['snooze_count_threshold'] == null
+          ? null
+          : _i(j['snooze_count_threshold']),
+      mergedInto: j['merged_into'] == null ? null : _i(j['merged_into']),
+      firstRelease: _s(j['first_release']),
+      lastRelease: _s(j['last_release']),
+      resolvedInRelease: _s(j['resolved_in_release']),
+    );
+  }
+}
+
+class ReleaseHealth {
+  const ReleaseHealth({
+    required this.version,
+    required this.firstSeen,
+    required this.lastSeen,
+    required this.sessionCount,
+    required this.errorSessionCount,
+    required this.errorCount,
+    required this.userCount,
+    required this.crashFreeRate,
+    required this.adoptionRate,
+  });
+  final String version;
+  final DateTime firstSeen, lastSeen;
+  final int sessionCount, errorSessionCount, errorCount, userCount;
+  final double crashFreeRate, adoptionRate;
+
+  factory ReleaseHealth.fromJson(Map<String, Object?> j) => ReleaseHealth(
+    version: _s(j['version']),
+    firstSeen: _t(j['first_seen']) ?? DateTime.now(),
+    lastSeen: _t(j['last_seen']) ?? DateTime.now(),
+    sessionCount: _i(j['session_count']),
+    errorSessionCount: _i(j['error_session_count']),
+    errorCount: _i(j['error_count']),
+    userCount: _i(j['user_count']),
+    crashFreeRate: _d(j['crash_free_rate']),
+    adoptionRate: _d(j['adoption_rate']),
+  );
+}
+
+
+class IssueComment {
+  const IssueComment({
+    required this.id,
+    required this.issueId,
+    required this.userId,
+    required this.userEmail,
+    required this.userName,
+    required this.body,
+    required this.createdAt,
+  });
+  final int id, issueId, userId;
+  final String userEmail, userName, body;
+  final DateTime createdAt;
+
+  factory IssueComment.fromJson(Map<String, Object?> j) => IssueComment(
     id: _i(j['id']),
-    title: _s(j['title']),
-    exception: _s(j['exception']),
-    firstSeen: _t(j['first_seen']),
-    lastSeen: _t(j['last_seen']),
-    count: _i(j['count']),
-    resolved: j['resolved'] == true || j['resolved'] == 1,
+    issueId: _i(j['issue_id']),
+    userId: _i(j['user_id']),
+    userEmail: _s(j['user_email']),
+    userName: _s(j['user_name']),
+    body: _s(j['body']),
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
+  );
+}
+
+class FingerprintRule {
+  const FingerprintRule({
+    required this.id,
+    required this.projectId,
+    this.exceptionMatch = '',
+    this.messageGlob = '',
+    this.stackContains = '',
+    required this.action,
+    this.groupFingerprint = '',
+    this.priority = 0,
+    required this.createdAt,
+  });
+  final int id, projectId, priority;
+  final String exceptionMatch,
+      messageGlob,
+      stackContains,
+      action,
+      groupFingerprint;
+  final DateTime createdAt;
+
+  factory FingerprintRule.fromJson(Map<String, Object?> j) => FingerprintRule(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    exceptionMatch: _s(j['exception_match']),
+    messageGlob: _s(j['message_glob']),
+    stackContains: _s(j['stack_contains']),
+    action: _s(j['action']),
+    groupFingerprint: _s(j['group_fingerprint']),
+    priority: _i(j['priority']),
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
   );
 }
 
@@ -519,3 +643,242 @@ class LiveStatus {
     ],
   );
 }
+
+class AlertChannel {
+  const AlertChannel({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.kind,
+    required this.target,
+    this.secret = '',
+    this.createdAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String kind; // 'email' | 'slack' | 'webhook'
+  final String target;
+  final String secret;
+  final DateTime? createdAt;
+
+  factory AlertChannel.fromJson(Map<String, Object?> j) => AlertChannel(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    kind: _s(j['kind']),
+    target: _s(j['target']),
+    secret: _s(j['secret']),
+    createdAt: _t(j['created_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'kind': kind,
+    'target': target,
+    if (secret.isNotEmpty) 'secret': secret,
+    if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+  };
+}
+
+class AlertRule {
+  const AlertRule({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.kind,
+    this.params = const {},
+    this.channelIds = const [],
+    this.enabled = true,
+    this.createdAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String kind; // 'new_issue' | 'regression' | 'rate_spike' | 'session_crash_free'
+  final Map<String, dynamic> params;
+  final List<int> channelIds;
+  final bool enabled;
+  final DateTime? createdAt;
+
+  factory AlertRule.fromJson(Map<String, Object?> j) => AlertRule(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    kind: _s(j['kind']),
+    params: _m(j['params']),
+    channelIds: [
+      for (final id in (j['channel_ids'] as List? ?? const [])) _i(id),
+    ],
+    enabled: j['enabled'] as bool? ?? true,
+    createdAt: _t(j['created_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'kind': kind,
+    'params': params,
+    'channel_ids': channelIds,
+    'enabled': enabled,
+    if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+  };
+}
+
+class PerformanceSummaryItem {
+  const PerformanceSummaryItem({
+    required this.op,
+    required this.name,
+    required this.count,
+    required this.p50,
+    required this.p95,
+    required this.avgDuration,
+    required this.errorCount,
+    required this.errorRate,
+  });
+
+  final String op;
+  final String name;
+  final int count;
+  final double p50;
+  final double p95;
+  final double avgDuration;
+  final int errorCount;
+  final double errorRate;
+
+  factory PerformanceSummaryItem.fromJson(Map<String, Object?> j) =>
+      PerformanceSummaryItem(
+        op: _s(j['op']),
+        name: _s(j['name']),
+        count: _i(j['count']),
+        p50: _d(j['p50']),
+        p95: _d(j['p95']),
+        avgDuration: _d(j['avg_duration']),
+        errorCount: _i(j['error_count']),
+        errorRate: _d(j['error_rate']),
+      );
+}
+
+class PerformanceResponse {
+  const PerformanceResponse({
+    this.summary = const [],
+    this.ops = const [],
+  });
+
+  final List<PerformanceSummaryItem> summary;
+  final List<String> ops;
+
+  factory PerformanceResponse.fromJson(Map<String, Object?> j) =>
+      PerformanceResponse(
+        summary: [
+          for (final s in (j['summary'] as List? ?? const []))
+            PerformanceSummaryItem.fromJson(_m(s)),
+        ],
+        ops: [for (final o in (j['ops'] as List? ?? const [])) _s(o)],
+      );
+}
+
+class SpanSample {
+  const SpanSample({
+    required this.id,
+    required this.sessionId,
+    required this.ts,
+    required this.durationMs,
+    required this.status,
+    this.tagsJson = '{}',
+  });
+
+  final int id;
+  final String sessionId;
+  final DateTime ts;
+  final double durationMs;
+  final String status;
+  final String tagsJson;
+
+  factory SpanSample.fromJson(Map<String, Object?> j) => SpanSample(
+        id: _i(j['id']),
+        sessionId: _s(j['session_id']),
+        ts: _t(j['ts']) ?? DateTime.now(),
+        durationMs: _d(j['duration_ms']),
+        status: _s(j['status']),
+        tagsJson: _s(j['tags_json']),
+      );
+}
+
+class DailyPerformancePoint {
+  const DailyPerformancePoint({
+    required this.date,
+    required this.count,
+    required this.p50,
+    required this.p95,
+    required this.avgDuration,
+  });
+
+  final String date;
+  final int count;
+  final double p50;
+  final double p95;
+  final double avgDuration;
+
+  factory DailyPerformancePoint.fromJson(Map<String, Object?> j) =>
+      DailyPerformancePoint(
+        date: _s(j['date']),
+        count: _i(j['count']),
+        p50: _d(j['p50']),
+        p95: _d(j['p95']),
+        avgDuration: _d(j['avg_duration']),
+      );
+}
+
+class TransactionDetailResponse {
+  const TransactionDetailResponse({
+    required this.op,
+    required this.name,
+    required this.count,
+    required this.p50,
+    required this.p95,
+    required this.avgDuration,
+    required this.errorCount,
+    required this.errorRate,
+    this.daily = const [],
+    this.samples = const [],
+  });
+
+  final String op;
+  final String name;
+  final int count;
+  final double p50;
+  final double p95;
+  final double avgDuration;
+  final int errorCount;
+  final double errorRate;
+  final List<DailyPerformancePoint> daily;
+  final List<SpanSample> samples;
+
+  factory TransactionDetailResponse.fromJson(Map<String, Object?> j) =>
+      TransactionDetailResponse(
+        op: _s(j['op']),
+        name: _s(j['name']),
+        count: _i(j['count']),
+        p50: _d(j['p50']),
+        p95: _d(j['p95']),
+        avgDuration: _d(j['avg_duration']),
+        errorCount: _i(j['error_count']),
+        errorRate: _d(j['error_rate']),
+        daily: [
+          for (final d in (j['daily'] as List? ?? const []))
+            DailyPerformancePoint.fromJson(_m(d)),
+        ],
+        samples: [
+          for (final s in (j['samples'] as List? ?? const []))
+            SpanSample.fromJson(_m(s)),
+        ],
+      );
+}
+
+

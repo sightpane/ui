@@ -41,6 +41,9 @@
   "errSelfRemove": "Kendinizi projeden çıkaramazsınız.",
   "errProjectNameRequired": "Proje adı gerekli.",
   "errUnsupportedLocale": "Bu dil desteklenmiyor.",
+  "errAlertChannelInvalid": "Geçersiz bildirim kanalı bilgisi.",
+  "errAlertRuleInvalid": "Geçersiz uyarı kuralı bilgisi.",
+  "errAlertSendFailed": "Bildirim gönderilemedi.",
   "fmtJustNow": "az önce",
   "fmtMinutesAgo": "{count} dk önce",
   "@fmtMinutesAgo": {
@@ -105,8 +108,33 @@
   "navOverview": "Genel bakış",
   "navIssues": "Hatalar",
   "navSessions": "Oturumlar",
+  "navReleases": "Sürümler",
   "navEvents": "Olaylar",
   "navSettings": "Ayarlar",
+  "releasesTitle": "Sürümler",
+  "releasesCount": "{count} sürüm",
+  "@releasesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "releasesLoadFailed": "Sürümler alınamadı: {error}",
+  "@releasesLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "releasesEmpty": "Henüz sürüm verisi yok.",
+  "colCrashFreeRate": "Hatasız Oturum %",
+  "colAdoption": "Kullanım %",
+  "colErrorSessions": "Hatalı Oturum",
+  "issueReleaseFirst": "İlk sürüm",
+  "issueReleaseLast": "Son sürüm",
+  "issueReleaseResolvedIn": "Çözüldüğü sürüm",
   "shellSourceTooltip": "Kaynak kodu: {url}",
   "@shellSourceTooltip": {
     "placeholders": {
@@ -365,6 +393,30 @@
   "issueResolve": "Çözüldü",
   "issueResolvedToast": "Çözüldü olarak işaretlendi",
   "issueResolvedToastNote": "Yeniden görülürse otomatik açılır.",
+  "issueAssignee": "Atanan",
+  "issueUnassigned": "Atanmamış",
+  "issueStatus": "Durum",
+  "issueStatusOpen": "Açık",
+  "issueStatusResolved": "Çözüldü",
+  "issueStatusIgnored": "Göz ardı edildi",
+  "issueStatusSnoozed": "Ertelendi",
+  "issueActionIgnore": "Göz ardı et",
+  "issueActionSnooze": "Ertele",
+  "issueSnoozeTitle": "Hatayı ertele",
+  "issueSnoozeDuration": "Süreye göre",
+  "issueSnooze1Hour": "1 saat",
+  "issueSnooze24Hours": "24 saat",
+  "issueSnooze7Days": "7 gün",
+  "issueSnoozeCount": "Oluşum sayısına göre",
+  "issueSnoozeCount10": "10 kez daha olunca",
+  "issueSnoozeCount50": "50 kez daha olunca",
+  "issueSnoozeCount100": "100 kez daha olunca",
+  "issueComments": "Yorumlar",
+  "issueCommentsEmpty": "Henüz yorum yok.",
+  "issueCommentAdd": "Yorum yaz...",
+  "issueCommentSend": "Gönder",
+  "issueIgnoredToast": "Hata göz ardı edildi",
+  "issueSnoozedToast": "Hata ertelendi",
   "issueStack": "Yığın",
   "issueNoStack": "(yığın yok)",
   "issueStackSymbolicated": "Kaynak eşlendi",
@@ -406,6 +458,18 @@
     }
   },
   "sessionsEmpty": "Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.",
+  "searchHint": "Örn: release:1.0 browser:Chrome route:/pay props.plan:pro errors:true",
+  "searchFilterQuick": "Hızlı Filtreler",
+  "searchClear": "Temizle",
+  "searchInvalid": "Arama sorgusu geçersiz: {error}",
+  "@searchInvalid": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "searchPlaceholderIssues": "Hata ara (örn: title:boom resolved:false)",
   "colUser": "Kullanıcı",
   "colIp": "IP",
   "colPlatform": "Platform",
@@ -540,6 +604,34 @@
   "settingsMemberAdded": "Üye eklendi",
   "settingsAddMember": "Üye ekle",
   "settingsMemberEmailHint": "uye@sirket.com (kayıtlı olmalı)",
+  "settingsAlertsTitle": "Uyarılar ve Bildirimler",
+  "settingsAlertChannels": "Bildirim Kanalları",
+  "settingsAlertChannelsEmpty": "Henüz bildirim kanalı eklenmedi.",
+  "settingsAlertChannelAdd": "Kanal ekle",
+  "settingsAlertChannelName": "Kanal adı",
+  "settingsAlertChannelKind": "Kanal türü",
+  "settingsAlertChannelTarget": "Hedef",
+  "settingsAlertChannelTargetHint": "E-posta, Slack veya Webhook URL",
+  "settingsAlertChannelSecret": "Gizli anahtar (Secret)",
+  "settingsAlertChannelSecretHint": "Webhook için isteğe bağlı HMAC anahtarı",
+  "settingsAlertChannelTest": "Test gönder",
+  "settingsAlertChannelTestSuccess": "Test bildirimi başarıyla gönderildi.",
+  "settingsAlertChannelDeleteConfirm": "Bu bildirim kanalını silmek istediğinize emin misiniz?",
+  "settingsAlertRules": "Uyarı Kuralları",
+  "settingsAlertRulesEmpty": "Henüz uyarı kuralı eklenmedi.",
+  "settingsAlertRuleAdd": "Kural ekle",
+  "settingsAlertRuleName": "Kural adı",
+  "settingsAlertRuleKind": "Olay türü",
+  "settingsAlertRuleKindNewIssue": "Yeni hata",
+  "settingsAlertRuleKindRegression": "Yeniden oluşan hata (Regresyon)",
+  "settingsAlertRuleKindRateSpike": "Hata oranı artışı (Spike)",
+  "settingsAlertRuleKindCrashFree": "Çökmesiz oturum düşüşü",
+  "settingsAlertRuleChannels": "Kanallar",
+  "settingsAlertRuleChannelsSelectHint": "En az bir kanal seçin",
+  "settingsAlertRuleThreshold": "Eşik değeri",
+  "settingsAlertRuleWindow": "Zaman aralığı (dakika)",
+  "settingsAlertRuleEnabled": "Etkin",
+  "settingsAlertRuleDeleteConfirm": "Bu uyarı kuralını silmek istediğinize emin misiniz?",
   "settingsDangerZone": "Tehlikeli bölge",
   "settingsDeleteBody": "Projeyi ve tüm oturum, hata, kare verisini kalıcı olarak siler.",
   "settingsDeleteProject": "Projeyi sil",
@@ -551,5 +643,35 @@
       }
     }
   },
-  "settingsDeleteConfirmBody": "Bu işlem geri alınamaz."
+  "settingsDeleteConfirmBody": "Bu işlem geri alınamaz.",
+  "performanceTitle": "Performans",
+  "performanceSubtitle": "{count} işlem izleniyor",
+  "@performanceSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "performanceEmpty": "Henüz performans verisi yok.",
+  "performanceLoadFailed": "Performans verisi yüklenemedi: {error}",
+  "@performanceLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "colOperation": "İşlem Türü",
+  "colTransaction": "İşlem Adı",
+  "colP50": "p50",
+  "colP95": "p95",
+  "colAvg": "Ort.",
+  "colCalls": "Çağrı",
+  "colErrorRate": "Hata %",
+  "performanceSlowestSamples": "En Yavaş Örnekler",
+  "performanceViewReplay": "Kaydı Aç",
+  "performanceDays7": "Son 7 Gün",
+  "performanceDays14": "Son 14 Gün",
+  "performanceDays30": "Son 30 Gün"
 }

@@ -64,14 +64,89 @@ abstract class SightpaneApi {
     int projectId, {
     bool onlyErrors = false,
     String user = '',
+    String query = '',
     int limit = 100,
   });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
-  Future<List<Issue>> issues(int projectId, {bool includeResolved = false});
+  Future<List<Issue>> issues(
+    int projectId, {
+    bool includeResolved = false,
+    String query = '',
+  });
   Future<IssueDetail> issue(int id);
   Future<void> resolveIssue(int id, {bool undo = false});
+  Future<void> assignIssue(int id, int? userId);
+  Future<void> setIssueStatus(int id, String status);
+  Future<void> snoozeIssue(int id, {DateTime? until, int countThreshold = 0});
+  Future<void> mergeIssue(int sourceId, int targetId);
+  Future<List<IssueComment>> issueComments(int issueId);
+  Future<IssueComment> addIssueComment(int issueId, String body);
+  Future<List<FingerprintRule>> fingerprintRules(int projectId);
+  Future<FingerprintRule> createFingerprintRule(
+    int projectId, {
+    String exceptionMatch = '',
+    String messageGlob = '',
+    String stackContains = '',
+    required String action,
+    String groupFingerprint = '',
+    int priority = 0,
+  });
+  Future<void> deleteFingerprintRule(int projectId, int ruleId);
   Future<List<EventCount>> eventSummary(int projectId, {int days = 30});
+  Future<List<ReleaseHealth>> releases(int projectId);
+  Future<ReleaseHealth> releaseHealth(int projectId, String version);
+  Future<PerformanceResponse> performance(
+    int projectId, {
+    int days = 14,
+    String op = '',
+  });
+  Future<TransactionDetailResponse> transactionDetail(
+    int projectId, {
+    required String name,
+    String op = '',
+    int days = 14,
+  });
+
+
+  Future<List<AlertChannel>> alertChannels(int projectId);
+  Future<AlertChannel> createAlertChannel(
+    int projectId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  });
+  Future<AlertChannel> updateAlertChannel(
+    int projectId,
+    int channelId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  });
+  Future<void> deleteAlertChannel(int projectId, int channelId);
+  Future<void> testAlertChannel(int projectId, int channelId);
+
+  Future<List<AlertRule>> alertRules(int projectId);
+  Future<AlertRule> createAlertRule(
+    int projectId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    bool enabled = true,
+  });
+  Future<AlertRule> updateAlertRule(
+    int projectId,
+    int ruleId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    required bool enabled,
+  });
+  Future<void> deleteAlertRule(int projectId, int ruleId);
 }
 
 /// The real HTTP client. [token] is supplied once a session is opened.
@@ -269,6 +344,7 @@ class HttpSightpaneApi implements SightpaneApi {
     int projectId, {
     bool onlyErrors = false,
     String user = '',
+    String query = '',
     int limit = 100,
   }) async => [
     for (final s in _list(
@@ -279,6 +355,7 @@ class HttpSightpaneApi implements SightpaneApi {
           'limit': '$limit',
           if (onlyErrors) 'errors': '1',
           if (user.isNotEmpty) 'user': user,
+          if (query.isNotEmpty) 'q': query,
         },
       ),
     ))
@@ -297,12 +374,16 @@ class HttpSightpaneApi implements SightpaneApi {
   Future<List<Issue>> issues(
     int projectId, {
     bool includeResolved = false,
+    String query = '',
   }) async => [
     for (final i in _list(
       await _send(
         'GET',
         '/api/v1/projects/$projectId/issues',
-        query: {if (includeResolved) 'resolved': '1'},
+        query: {
+          if (includeResolved) 'resolved': '1',
+          if (query.isNotEmpty) 'q': query,
+        },
       ),
     ))
       Issue.fromJson(i),
@@ -317,6 +398,86 @@ class HttpSightpaneApi implements SightpaneApi {
     query: {if (undo) 'undo': '1'},
   );
   @override
+  Future<void> assignIssue(int id, int? userId) => _send(
+    'POST',
+    '/api/v1/issues/$id/assign',
+    body: {'user_id': userId},
+  );
+  @override
+  Future<void> setIssueStatus(int id, String status) => _send(
+    'POST',
+    '/api/v1/issues/$id/status',
+    body: {'status': status},
+  );
+  @override
+  Future<void> snoozeIssue(int id, {DateTime? until, int countThreshold = 0}) =>
+      _send(
+        'POST',
+        '/api/v1/issues/$id/snooze',
+        body: {
+          if (until != null) 'until': until.toUtc().toIso8601String(),
+          if (countThreshold > 0) 'count_threshold': countThreshold,
+        },
+      );
+  @override
+  Future<void> mergeIssue(int sourceId, int targetId) => _send(
+    'POST',
+    '/api/v1/issues/$sourceId/merge',
+    body: {'target_id': targetId},
+  );
+  @override
+  Future<List<IssueComment>> issueComments(int issueId) async => [
+    for (final c in _list(await _send('GET', '/api/v1/issues/$issueId/comments')))
+      IssueComment.fromJson(c),
+  ];
+  @override
+  Future<IssueComment> addIssueComment(int issueId, String body) async =>
+      IssueComment.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/issues/$issueId/comments',
+            body: {'body': body},
+          ),
+        ),
+      );
+  @override
+  Future<List<FingerprintRule>> fingerprintRules(int projectId) async => [
+    for (final r in _list(
+      await _send('GET', '/api/v1/projects/$projectId/fingerprint-rules'),
+    ))
+      FingerprintRule.fromJson(r),
+  ];
+  @override
+  Future<FingerprintRule> createFingerprintRule(
+    int projectId, {
+    String exceptionMatch = '',
+    String messageGlob = '',
+    String stackContains = '',
+    required String action,
+    String groupFingerprint = '',
+    int priority = 0,
+  }) async => FingerprintRule.fromJson(
+    _map(
+      await _send(
+        'POST',
+        '/api/v1/projects/$projectId/fingerprint-rules',
+        body: {
+          if (exceptionMatch.isNotEmpty) 'exception_match': exceptionMatch,
+          if (messageGlob.isNotEmpty) 'message_glob': messageGlob,
+          if (stackContains.isNotEmpty) 'stack_contains': stackContains,
+          'action': action,
+          if (groupFingerprint.isNotEmpty)
+            'group_fingerprint': groupFingerprint,
+          if (priority != 0) 'priority': priority,
+        },
+      ),
+    ),
+  );
+  @override
+  Future<void> deleteFingerprintRule(int projectId, int ruleId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/fingerprint-rules/$ruleId');
+  @override
   Future<List<EventCount>> eventSummary(int projectId, {int days = 30}) async =>
       [
         for (final e in _list(
@@ -328,6 +489,184 @@ class HttpSightpaneApi implements SightpaneApi {
         ))
           EventCount.fromJson(e),
       ];
+
+  @override
+  Future<List<ReleaseHealth>> releases(int projectId) async => [
+    for (final r in _list(await _send('GET', '/api/v1/projects/$projectId/releases')))
+      ReleaseHealth.fromJson(r),
+  ];
+
+  @override
+  Future<ReleaseHealth> releaseHealth(int projectId, String version) async =>
+      ReleaseHealth.fromJson(
+        _map(
+          await _send('GET', '/api/v1/projects/$projectId/releases/$version'),
+        ),
+      );
+
+  @override
+  Future<PerformanceResponse> performance(
+    int projectId, {
+    int days = 14,
+    String op = '',
+  }) async =>
+      PerformanceResponse.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/performance',
+            query: {
+              'days': '$days',
+              if (op.isNotEmpty) 'op': op,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<TransactionDetailResponse> transactionDetail(
+    int projectId, {
+    required String name,
+    String op = '',
+    int days = 14,
+  }) async =>
+      TransactionDetailResponse.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/performance/detail',
+            query: {
+              'name': name,
+              'days': '$days',
+              if (op.isNotEmpty) 'op': op,
+            },
+          ),
+        ),
+      );
+
+
+
+  @override
+  Future<List<AlertChannel>> alertChannels(int projectId) async => [
+    for (final c in _list(
+      await _send('GET', '/api/v1/projects/$projectId/alert-channels'),
+    ))
+      AlertChannel.fromJson(c),
+  ];
+
+  @override
+  Future<AlertChannel> createAlertChannel(
+    int projectId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  }) async => AlertChannel.fromJson(
+    _map(
+      await _send(
+        'POST',
+        '/api/v1/projects/$projectId/alert-channels',
+        body: {
+          'name': name,
+          'kind': kind,
+          'target': target,
+          'secret': secret,
+        },
+      ),
+    ),
+  );
+
+  @override
+  Future<AlertChannel> updateAlertChannel(
+    int projectId,
+    int channelId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  }) async => AlertChannel.fromJson(
+    _map(
+      await _send(
+        'PATCH',
+        '/api/v1/projects/$projectId/alert-channels/$channelId',
+        body: {
+          'name': name,
+          'kind': kind,
+          'target': target,
+          'secret': secret,
+        },
+      ),
+    ),
+  );
+
+  @override
+  Future<void> deleteAlertChannel(int projectId, int channelId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/alert-channels/$channelId');
+
+  @override
+  Future<void> testAlertChannel(int projectId, int channelId) =>
+      _send('POST', '/api/v1/projects/$projectId/alert-channels/$channelId/test');
+
+  @override
+  Future<List<AlertRule>> alertRules(int projectId) async => [
+    for (final r in _list(
+      await _send('GET', '/api/v1/projects/$projectId/alerts'),
+    ))
+      AlertRule.fromJson(r),
+  ];
+
+  @override
+  Future<AlertRule> createAlertRule(
+    int projectId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    bool enabled = true,
+  }) async => AlertRule.fromJson(
+    _map(
+      await _send(
+        'POST',
+        '/api/v1/projects/$projectId/alerts',
+        body: {
+          'name': name,
+          'kind': kind,
+          'params': params,
+          'channel_ids': channelIds,
+          'enabled': enabled,
+        },
+      ),
+    ),
+  );
+
+  @override
+  Future<AlertRule> updateAlertRule(
+    int projectId,
+    int ruleId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    required bool enabled,
+  }) async => AlertRule.fromJson(
+    _map(
+      await _send(
+        'PATCH',
+        '/api/v1/projects/$projectId/alerts/$ruleId',
+        body: {
+          'name': name,
+          'kind': kind,
+          'params': params,
+          'channel_ids': channelIds,
+          'enabled': enabled,
+        },
+      ),
+    ),
+  );
+
+  @override
+  Future<void> deleteAlertRule(int projectId, int ruleId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/alerts/$ruleId');
 }
 
 /// A single API for the whole app; [tokenStoreProvider] supplies the token.

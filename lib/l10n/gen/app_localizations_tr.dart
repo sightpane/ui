@@ -106,6 +106,15 @@ class LTr extends L {
   String get errUnsupportedLocale => 'Bu dil desteklenmiyor.';
 
   @override
+  String get errAlertChannelInvalid => 'Geçersiz bildirim kanalı bilgisi.';
+
+  @override
+  String get errAlertRuleInvalid => 'Geçersiz uyarı kuralı bilgisi.';
+
+  @override
+  String get errAlertSendFailed => 'Bildirim gönderilemedi.';
+
+  @override
   String get fmtJustNow => 'az önce';
 
   @override
@@ -157,10 +166,47 @@ class LTr extends L {
   String get navSessions => 'Oturumlar';
 
   @override
+  String get navReleases => 'Sürümler';
+
+  @override
   String get navEvents => 'Olaylar';
 
   @override
   String get navSettings => 'Ayarlar';
+
+  @override
+  String get releasesTitle => 'Sürümler';
+
+  @override
+  String releasesCount(int count) {
+    return '$count sürüm';
+  }
+
+  @override
+  String releasesLoadFailed(String error) {
+    return 'Sürümler alınamadı: $error';
+  }
+
+  @override
+  String get releasesEmpty => 'Henüz sürüm verisi yok.';
+
+  @override
+  String get colCrashFreeRate => 'Hatasız Oturum %';
+
+  @override
+  String get colAdoption => 'Kullanım %';
+
+  @override
+  String get colErrorSessions => 'Hatalı Oturum';
+
+  @override
+  String get issueReleaseFirst => 'İlk sürüm';
+
+  @override
+  String get issueReleaseLast => 'Son sürüm';
+
+  @override
+  String get issueReleaseResolvedIn => 'Çözüldüğü sürüm';
 
   @override
   String shellSourceTooltip(String url) {
@@ -497,6 +543,78 @@ class LTr extends L {
   String get issueResolvedToastNote => 'Yeniden görülürse otomatik açılır.';
 
   @override
+  String get issueAssignee => 'Atanan';
+
+  @override
+  String get issueUnassigned => 'Atanmamış';
+
+  @override
+  String get issueStatus => 'Durum';
+
+  @override
+  String get issueStatusOpen => 'Açık';
+
+  @override
+  String get issueStatusResolved => 'Çözüldü';
+
+  @override
+  String get issueStatusIgnored => 'Göz ardı edildi';
+
+  @override
+  String get issueStatusSnoozed => 'Ertelendi';
+
+  @override
+  String get issueActionIgnore => 'Göz ardı et';
+
+  @override
+  String get issueActionSnooze => 'Ertele';
+
+  @override
+  String get issueSnoozeTitle => 'Hatayı ertele';
+
+  @override
+  String get issueSnoozeDuration => 'Süreye göre';
+
+  @override
+  String get issueSnooze1Hour => '1 saat';
+
+  @override
+  String get issueSnooze24Hours => '24 saat';
+
+  @override
+  String get issueSnooze7Days => '7 gün';
+
+  @override
+  String get issueSnoozeCount => 'Oluşum sayısına göre';
+
+  @override
+  String get issueSnoozeCount10 => '10 kez daha olunca';
+
+  @override
+  String get issueSnoozeCount50 => '50 kez daha olunca';
+
+  @override
+  String get issueSnoozeCount100 => '100 kez daha olunca';
+
+  @override
+  String get issueComments => 'Yorumlar';
+
+  @override
+  String get issueCommentsEmpty => 'Henüz yorum yok.';
+
+  @override
+  String get issueCommentAdd => 'Yorum yaz...';
+
+  @override
+  String get issueCommentSend => 'Gönder';
+
+  @override
+  String get issueIgnoredToast => 'Hata göz ardı edildi';
+
+  @override
+  String get issueSnoozedToast => 'Hata ertelendi';
+
+  @override
   String get issueStack => 'Yığın';
 
   @override
@@ -563,6 +681,25 @@ class LTr extends L {
   @override
   String get sessionsEmpty =>
       'Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.';
+
+  @override
+  String get searchHint =>
+      'Örn: release:1.0 browser:Chrome route:/pay props.plan:pro errors:true';
+
+  @override
+  String get searchFilterQuick => 'Hızlı Filtreler';
+
+  @override
+  String get searchClear => 'Temizle';
+
+  @override
+  String searchInvalid(String error) {
+    return 'Arama sorgusu geçersiz: $error';
+  }
+
+  @override
+  String get searchPlaceholderIssues =>
+      'Hata ara (örn: title:boom resolved:false)';
 
   @override
   String get colUser => 'Kullanıcı';
@@ -725,6 +862,96 @@ class LTr extends L {
   String get settingsMemberEmailHint => 'uye@sirket.com (kayıtlı olmalı)';
 
   @override
+  String get settingsAlertsTitle => 'Uyarılar ve Bildirimler';
+
+  @override
+  String get settingsAlertChannels => 'Bildirim Kanalları';
+
+  @override
+  String get settingsAlertChannelsEmpty => 'Henüz bildirim kanalı eklenmedi.';
+
+  @override
+  String get settingsAlertChannelAdd => 'Kanal ekle';
+
+  @override
+  String get settingsAlertChannelName => 'Kanal adı';
+
+  @override
+  String get settingsAlertChannelKind => 'Kanal türü';
+
+  @override
+  String get settingsAlertChannelTarget => 'Hedef';
+
+  @override
+  String get settingsAlertChannelTargetHint =>
+      'E-posta, Slack veya Webhook URL';
+
+  @override
+  String get settingsAlertChannelSecret => 'Gizli anahtar (Secret)';
+
+  @override
+  String get settingsAlertChannelSecretHint =>
+      'Webhook için isteğe bağlı HMAC anahtarı';
+
+  @override
+  String get settingsAlertChannelTest => 'Test gönder';
+
+  @override
+  String get settingsAlertChannelTestSuccess =>
+      'Test bildirimi başarıyla gönderildi.';
+
+  @override
+  String get settingsAlertChannelDeleteConfirm =>
+      'Bu bildirim kanalını silmek istediğinize emin misiniz?';
+
+  @override
+  String get settingsAlertRules => 'Uyarı Kuralları';
+
+  @override
+  String get settingsAlertRulesEmpty => 'Henüz uyarı kuralı eklenmedi.';
+
+  @override
+  String get settingsAlertRuleAdd => 'Kural ekle';
+
+  @override
+  String get settingsAlertRuleName => 'Kural adı';
+
+  @override
+  String get settingsAlertRuleKind => 'Olay türü';
+
+  @override
+  String get settingsAlertRuleKindNewIssue => 'Yeni hata';
+
+  @override
+  String get settingsAlertRuleKindRegression =>
+      'Yeniden oluşan hata (Regresyon)';
+
+  @override
+  String get settingsAlertRuleKindRateSpike => 'Hata oranı artışı (Spike)';
+
+  @override
+  String get settingsAlertRuleKindCrashFree => 'Çökmesiz oturum düşüşü';
+
+  @override
+  String get settingsAlertRuleChannels => 'Kanallar';
+
+  @override
+  String get settingsAlertRuleChannelsSelectHint => 'En az bir kanal seçin';
+
+  @override
+  String get settingsAlertRuleThreshold => 'Eşik değeri';
+
+  @override
+  String get settingsAlertRuleWindow => 'Zaman aralığı (dakika)';
+
+  @override
+  String get settingsAlertRuleEnabled => 'Etkin';
+
+  @override
+  String get settingsAlertRuleDeleteConfirm =>
+      'Bu uyarı kuralını silmek istediğinize emin misiniz?';
+
+  @override
   String get settingsDangerZone => 'Tehlikeli bölge';
 
   @override
@@ -741,4 +968,56 @@ class LTr extends L {
 
   @override
   String get settingsDeleteConfirmBody => 'Bu işlem geri alınamaz.';
+
+  @override
+  String get performanceTitle => 'Performans';
+
+  @override
+  String performanceSubtitle(int count) {
+    return '$count işlem izleniyor';
+  }
+
+  @override
+  String get performanceEmpty => 'Henüz performans verisi yok.';
+
+  @override
+  String performanceLoadFailed(String error) {
+    return 'Performans verisi yüklenemedi: $error';
+  }
+
+  @override
+  String get colOperation => 'İşlem Türü';
+
+  @override
+  String get colTransaction => 'İşlem Adı';
+
+  @override
+  String get colP50 => 'p50';
+
+  @override
+  String get colP95 => 'p95';
+
+  @override
+  String get colAvg => 'Ort.';
+
+  @override
+  String get colCalls => 'Çağrı';
+
+  @override
+  String get colErrorRate => 'Hata %';
+
+  @override
+  String get performanceSlowestSamples => 'En Yavaş Örnekler';
+
+  @override
+  String get performanceViewReplay => 'Kaydı Aç';
+
+  @override
+  String get performanceDays7 => 'Son 7 Gün';
+
+  @override
+  String get performanceDays14 => 'Son 14 Gün';
+
+  @override
+  String get performanceDays30 => 'Son 30 Gün';
 }

@@ -119,6 +119,82 @@ void main() {
     await go(tester, '/projects/2/settings', size: tallDesktopSize);
     expect(find.text('Projeyi sil'), findsNothing);
     expect(find.text('Üye ekle'), findsNothing);
+    expect(find.text('Bildirim Kanalları'), findsNothing);
+    expect(find.text('Uyarı Kuralları'), findsNothing);
     expect(find.textContaining('yalnızca görüntüleme'), findsOneWidget);
   });
+
+  testWidgets(
+    'settings: alert channels and alert rules render and support actions',
+    (tester) async {
+      await go(tester, '/projects/1/settings', size: tallDesktopSize);
+      await settle(tester);
+
+      // Channels rendered
+      expect(find.text('Bildirim Kanalları'), findsOneWidget);
+      expect(find.text('Ops Slack'), findsOneWidget);
+      expect(find.text('SLACK'), findsOneWidget);
+
+      // Test alert channel
+      await tester.tap(find.text('Test gönder'));
+      await settle(tester);
+      expect(api.calls, contains('testAlertChannel 1 1'));
+      await dismissToasts(tester);
+
+      // Rules rendered
+      expect(find.text('Uyarı Kuralları'), findsOneWidget);
+      expect(find.text('New Issues'), findsOneWidget);
+      expect(find.text('Yeni hata'), findsOneWidget);
+
+      // Toggle rule
+      final switchFinder = find.byType(Switch);
+      expect(switchFinder, findsOneWidget);
+      await tester.tap(switchFinder);
+      await settle(tester);
+      expect(api.calls, contains('updateAlertRule 1 1 enabled=false'));
+
+      // Add channel dialog
+      await tester.tap(find.text('Kanal ekle'));
+      await settle(tester);
+      expect(find.text('Kanal adı'), findsOneWidget);
+      await tester.enterText(
+        inDialog(find.byType(TextField)).first,
+        'Email Team',
+      );
+      await tester.enterText(
+        inDialog(find.byType(TextField)).last,
+        'devs@example.com',
+      );
+      await tester.tap(inDialog(find.text('Oluştur')));
+      await settle(tester);
+      expect(
+        api.calls,
+        contains('createAlertChannel 1 Email Team email devs@example.com'),
+      );
+
+      // Add rule dialog
+      await tester.tap(find.text('Kural ekle'));
+      await settle(tester);
+      expect(find.text('Kural adı'), findsOneWidget);
+      await tester.enterText(
+        inDialog(find.byType(TextField)).first,
+        'Critical Spike',
+      );
+      await tester.tap(inDialog(find.text('Hata oranı artışı (Spike)')));
+      await settle(tester);
+      await tester.tap(inDialog(find.text('Oluştur')));
+      await settle(tester);
+      expect(api.calls, contains('createAlertRule 1 Critical Spike rate_spike'));
+
+      // Delete rule
+      await tester.tap(find.byIcon(LucideIcons.trash2).last);
+      await settle(tester);
+      await tester.tap(inDialog(find.text('Sil')));
+      await settle(tester);
+      expect(api.calls, contains('deleteAlertRule 1 2'));
+
+      await dismissToasts(tester);
+    },
+  );
 }
+

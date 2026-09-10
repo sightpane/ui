@@ -283,6 +283,24 @@ abstract class L {
   /// **'Bu dil desteklenmiyor.'**
   String get errUnsupportedLocale;
 
+  /// No description provided for @errAlertChannelInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçersiz bildirim kanalı bilgisi.'**
+  String get errAlertChannelInvalid;
+
+  /// No description provided for @errAlertRuleInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçersiz uyarı kuralı bilgisi.'**
+  String get errAlertRuleInvalid;
+
+  /// No description provided for @errAlertSendFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim gönderilemedi.'**
+  String get errAlertSendFailed;
+
   /// No description provided for @fmtJustNow.
   ///
   /// In tr, this message translates to:
@@ -361,6 +379,12 @@ abstract class L {
   /// **'Oturumlar'**
   String get navSessions;
 
+  /// No description provided for @navReleases.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürümler'**
+  String get navReleases;
+
   /// No description provided for @navEvents.
   ///
   /// In tr, this message translates to:
@@ -372,6 +396,66 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Ayarlar'**
   String get navSettings;
+
+  /// No description provided for @releasesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürümler'**
+  String get releasesTitle;
+
+  /// No description provided for @releasesCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} sürüm'**
+  String releasesCount(int count);
+
+  /// No description provided for @releasesLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürümler alınamadı: {error}'**
+  String releasesLoadFailed(String error);
+
+  /// No description provided for @releasesEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz sürüm verisi yok.'**
+  String get releasesEmpty;
+
+  /// No description provided for @colCrashFreeRate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatasız Oturum %'**
+  String get colCrashFreeRate;
+
+  /// No description provided for @colAdoption.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanım %'**
+  String get colAdoption;
+
+  /// No description provided for @colErrorSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatalı Oturum'**
+  String get colErrorSessions;
+
+  /// No description provided for @issueReleaseFirst.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlk sürüm'**
+  String get issueReleaseFirst;
+
+  /// No description provided for @issueReleaseLast.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son sürüm'**
+  String get issueReleaseLast;
+
+  /// No description provided for @issueReleaseResolvedIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çözüldüğü sürüm'**
+  String get issueReleaseResolvedIn;
 
   /// No description provided for @shellSourceTooltip.
   ///
@@ -955,6 +1039,150 @@ abstract class L {
   /// **'Yeniden görülürse otomatik açılır.'**
   String get issueResolvedToastNote;
 
+  /// No description provided for @issueAssignee.
+  ///
+  /// In tr, this message translates to:
+  /// **'Atanan'**
+  String get issueAssignee;
+
+  /// No description provided for @issueUnassigned.
+  ///
+  /// In tr, this message translates to:
+  /// **'Atanmamış'**
+  String get issueUnassigned;
+
+  /// No description provided for @issueStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get issueStatus;
+
+  /// No description provided for @issueStatusOpen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açık'**
+  String get issueStatusOpen;
+
+  /// No description provided for @issueStatusResolved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çözüldü'**
+  String get issueStatusResolved;
+
+  /// No description provided for @issueStatusIgnored.
+  ///
+  /// In tr, this message translates to:
+  /// **'Göz ardı edildi'**
+  String get issueStatusIgnored;
+
+  /// No description provided for @issueStatusSnoozed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ertelendi'**
+  String get issueStatusSnoozed;
+
+  /// No description provided for @issueActionIgnore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Göz ardı et'**
+  String get issueActionIgnore;
+
+  /// No description provided for @issueActionSnooze.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ertele'**
+  String get issueActionSnooze;
+
+  /// No description provided for @issueSnoozeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatayı ertele'**
+  String get issueSnoozeTitle;
+
+  /// No description provided for @issueSnoozeDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Süreye göre'**
+  String get issueSnoozeDuration;
+
+  /// No description provided for @issueSnooze1Hour.
+  ///
+  /// In tr, this message translates to:
+  /// **'1 saat'**
+  String get issueSnooze1Hour;
+
+  /// No description provided for @issueSnooze24Hours.
+  ///
+  /// In tr, this message translates to:
+  /// **'24 saat'**
+  String get issueSnooze24Hours;
+
+  /// No description provided for @issueSnooze7Days.
+  ///
+  /// In tr, this message translates to:
+  /// **'7 gün'**
+  String get issueSnooze7Days;
+
+  /// No description provided for @issueSnoozeCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oluşum sayısına göre'**
+  String get issueSnoozeCount;
+
+  /// No description provided for @issueSnoozeCount10.
+  ///
+  /// In tr, this message translates to:
+  /// **'10 kez daha olunca'**
+  String get issueSnoozeCount10;
+
+  /// No description provided for @issueSnoozeCount50.
+  ///
+  /// In tr, this message translates to:
+  /// **'50 kez daha olunca'**
+  String get issueSnoozeCount50;
+
+  /// No description provided for @issueSnoozeCount100.
+  ///
+  /// In tr, this message translates to:
+  /// **'100 kez daha olunca'**
+  String get issueSnoozeCount100;
+
+  /// No description provided for @issueComments.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yorumlar'**
+  String get issueComments;
+
+  /// No description provided for @issueCommentsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz yorum yok.'**
+  String get issueCommentsEmpty;
+
+  /// No description provided for @issueCommentAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yorum yaz...'**
+  String get issueCommentAdd;
+
+  /// No description provided for @issueCommentSend.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gönder'**
+  String get issueCommentSend;
+
+  /// No description provided for @issueIgnoredToast.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata göz ardı edildi'**
+  String get issueIgnoredToast;
+
+  /// No description provided for @issueSnoozedToast.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata ertelendi'**
+  String get issueSnoozedToast;
+
   /// No description provided for @issueStack.
   ///
   /// In tr, this message translates to:
@@ -1074,6 +1302,36 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Bu filtreye uyan oturum yok. SDK bağlıysa birkaç saniye içinde oturumlar burada görünür.'**
   String get sessionsEmpty;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: release:1.0 browser:Chrome route:/pay props.plan:pro errors:true'**
+  String get searchHint;
+
+  /// No description provided for @searchFilterQuick.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hızlı Filtreler'**
+  String get searchFilterQuick;
+
+  /// No description provided for @searchClear.
+  ///
+  /// In tr, this message translates to:
+  /// **'Temizle'**
+  String get searchClear;
+
+  /// No description provided for @searchInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arama sorgusu geçersiz: {error}'**
+  String searchInvalid(String error);
+
+  /// No description provided for @searchPlaceholderIssues.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata ara (örn: title:boom resolved:false)'**
+  String get searchPlaceholderIssues;
 
   /// No description provided for @colUser.
   ///
@@ -1345,6 +1603,174 @@ abstract class L {
   /// **'uye@sirket.com (kayıtlı olmalı)'**
   String get settingsMemberEmailHint;
 
+  /// No description provided for @settingsAlertsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uyarılar ve Bildirimler'**
+  String get settingsAlertsTitle;
+
+  /// No description provided for @settingsAlertChannels.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Kanalları'**
+  String get settingsAlertChannels;
+
+  /// No description provided for @settingsAlertChannelsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bildirim kanalı eklenmedi.'**
+  String get settingsAlertChannelsEmpty;
+
+  /// No description provided for @settingsAlertChannelAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kanal ekle'**
+  String get settingsAlertChannelAdd;
+
+  /// No description provided for @settingsAlertChannelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kanal adı'**
+  String get settingsAlertChannelName;
+
+  /// No description provided for @settingsAlertChannelKind.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kanal türü'**
+  String get settingsAlertChannelKind;
+
+  /// No description provided for @settingsAlertChannelTarget.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef'**
+  String get settingsAlertChannelTarget;
+
+  /// No description provided for @settingsAlertChannelTargetHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'E-posta, Slack veya Webhook URL'**
+  String get settingsAlertChannelTargetHint;
+
+  /// No description provided for @settingsAlertChannelSecret.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gizli anahtar (Secret)'**
+  String get settingsAlertChannelSecret;
+
+  /// No description provided for @settingsAlertChannelSecretHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Webhook için isteğe bağlı HMAC anahtarı'**
+  String get settingsAlertChannelSecretHint;
+
+  /// No description provided for @settingsAlertChannelTest.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test gönder'**
+  String get settingsAlertChannelTest;
+
+  /// No description provided for @settingsAlertChannelTestSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Test bildirimi başarıyla gönderildi.'**
+  String get settingsAlertChannelTestSuccess;
+
+  /// No description provided for @settingsAlertChannelDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu bildirim kanalını silmek istediğinize emin misiniz?'**
+  String get settingsAlertChannelDeleteConfirm;
+
+  /// No description provided for @settingsAlertRules.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uyarı Kuralları'**
+  String get settingsAlertRules;
+
+  /// No description provided for @settingsAlertRulesEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz uyarı kuralı eklenmedi.'**
+  String get settingsAlertRulesEmpty;
+
+  /// No description provided for @settingsAlertRuleAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural ekle'**
+  String get settingsAlertRuleAdd;
+
+  /// No description provided for @settingsAlertRuleName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural adı'**
+  String get settingsAlertRuleName;
+
+  /// No description provided for @settingsAlertRuleKind.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay türü'**
+  String get settingsAlertRuleKind;
+
+  /// No description provided for @settingsAlertRuleKindNewIssue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni hata'**
+  String get settingsAlertRuleKindNewIssue;
+
+  /// No description provided for @settingsAlertRuleKindRegression.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeniden oluşan hata (Regresyon)'**
+  String get settingsAlertRuleKindRegression;
+
+  /// No description provided for @settingsAlertRuleKindRateSpike.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata oranı artışı (Spike)'**
+  String get settingsAlertRuleKindRateSpike;
+
+  /// No description provided for @settingsAlertRuleKindCrashFree.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çökmesiz oturum düşüşü'**
+  String get settingsAlertRuleKindCrashFree;
+
+  /// No description provided for @settingsAlertRuleChannels.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kanallar'**
+  String get settingsAlertRuleChannels;
+
+  /// No description provided for @settingsAlertRuleChannelsSelectHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'En az bir kanal seçin'**
+  String get settingsAlertRuleChannelsSelectHint;
+
+  /// No description provided for @settingsAlertRuleThreshold.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eşik değeri'**
+  String get settingsAlertRuleThreshold;
+
+  /// No description provided for @settingsAlertRuleWindow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman aralığı (dakika)'**
+  String get settingsAlertRuleWindow;
+
+  /// No description provided for @settingsAlertRuleEnabled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Etkin'**
+  String get settingsAlertRuleEnabled;
+
+  /// No description provided for @settingsAlertRuleDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu uyarı kuralını silmek istediğinize emin misiniz?'**
+  String get settingsAlertRuleDeleteConfirm;
+
   /// No description provided for @settingsDangerZone.
   ///
   /// In tr, this message translates to:
@@ -1374,6 +1800,102 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Bu işlem geri alınamaz.'**
   String get settingsDeleteConfirmBody;
+
+  /// No description provided for @performanceTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Performans'**
+  String get performanceTitle;
+
+  /// No description provided for @performanceSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} işlem izleniyor'**
+  String performanceSubtitle(int count);
+
+  /// No description provided for @performanceEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz performans verisi yok.'**
+  String get performanceEmpty;
+
+  /// No description provided for @performanceLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Performans verisi yüklenemedi: {error}'**
+  String performanceLoadFailed(String error);
+
+  /// No description provided for @colOperation.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem Türü'**
+  String get colOperation;
+
+  /// No description provided for @colTransaction.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem Adı'**
+  String get colTransaction;
+
+  /// No description provided for @colP50.
+  ///
+  /// In tr, this message translates to:
+  /// **'p50'**
+  String get colP50;
+
+  /// No description provided for @colP95.
+  ///
+  /// In tr, this message translates to:
+  /// **'p95'**
+  String get colP95;
+
+  /// No description provided for @colAvg.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ort.'**
+  String get colAvg;
+
+  /// No description provided for @colCalls.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çağrı'**
+  String get colCalls;
+
+  /// No description provided for @colErrorRate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata %'**
+  String get colErrorRate;
+
+  /// No description provided for @performanceSlowestSamples.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Yavaş Örnekler'**
+  String get performanceSlowestSamples;
+
+  /// No description provided for @performanceViewReplay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaydı Aç'**
+  String get performanceViewReplay;
+
+  /// No description provided for @performanceDays7.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 7 Gün'**
+  String get performanceDays7;
+
+  /// No description provided for @performanceDays14.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 14 Gün'**
+  String get performanceDays14;
+
+  /// No description provided for @performanceDays30.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 30 Gün'**
+  String get performanceDays30;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

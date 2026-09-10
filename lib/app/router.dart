@@ -10,7 +10,10 @@ import '../features/issues/issues_page.dart';
 import '../features/projects/overview_page.dart';
 import '../features/projects/projects_page.dart';
 import '../features/projects/settings_page.dart';
+import '../features/performance/performance_page.dart';
+import '../features/releases/releases_page.dart';
 import '../features/sessions/session_detail_page.dart';
+
 import '../features/sessions/sessions_page.dart';
 import '../shell/app_shell.dart';
 
@@ -60,6 +63,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   projectId: _id(s),
                   onlyErrors: s.uri.queryParameters['errors'] == '1',
                   user: s.uri.queryParameters['user'] ?? '',
+                  query: s.uri.queryParameters['q'] ?? '',
                 ),
               ),
               GoRoute(
@@ -74,6 +78,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, s) => IssuesPage(
                   projectId: _id(s),
                   includeResolved: s.uri.queryParameters['resolved'] == '1',
+                  query: s.uri.queryParameters['q'] ?? '',
                 ),
               ),
               GoRoute(
@@ -84,9 +89,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
               GoRoute(
+                path: 'performance',
+                builder: (_, s) => PerformancePage(projectId: _id(s)),
+              ),
+              GoRoute(
+                path: 'releases',
+                builder: (_, s) => ReleasesPage(projectId: _id(s)),
+              ),
+              GoRoute(
                 path: 'events',
                 builder: (_, s) => EventsPage(projectId: _id(s)),
               ),
+
               GoRoute(
                 path: 'settings',
                 builder: (_, s) => SettingsPage(projectId: _id(s)),

@@ -457,9 +457,10 @@ class FakeApi implements SightpaneApi {
     int projectId, {
     bool onlyErrors = false,
     String user = '',
+    String query = '',
     int limit = 100,
   }) async {
-    calls.add('sessions $projectId errors=$onlyErrors user=$user');
+    calls.add('sessions $projectId errors=$onlyErrors user=$user query=$query');
     return onlyErrors
         ? sessionList.where((s) => s.errorCount > 0).toList()
         : sessionList;
@@ -474,9 +475,13 @@ class FakeApi implements SightpaneApi {
   Future<List<Issue>> issues(
     int projectId, {
     bool includeResolved = false,
-  }) async => includeResolved
+    String query = '',
+  }) async {
+    calls.add('issues $projectId resolved=$includeResolved query=$query');
+    return includeResolved
       ? issueList
       : issueList.where((i) => !i.resolved).toList();
+  }
   @override
   Future<IssueDetail> issue(int id) async => IssueDetail(
     issue: issueList.firstWhere((i) => i.id == id),
@@ -499,6 +504,143 @@ class FakeApi implements SightpaneApi {
     ];
   }
 
+  var commentsList = <IssueComment>[
+    IssueComment(
+      id: 1,
+      issueId: 7,
+      userId: 1,
+      userEmail: 'owner@casino.local',
+      userName: 'Owner',
+      body: 'Looking into this crash',
+      createdAt: DateTime(2026, 9, 7, 10, 30),
+    ),
+  ];
+  var rulesList = <FingerprintRule>[];
+
+  @override
+  Future<void> assignIssue(int id, int? userId) async {
+    calls.add('assignIssue $id $userId');
+    issueList = [
+      for (final i in issueList)
+        i.id == id
+            ? Issue(
+                id: i.id,
+                title: i.title,
+                exception: i.exception,
+                count: i.count,
+                resolved: i.resolved,
+                status: i.status,
+                assigneeUserId: userId,
+                assigneeEmail: userId == 1 ? 'owner@casino.local' : 'dev@casino.local',
+              )
+            : i,
+    ];
+  }
+
+  @override
+  Future<void> setIssueStatus(int id, String status) async {
+    calls.add('setIssueStatus $id $status');
+    issueList = [
+      for (final i in issueList)
+        i.id == id
+            ? Issue(
+                id: i.id,
+                title: i.title,
+                exception: i.exception,
+                count: i.count,
+                resolved: status == 'resolved',
+                status: status,
+              )
+            : i,
+    ];
+  }
+
+  @override
+  Future<void> snoozeIssue(int id, {DateTime? until, int countThreshold = 0}) async {
+    calls.add('snoozeIssue $id until=$until threshold=$countThreshold');
+    issueList = [
+      for (final i in issueList)
+        i.id == id
+            ? Issue(
+                id: i.id,
+                title: i.title,
+                exception: i.exception,
+                count: i.count,
+                resolved: false,
+                status: 'snoozed',
+                snoozeUntil: until,
+                snoozeCountThreshold: countThreshold,
+              )
+            : i,
+    ];
+  }
+
+  @override
+  Future<void> mergeIssue(int sourceId, int targetId) async {
+    calls.add('mergeIssue $sourceId -> $targetId');
+    issueList = issueList.where((i) => i.id != sourceId).toList();
+  }
+
+  @override
+  Future<List<IssueComment>> issueComments(int issueId) async {
+    calls.add('issueComments $issueId');
+    return commentsList.where((c) => c.issueId == issueId).toList();
+  }
+
+  @override
+  Future<IssueComment> addIssueComment(int issueId, String body) async {
+    calls.add('addIssueComment $issueId $body');
+    final c = IssueComment(
+      id: commentsList.length + 1,
+      issueId: issueId,
+      userId: 1,
+      userEmail: 'owner@casino.local',
+      userName: 'Owner',
+      body: body,
+      createdAt: DateTime.now(),
+    );
+    commentsList = [...commentsList, c];
+    return c;
+  }
+
+  @override
+  Future<List<FingerprintRule>> fingerprintRules(int projectId) async {
+    calls.add('fingerprintRules $projectId');
+    return rulesList.where((r) => r.projectId == projectId).toList();
+  }
+
+  @override
+  Future<FingerprintRule> createFingerprintRule(
+    int projectId, {
+    String exceptionMatch = '',
+    String messageGlob = '',
+    String stackContains = '',
+    required String action,
+    String groupFingerprint = '',
+    int priority = 0,
+  }) async {
+    calls.add('createFingerprintRule $projectId $action');
+    final r = FingerprintRule(
+      id: rulesList.length + 1,
+      projectId: projectId,
+      exceptionMatch: exceptionMatch,
+      messageGlob: messageGlob,
+      stackContains: stackContains,
+      action: action,
+      groupFingerprint: groupFingerprint,
+      priority: priority,
+      createdAt: DateTime.now(),
+    );
+    rulesList = [...rulesList, r];
+    return r;
+  }
+
+  @override
+  Future<void> deleteFingerprintRule(int projectId, int ruleId) async {
+    calls.add('deleteFingerprintRule $projectId $ruleId');
+    rulesList = rulesList.where((r) => r.id != ruleId).toList();
+  }
+
   @override
   Future<List<EventCount>> eventSummary(int projectId, {int days = 30}) async =>
       const [
@@ -506,6 +648,302 @@ class FakeApi implements SightpaneApi {
         EventCount(name: 'deposit', day: '2026-09-06', count: 10, users: 2),
         EventCount(name: 'login', day: '2026-09-07', count: 5, users: 5),
       ];
+
+  var releaseHealthList = <ReleaseHealth>[
+    ReleaseHealth(
+      version: '1.0.0',
+      firstSeen: DateTime(2026, 9, 1),
+      lastSeen: DateTime(2026, 9, 7),
+      sessionCount: 20,
+      errorSessionCount: 2,
+      errorCount: 3,
+      userCount: 15,
+      crashFreeRate: 90.0,
+      adoptionRate: 80.0,
+    ),
+    ReleaseHealth(
+      version: '0.9.0',
+      firstSeen: DateTime(2026, 8, 15),
+      lastSeen: DateTime(2026, 8, 31),
+      sessionCount: 5,
+      errorSessionCount: 0,
+      errorCount: 0,
+      userCount: 4,
+      crashFreeRate: 100.0,
+      adoptionRate: 20.0,
+    ),
+  ];
+
+  @override
+  Future<List<ReleaseHealth>> releases(int projectId) async {
+    calls.add('releases $projectId');
+    return releaseHealthList;
+  }
+
+  @override
+  Future<ReleaseHealth> releaseHealth(int projectId, String version) async {
+    calls.add('releaseHealth $projectId $version');
+    return releaseHealthList.firstWhere(
+      (r) => r.version == version,
+      orElse: () => ReleaseHealth(
+        version: version,
+        firstSeen: DateTime.now(),
+        lastSeen: DateTime.now(),
+        sessionCount: 0,
+        errorSessionCount: 0,
+        errorCount: 0,
+        userCount: 0,
+        crashFreeRate: 100.0,
+        adoptionRate: 0.0,
+      ),
+    );
+  }
+
+
+  var alertChannelList = <AlertChannel>[
+    const AlertChannel(
+      id: 1,
+      projectId: 1,
+      name: 'Ops Slack',
+      kind: 'slack',
+      target: 'https://hooks.slack.com/services/xxx',
+    ),
+  ];
+  var alertRuleList = <AlertRule>[
+    const AlertRule(
+      id: 1,
+      projectId: 1,
+      name: 'New Issues',
+      kind: 'new_issue',
+      channelIds: [1],
+      enabled: true,
+    ),
+  ];
+
+  @override
+  Future<List<AlertChannel>> alertChannels(int projectId) async {
+    calls.add('alertChannels $projectId');
+    return alertChannelList.where((c) => c.projectId == projectId).toList();
+  }
+
+  @override
+  Future<AlertChannel> createAlertChannel(
+    int projectId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  }) async {
+    calls.add('createAlertChannel $projectId $name $kind $target');
+    final ch = AlertChannel(
+      id: alertChannelList.length + 1,
+      projectId: projectId,
+      name: name,
+      kind: kind,
+      target: target,
+      secret: secret,
+      createdAt: DateTime.now(),
+    );
+    alertChannelList = [...alertChannelList, ch];
+    return ch;
+  }
+
+  @override
+  Future<AlertChannel> updateAlertChannel(
+    int projectId,
+    int channelId, {
+    required String name,
+    required String kind,
+    required String target,
+    String secret = '',
+  }) async {
+    calls.add('updateAlertChannel $projectId $channelId $name');
+    final ch = AlertChannel(
+      id: channelId,
+      projectId: projectId,
+      name: name,
+      kind: kind,
+      target: target,
+      secret: secret,
+    );
+    alertChannelList = [
+      for (final c in alertChannelList) c.id == channelId ? ch : c,
+    ];
+    return ch;
+  }
+
+  @override
+  Future<void> deleteAlertChannel(int projectId, int channelId) async {
+    calls.add('deleteAlertChannel $projectId $channelId');
+    alertChannelList =
+        alertChannelList.where((c) => c.id != channelId).toList();
+    alertRuleList = [
+      for (final r in alertRuleList)
+        AlertRule(
+          id: r.id,
+          projectId: r.projectId,
+          name: r.name,
+          kind: r.kind,
+          params: r.params,
+          channelIds: r.channelIds.where((id) => id != channelId).toList(),
+          enabled: r.enabled,
+          createdAt: r.createdAt,
+        ),
+    ];
+  }
+
+  @override
+  Future<void> testAlertChannel(int projectId, int channelId) async {
+    calls.add('testAlertChannel $projectId $channelId');
+  }
+
+  @override
+  Future<List<AlertRule>> alertRules(int projectId) async {
+    calls.add('alertRules $projectId');
+    return alertRuleList.where((r) => r.projectId == projectId).toList();
+  }
+
+  @override
+  Future<AlertRule> createAlertRule(
+    int projectId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    bool enabled = true,
+  }) async {
+    calls.add('createAlertRule $projectId $name $kind');
+    final r = AlertRule(
+      id: alertRuleList.length + 1,
+      projectId: projectId,
+      name: name,
+      kind: kind,
+      params: params,
+      channelIds: channelIds,
+      enabled: enabled,
+      createdAt: DateTime.now(),
+    );
+    alertRuleList = [...alertRuleList, r];
+    return r;
+  }
+
+  @override
+  Future<AlertRule> updateAlertRule(
+    int projectId,
+    int ruleId, {
+    required String name,
+    required String kind,
+    Map<String, dynamic> params = const {},
+    required List<int> channelIds,
+    required bool enabled,
+  }) async {
+    calls.add('updateAlertRule $projectId $ruleId enabled=$enabled');
+    final r = AlertRule(
+      id: ruleId,
+      projectId: projectId,
+      name: name,
+      kind: kind,
+      params: params,
+      channelIds: channelIds,
+      enabled: enabled,
+    );
+    alertRuleList = [
+      for (final existing in alertRuleList)
+        existing.id == ruleId ? r : existing,
+    ];
+    return r;
+  }
+
+  @override
+  Future<void> deleteAlertRule(int projectId, int ruleId) async {
+    calls.add('deleteAlertRule $projectId $ruleId');
+    alertRuleList = alertRuleList.where((r) => r.id != ruleId).toList();
+  }
+
+  var performanceSummaryList = <PerformanceSummaryItem>[
+    const PerformanceSummaryItem(
+      op: 'navigation',
+      name: 'route:/dashboard',
+      count: 450,
+      p50: 120.0,
+      p95: 280.0,
+      avgDuration: 135.0,
+      errorCount: 0,
+      errorRate: 0.0,
+    ),
+    const PerformanceSummaryItem(
+      op: 'http.client',
+      name: 'GET /api/v1/sessions',
+      count: 1200,
+      p50: 85.0,
+      p95: 350.0,
+      avgDuration: 95.0,
+      errorCount: 12,
+      errorRate: 0.01,
+    ),
+  ];
+  var performanceOpsList = <String>['navigation', 'http.client'];
+
+  @override
+  Future<PerformanceResponse> performance(
+    int projectId, {
+    int days = 14,
+    String op = '',
+  }) async {
+    calls.add('performance $projectId days=$days op=$op');
+    final filtered = op.isEmpty
+        ? performanceSummaryList
+        : performanceSummaryList.where((s) => s.op == op).toList();
+    return PerformanceResponse(
+      summary: filtered,
+      ops: performanceOpsList,
+    );
+  }
+
+  @override
+  Future<TransactionDetailResponse> transactionDetail(
+    int projectId, {
+    required String name,
+    String op = '',
+    int days = 14,
+  }) async {
+    calls.add('transactionDetail $projectId name=$name op=$op days=$days');
+    return TransactionDetailResponse(
+      op: op.isNotEmpty ? op : 'navigation',
+      name: name,
+      count: 100,
+      p50: 110.0,
+      p95: 250.0,
+      avgDuration: 125.0,
+      errorCount: 2,
+      errorRate: 0.02,
+      daily: [
+        const DailyPerformancePoint(
+          date: '2026-09-08',
+          count: 50,
+          p50: 105.0,
+          p95: 240.0,
+          avgDuration: 120.0,
+        ),
+        const DailyPerformancePoint(
+          date: '2026-09-09',
+          count: 50,
+          p50: 115.0,
+          p95: 260.0,
+          avgDuration: 130.0,
+        ),
+      ],
+      samples: [
+        SpanSample(
+          id: 1,
+          sessionId: 'abcdef12-3456',
+          ts: DateTime(2026, 9, 9, 12, 0),
+          durationMs: 450.0,
+          status: 'ok',
+        ),
+      ],
+    );
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

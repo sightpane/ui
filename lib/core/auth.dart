@@ -55,6 +55,11 @@ String describeError(L l10n, Object e) {
     'auth.unsupported_locale' => l10n.errUnsupportedLocale,
     'project.owner_required' => l10n.errOwnerRequired,
     'project.name_required' => l10n.errProjectNameRequired,
+    'alert_channel.invalid' => l10n.errAlertChannelInvalid,
+    'alert_rule.invalid' => l10n.errAlertRuleInvalid,
+    'alert.send_failed' => l10n.errAlertSendFailed,
+    'alert_channel.not_found' ||
+    'alert_rule.not_found' ||
     'project.not_found' ||
     'session.not_found' ||
     'frame.not_found' ||
@@ -62,6 +67,7 @@ String describeError(L l10n, Object e) {
     'not_found' => l10n.errNotFound,
     'member.unknown_email' => l10n.errUnknownMember,
     'member.owner_self_remove' => l10n.errSelfRemove,
+    'search.invalid_query' => l10n.searchInvalid(e.message),
     _ => null,
   };
   if (byCode != null) return byCode;

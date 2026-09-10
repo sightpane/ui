@@ -10,18 +10,68 @@ import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../shared/widgets.dart';
 
-class IssuesPage extends ConsumerWidget {
+class IssuesPage extends ConsumerStatefulWidget {
   const IssuesPage({
     super.key,
     required this.projectId,
     this.includeResolved = false,
+    this.query = '',
   });
   final int projectId;
   final bool includeResolved;
+  final String query;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final key = (project: projectId, includeResolved: includeResolved);
+  ConsumerState<IssuesPage> createState() => _IssuesPageState();
+}
+
+class _IssuesPageState extends ConsumerState<IssuesPage> {
+  late final _query = TextEditingController(text: widget.query);
+
+  @override
+  void didUpdateWidget(IssuesPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_query.text != widget.query) {
+      _query.text = widget.query;
+    }
+  }
+
+  @override
+  void dispose() {
+    _query.dispose();
+    super.dispose();
+  }
+
+  void _go({bool? includeResolved, String? query}) {
+    final q = query ?? _query.text.trim();
+    final res = includeResolved ?? widget.includeResolved;
+    final qp = <String, String>{
+      if (res) 'resolved': '1',
+      if (q.isNotEmpty) 'q': q,
+    };
+    context.go(
+      Uri(
+        path: '/projects/${widget.projectId}/issues',
+        queryParameters: qp.isEmpty ? null : qp,
+      ).toString(),
+    );
+  }
+
+  void _addFilter(String token) {
+    final cur = _query.text.trim();
+    if (cur.contains(token)) return;
+    final updated = cur.isEmpty ? token : '$cur $token';
+    _query.text = updated;
+    _go(query: updated);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final key = (
+      project: widget.projectId,
+      includeResolved: widget.includeResolved,
+      query: widget.query,
+    );
     final issues = ref.watch(issuesProvider(key));
     return Padding(
       padding: const EdgeInsets.all(20),
@@ -36,11 +86,32 @@ class IssuesPage extends ConsumerWidget {
                     issues.value!.where((i) => !i.resolved).length,
                   ),
             actions: [
-              Toggle(
-                value: includeResolved,
-                onChanged: (v) => context.go(
-                  '/projects/$projectId/issues${v ? '?resolved=1' : ''}',
+              SizedBox(
+                width: 280,
+                child: TextField(
+                  controller: _query,
+                  placeholder: Text(context.l10n.searchPlaceholderIssues),
+                  onSubmitted: (v) => _go(query: v.trim()),
+                  features: [
+                    const InputFeature.leading(Icon(LucideIcons.search, size: 14)),
+                    if (_query.text.isNotEmpty)
+                      InputFeature.trailing(
+                        GhostButton(
+                          density: ButtonDensity.compact,
+                          size: ButtonSize.xSmall,
+                          onPressed: () {
+                            _query.clear();
+                            _go(query: '');
+                          },
+                          child: const Icon(LucideIcons.x, size: 12),
+                        ),
+                      ),
+                  ],
                 ),
+              ),
+              Toggle(
+                value: widget.includeResolved,
+                onChanged: (v) => _go(includeResolved: v),
                 child: Text(context.l10n.issuesShowResolved),
               ),
               GhostButton(
@@ -49,6 +120,40 @@ class IssuesPage extends ConsumerWidget {
                 onPressed: () => ref.invalidate(issuesProvider(key)),
                 child: Text(context.l10n.commonRefresh),
               ),
+            ],
+          ),
+          const Gap(10),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Text(
+                context.l10n.searchFilterQuick,
+                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('resolved:false'),
+                child: const Text('resolved:false'),
+              ),
+              OutlineButton(
+                size: ButtonSize.xSmall,
+                density: ButtonDensity.compact,
+                onPressed: () => _addFilter('resolved:true'),
+                child: const Text('resolved:true'),
+              ),
+              if (_query.text.isNotEmpty)
+                GhostButton(
+                  size: ButtonSize.xSmall,
+                  density: ButtonDensity.compact,
+                  onPressed: () {
+                    _query.clear();
+                    _go(query: '');
+                  },
+                  child: Text(context.l10n.searchClear),
+                ),
             ],
           ),
           const Gap(14),
@@ -76,7 +181,7 @@ class IssuesPage extends ConsumerWidget {
                     rows: list,
                     emptyText: context.l10n.issuesEmpty,
                     onTap: (i) =>
-                        context.go('/projects/$projectId/issues/${i.id}'),
+                        context.go('/projects/${widget.projectId}/issues/${i.id}'),
                     cells: (i) => [
                       Text(
                         i.title,

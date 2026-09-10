@@ -296,6 +296,18 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
                 if (owner) ...[
                   const Gap(12),
+                  _AlertChannelsPanel(
+                    projectId: pid,
+                    busy: _busy,
+                    onRun: _run,
+                  ),
+                  const Gap(12),
+                  _AlertRulesPanel(
+                    projectId: pid,
+                    busy: _busy,
+                    onRun: _run,
+                  ),
+                  const Gap(12),
                   PanelCard(
                     title: context.l10n.settingsDangerZone,
                     child: Padding(
@@ -349,3 +361,710 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
     );
   }
 }
+
+class _AlertChannelsPanel extends ConsumerWidget {
+  const _AlertChannelsPanel({
+    required this.projectId,
+    required this.busy,
+    required this.onRun,
+  });
+
+  final int projectId;
+  final bool busy;
+  final Future<void> Function(Future<void> Function(), {String? done}) onRun;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final channelsAsync = ref.watch(alertChannelsProvider(projectId));
+    final api = ref.read(apiProvider);
+
+    return PanelCard(
+      title: context.l10n.settingsAlertChannels,
+      action: OutlineButton(
+        size: ButtonSize.small,
+        leading: const Icon(LucideIcons.plus, size: 14),
+        onPressed: busy
+            ? null
+            : () => showAppDialog(
+                  context,
+                  _CreateChannelDialog(projectId: projectId),
+                ),
+        child: Text(context.l10n.settingsAlertChannelAdd),
+      ),
+      child: channelsAsync.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(14),
+          child: Center(child: CircularProgressIndicator(size: 16)),
+        ),
+        error: (e, _) => Padding(
+          padding: const EdgeInsets.all(14),
+          child: Text(
+            describeError(context.l10n, e),
+            style: const TextStyle(color: Tokens.danger, fontSize: 12),
+          ),
+        ),
+        data: (channels) {
+          if (channels.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(14),
+              child: Text(
+                context.l10n.settingsAlertChannelsEmpty,
+                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+              ),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                for (var i = 0; i < channels.length; i++) ...[
+                  if (i > 0)
+                    Container(
+                      height: 1,
+                      color: Tokens.border,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  _ChannelRow(
+                    channel: channels[i],
+                    busy: busy,
+                    onTest: () => onRun(
+                      () => api.testAlertChannel(projectId, channels[i].id),
+                      done: context.l10n.settingsAlertChannelTestSuccess,
+                    ),
+                    onDelete: () => showAppDialog(
+                      context,
+                      ConfirmDialog(
+                        title: context.l10n.settingsAlertChannelDeleteConfirm,
+                        message: channels[i].name,
+                        confirmLabel: context.l10n.commonDelete,
+                        destructive: true,
+                        onConfirm: () async {
+                          await api.deleteAlertChannel(
+                            projectId,
+                            channels[i].id,
+                          );
+                          ref.invalidate(alertChannelsProvider(projectId));
+                          ref.invalidate(alertRulesProvider(projectId));
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ChannelRow extends StatelessWidget {
+  const _ChannelRow({
+    required this.channel,
+    required this.busy,
+    required this.onTest,
+    required this.onDelete,
+  });
+
+  final AlertChannel channel;
+  final bool busy;
+  final VoidCallback onTest;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = switch (channel.kind) {
+      'email' => LucideIcons.mail,
+      'slack' => LucideIcons.messageSquare,
+      _ => LucideIcons.webhook,
+    };
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Tokens.textDim),
+        const Gap(10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                channel.name,
+                style: const TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w500,
+                  color: Tokens.textStrong,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                channel.target,
+                style: const TextStyle(fontSize: 11, color: Tokens.textDim),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+        const Gap(8),
+        Pill(channel.kind.toUpperCase(), color: Tokens.chip),
+        const Gap(8),
+        OutlineButton(
+          size: ButtonSize.small,
+          leading: const Icon(LucideIcons.send, size: 12),
+          onPressed: busy ? null : onTest,
+          child: Text(context.l10n.settingsAlertChannelTest),
+        ),
+        const Gap(4),
+        IconButton.ghost(
+          size: ButtonSize.small,
+          icon: const Icon(LucideIcons.trash2, size: 14),
+          onPressed: busy ? null : onDelete,
+        ),
+      ],
+    );
+  }
+}
+
+class _CreateChannelDialog extends ConsumerStatefulWidget {
+  const _CreateChannelDialog({required this.projectId});
+  final int projectId;
+
+  @override
+  ConsumerState<_CreateChannelDialog> createState() =>
+      _CreateChannelDialogState();
+}
+
+class _CreateChannelDialogState extends ConsumerState<_CreateChannelDialog> {
+  final _name = TextEditingController();
+  final _target = TextEditingController();
+  final _secret = TextEditingController();
+  String _kind = 'email';
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _target.dispose();
+    _secret.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final name = _name.text.trim();
+    final target = _target.text.trim();
+    if (name.isEmpty || target.isEmpty) {
+      setState(() => _error = context.l10n.errAlertChannelInvalid);
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(apiProvider).createAlertChannel(
+            widget.projectId,
+            name: name,
+            kind: _kind,
+            target: target,
+            secret: _secret.text.trim(),
+          );
+      ref.invalidate(alertChannelsProvider(widget.projectId));
+      if (mounted) closeOverlay(context);
+    } catch (e) {
+      if (mounted) setState(() => _error = describeError(context.l10n, e));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(context.l10n.settingsAlertChannelAdd),
+      content: SizedBox(
+        width: 420,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            FieldLabel(context.l10n.settingsAlertChannelName),
+            TextField(
+              controller: _name,
+              enabled: !_busy,
+              autofocus: true,
+            ),
+            const Gap(12),
+            FieldLabel(context.l10n.settingsAlertChannelKind),
+            Row(
+              children: [
+                for (final k in const ['email', 'slack', 'webhook']) ...[
+                  _kind == k
+                      ? SecondaryButton(
+                          size: ButtonSize.small,
+                          onPressed: () {},
+                          child: Text(k.toUpperCase()),
+                        )
+                      : GhostButton(
+                          size: ButtonSize.small,
+                          onPressed: () => setState(() => _kind = k),
+                          child: Text(k.toUpperCase()),
+                        ),
+                  const Gap(6),
+                ],
+              ],
+            ),
+            const Gap(12),
+            FieldLabel(context.l10n.settingsAlertChannelTarget),
+            TextField(
+              controller: _target,
+              enabled: !_busy,
+              placeholder: Text(
+                _kind == 'email'
+                    ? 'dev-team@example.com'
+                    : _kind == 'slack'
+                        ? 'https://hooks.slack.com/services/...'
+                        : 'https://example.com/webhook',
+              ),
+            ),
+            if (_kind == 'webhook') ...[
+              const Gap(12),
+              FieldLabel(context.l10n.settingsAlertChannelSecret),
+              TextField(
+                controller: _secret,
+                enabled: !_busy,
+                placeholder: Text(context.l10n.settingsAlertChannelSecretHint),
+              ),
+            ],
+            if (_error != null) ...[
+              const Gap(8),
+              FieldError(_error!),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        OutlineButton(
+          onPressed: _busy ? null : () => closeOverlay(context),
+          child: Text(context.l10n.commonCancel),
+        ),
+        PrimaryButton(
+          onPressed: _busy ? null : _submit,
+          child: _busy
+              ? const CircularProgressIndicator(size: 14)
+              : Text(context.l10n.commonCreate),
+        ),
+      ],
+    );
+  }
+}
+
+class _AlertRulesPanel extends ConsumerWidget {
+  const _AlertRulesPanel({
+    required this.projectId,
+    required this.busy,
+    required this.onRun,
+  });
+
+  final int projectId;
+  final bool busy;
+  final Future<void> Function(Future<void> Function(), {String? done}) onRun;
+
+  String _eventKindLabel(BuildContext context, String kind) => switch (kind) {
+        'new_issue' => context.l10n.settingsAlertRuleKindNewIssue,
+        'regression' => context.l10n.settingsAlertRuleKindRegression,
+        'rate_spike' => context.l10n.settingsAlertRuleKindRateSpike,
+        'crash_free_drop' => context.l10n.settingsAlertRuleKindCrashFree,
+        _ => kind,
+      };
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final rulesAsync = ref.watch(alertRulesProvider(projectId));
+    final channelsAsync = ref.watch(alertChannelsProvider(projectId));
+    final api = ref.read(apiProvider);
+
+    final channels = channelsAsync.value ?? const [];
+    final channelMap = {for (final c in channels) c.id: c.name};
+
+    return PanelCard(
+      title: context.l10n.settingsAlertRules,
+      action: OutlineButton(
+        size: ButtonSize.small,
+        leading: const Icon(LucideIcons.plus, size: 14),
+        onPressed: busy
+            ? null
+            : () => showAppDialog(
+                  context,
+                  _CreateRuleDialog(
+                    projectId: projectId,
+                    availableChannels: channels,
+                  ),
+                ),
+        child: Text(context.l10n.settingsAlertRuleAdd),
+      ),
+      child: rulesAsync.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(14),
+          child: Center(child: CircularProgressIndicator(size: 16)),
+        ),
+        error: (e, _) => Padding(
+          padding: const EdgeInsets.all(14),
+          child: Text(
+            describeError(context.l10n, e),
+            style: const TextStyle(color: Tokens.danger, fontSize: 12),
+          ),
+        ),
+        data: (rules) {
+          if (rules.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(14),
+              child: Text(
+                context.l10n.settingsAlertRulesEmpty,
+                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+              ),
+            );
+          }
+          return Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                for (var i = 0; i < rules.length; i++) ...[
+                  if (i > 0)
+                    Container(
+                      height: 1,
+                      color: Tokens.border,
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                    ),
+                  _RuleRow(
+                    rule: rules[i],
+                    channelMap: channelMap,
+                    eventKindLabel:
+                        _eventKindLabel(context, rules[i].kind),
+                    busy: busy,
+                    onToggle: (enabled) => onRun(
+                      () async {
+                        await api.updateAlertRule(
+                          projectId,
+                          rules[i].id,
+                          name: rules[i].name,
+                          kind: rules[i].kind,
+                          params: rules[i].params,
+                          channelIds: rules[i].channelIds,
+                          enabled: enabled,
+                        );
+                        ref.invalidate(alertRulesProvider(projectId));
+                      },
+                    ),
+                    onDelete: () => showAppDialog(
+                      context,
+                      ConfirmDialog(
+                        title: context.l10n.settingsAlertRuleDeleteConfirm,
+                        message: rules[i].name,
+                        confirmLabel: context.l10n.commonDelete,
+                        destructive: true,
+                        onConfirm: () async {
+                          await api.deleteAlertRule(projectId, rules[i].id);
+                          ref.invalidate(alertRulesProvider(projectId));
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _RuleRow extends StatelessWidget {
+  const _RuleRow({
+    required this.rule,
+    required this.channelMap,
+    required this.eventKindLabel,
+    required this.busy,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  final AlertRule rule;
+  final Map<int, String> channelMap;
+  final String eventKindLabel;
+  final bool busy;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final channelNames = rule.channelIds
+        .map((id) => channelMap[id] ?? '#$id')
+        .join(', ');
+
+    return Row(
+      children: [
+        Switch(
+          value: rule.enabled,
+          onChanged: busy ? null : onToggle,
+        ),
+        const Gap(10),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      rule.name,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w500,
+                        color:
+                            rule.enabled ? Tokens.textStrong : Tokens.textDim,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Gap(8),
+                  Pill(eventKindLabel, color: Tokens.accent),
+                ],
+              ),
+              if (channelNames.isNotEmpty) ...[
+                const Gap(3),
+                Text(
+                  '${context.l10n.settingsAlertRuleChannels}: $channelNames',
+                  style: const TextStyle(fontSize: 11, color: Tokens.textDim),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ],
+          ),
+        ),
+        const Gap(8),
+        IconButton.ghost(
+          size: ButtonSize.small,
+          icon: const Icon(LucideIcons.trash2, size: 14),
+          onPressed: busy ? null : onDelete,
+        ),
+      ],
+    );
+  }
+}
+
+class _CreateRuleDialog extends ConsumerStatefulWidget {
+  const _CreateRuleDialog({
+    required this.projectId,
+    required this.availableChannels,
+  });
+
+  final int projectId;
+  final List<AlertChannel> availableChannels;
+
+  @override
+  ConsumerState<_CreateRuleDialog> createState() => _CreateRuleDialogState();
+}
+
+class _CreateRuleDialogState extends ConsumerState<_CreateRuleDialog> {
+  final _name = TextEditingController();
+  final _threshold = TextEditingController(text: '10');
+  final _window = TextEditingController(text: '5');
+  String _eventKind = 'new_issue';
+  final Set<int> _selectedChannelIds = {};
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.availableChannels.isNotEmpty) {
+      _selectedChannelIds.add(widget.availableChannels.first.id);
+    }
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _threshold.dispose();
+    _window.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final name = _name.text.trim();
+    if (name.isEmpty) {
+      setState(() => _error = context.l10n.errAlertRuleInvalid);
+      return;
+    }
+    if (_selectedChannelIds.isEmpty) {
+      setState(() => _error = context.l10n.settingsAlertRuleChannelsSelectHint);
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final params = <String, dynamic>{};
+      if (_eventKind == 'rate_spike' || _eventKind == 'crash_free_drop') {
+        final threshold = double.tryParse(_threshold.text.trim());
+        final window = int.tryParse(_window.text.trim());
+        if (threshold != null) params['threshold'] = threshold;
+        if (window != null) params['window_minutes'] = window;
+      }
+      await ref.read(apiProvider).createAlertRule(
+            widget.projectId,
+            name: name,
+            kind: _eventKind,
+            params: params,
+            channelIds: _selectedChannelIds.toList(),
+          );
+      ref.invalidate(alertRulesProvider(widget.projectId));
+      if (mounted) closeOverlay(context);
+    } catch (e) {
+      if (mounted) setState(() => _error = describeError(context.l10n, e));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kinds = [
+      ('new_issue', context.l10n.settingsAlertRuleKindNewIssue),
+      ('regression', context.l10n.settingsAlertRuleKindRegression),
+      ('rate_spike', context.l10n.settingsAlertRuleKindRateSpike),
+      ('crash_free_drop', context.l10n.settingsAlertRuleKindCrashFree),
+    ];
+
+    return AlertDialog(
+      title: Text(context.l10n.settingsAlertRuleAdd),
+      content: SizedBox(
+        width: 460,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              FieldLabel(context.l10n.settingsAlertRuleName),
+              TextField(
+                controller: _name,
+                enabled: !_busy,
+                autofocus: true,
+              ),
+              const Gap(12),
+              FieldLabel(context.l10n.settingsAlertRuleKind),
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final (k, label) in kinds)
+                    _eventKind == k
+                        ? SecondaryButton(
+                            size: ButtonSize.small,
+                            onPressed: () {},
+                            child: Text(label),
+                          )
+                        : GhostButton(
+                            size: ButtonSize.small,
+                            onPressed: () => setState(() => _eventKind = k),
+                            child: Text(label),
+                          ),
+                ],
+              ),
+              if (_eventKind == 'rate_spike' ||
+                  _eventKind == 'crash_free_drop') ...[
+                const Gap(12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(context.l10n.settingsAlertRuleThreshold),
+                          TextField(
+                            controller: _threshold,
+                            enabled: !_busy,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          FieldLabel(context.l10n.settingsAlertRuleWindow),
+                          TextField(
+                            controller: _window,
+                            enabled: !_busy,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+              const Gap(12),
+              FieldLabel(context.l10n.settingsAlertRuleChannels),
+              if (widget.availableChannels.isEmpty)
+                Text(
+                  context.l10n.settingsAlertChannelsEmpty,
+                  style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+                )
+              else
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    for (final ch in widget.availableChannels)
+                      _selectedChannelIds.contains(ch.id)
+                          ? SecondaryButton(
+                              size: ButtonSize.small,
+                              onPressed: () => setState(
+                                () => _selectedChannelIds.remove(ch.id),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(LucideIcons.check, size: 12),
+                                  const Gap(4),
+                                  Text(ch.name),
+                                ],
+                              ),
+                            )
+                          : GhostButton(
+                              size: ButtonSize.small,
+                              onPressed: () => setState(
+                                () => _selectedChannelIds.add(ch.id),
+                              ),
+                              child: Text(ch.name),
+                            ),
+                  ],
+                ),
+              if (_error != null) ...[
+                const Gap(8),
+                FieldError(_error!),
+              ],
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        OutlineButton(
+          onPressed: _busy ? null : () => closeOverlay(context),
+          child: Text(context.l10n.commonCancel),
+        ),
+        PrimaryButton(
+          onPressed: _busy ? null : _submit,
+          child: _busy
+              ? const CircularProgressIndicator(size: 14)
+              : Text(context.l10n.commonCreate),
+        ),
+      ],
+    );
+  }
+}
+
