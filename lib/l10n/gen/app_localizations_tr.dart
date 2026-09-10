@@ -799,6 +799,54 @@ class LTr extends L {
   String get itemBreadcrumbsBefore => 'Hata öncesi adımlar';
 
   @override
+  String get sessionClientInfo => 'İstemci ve Ortam Bilgileri';
+
+  @override
+  String get clientPlatform => 'Platform';
+
+  @override
+  String get clientPlatformDesktop => 'Masaüstü (Desktop)';
+
+  @override
+  String get clientPlatformWeb => 'Web';
+
+  @override
+  String get clientPlatformMobile => 'Mobil';
+
+  @override
+  String get clientOS => 'İşletim Sistemi';
+
+  @override
+  String get clientOsVersion => 'OS Sürümü';
+
+  @override
+  String get clientKernel => 'Çekirdek (Kernel)';
+
+  @override
+  String get clientKernelVersion => 'Çekirdek Sürümü';
+
+  @override
+  String get clientBrowser => 'Tarayıcı';
+
+  @override
+  String get clientBrowserVersion => 'Tarayıcı Sürümü';
+
+  @override
+  String get clientArch => 'Mimari';
+
+  @override
+  String get clientCores => 'CPU Çekirdekleri';
+
+  @override
+  String get clientScreen => 'Ekran Çözünürlüğü';
+
+  @override
+  String get clientLocale => 'Dil / Yerel Ayar';
+
+  @override
+  String get clientSdk => 'SDK';
+
+  @override
   String get eventsTitle => 'Olaylar';
 
   @override

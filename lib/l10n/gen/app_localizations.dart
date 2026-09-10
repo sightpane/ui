@@ -1483,6 +1483,102 @@ abstract class L {
   /// **'Hata öncesi adımlar'**
   String get itemBreadcrumbsBefore;
 
+  /// No description provided for @sessionClientInfo.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstemci ve Ortam Bilgileri'**
+  String get sessionClientInfo;
+
+  /// No description provided for @clientPlatform.
+  ///
+  /// In tr, this message translates to:
+  /// **'Platform'**
+  String get clientPlatform;
+
+  /// No description provided for @clientPlatformDesktop.
+  ///
+  /// In tr, this message translates to:
+  /// **'Masaüstü (Desktop)'**
+  String get clientPlatformDesktop;
+
+  /// No description provided for @clientPlatformWeb.
+  ///
+  /// In tr, this message translates to:
+  /// **'Web'**
+  String get clientPlatformWeb;
+
+  /// No description provided for @clientPlatformMobile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mobil'**
+  String get clientPlatformMobile;
+
+  /// No description provided for @clientOS.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşletim Sistemi'**
+  String get clientOS;
+
+  /// No description provided for @clientOsVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'OS Sürümü'**
+  String get clientOsVersion;
+
+  /// No description provided for @clientKernel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çekirdek (Kernel)'**
+  String get clientKernel;
+
+  /// No description provided for @clientKernelVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çekirdek Sürümü'**
+  String get clientKernelVersion;
+
+  /// No description provided for @clientBrowser.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarayıcı'**
+  String get clientBrowser;
+
+  /// No description provided for @clientBrowserVersion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarayıcı Sürümü'**
+  String get clientBrowserVersion;
+
+  /// No description provided for @clientArch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mimari'**
+  String get clientArch;
+
+  /// No description provided for @clientCores.
+  ///
+  /// In tr, this message translates to:
+  /// **'CPU Çekirdekleri'**
+  String get clientCores;
+
+  /// No description provided for @clientScreen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekran Çözünürlüğü'**
+  String get clientScreen;
+
+  /// No description provided for @clientLocale.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dil / Yerel Ayar'**
+  String get clientLocale;
+
+  /// No description provided for @clientSdk.
+  ///
+  /// In tr, this message translates to:
+  /// **'SDK'**
+  String get clientSdk;
+
   /// No description provided for @eventsTitle.
   ///
   /// In tr, this message translates to:

@@ -88,6 +88,59 @@ void main() {
     expect(dDom.session.sdkVersion, '0.1.0');
     expect(dDom.hasDom, isTrue);
     expect(dDom.isFlutter, isFalse);
+
+    final sLinux = Session.fromJson({
+      'id': 'sess-linux',
+      'project_id': 1,
+      'started_at': '2026-09-07T10:00:00Z',
+      'last_seen_at': '2026-09-07T10:05:00Z',
+      'platform': 'linux',
+      'device': {
+        'platform_category': 'desktop',
+        'os': 'Ubuntu',
+        'os_version': '24.04',
+        'kernel': 'Linux',
+        'kernel_version': '6.8.0-40-generic',
+        'arch': 'x86_64',
+        'cpu_cores': 8,
+        'screen': {'w': 1920, 'h': 1080, 'dpr': 1.5},
+        'locale': 'tr-TR',
+      },
+    });
+    expect(sLinux.platformCategory, 'Desktop');
+    expect(sLinux.osName, 'Ubuntu');
+    expect(sLinux.osVersion, '24.04');
+    expect(sLinux.kernel, 'Linux');
+    expect(sLinux.kernelVersion, '6.8.0-40-generic');
+    expect(sLinux.arch, 'x86_64');
+    expect(sLinux.cpuCores, 8);
+    expect(sLinux.screenResolution, '1920×1080 (1.5x)');
+    expect(sLinux.locale, 'tr-TR');
+    expect(sLinux.isLinuxDesktop, isTrue);
+    expect(sLinux.isWeb, isFalse);
+
+    final sWeb = Session.fromJson({
+      'id': 'sess-web',
+      'project_id': 1,
+      'started_at': '2026-09-07T10:00:00Z',
+      'last_seen_at': '2026-09-07T10:05:00Z',
+      'platform': 'web',
+      'device': {
+        'platform_category': 'web',
+        'os': 'Linux',
+        'browser': 'Chrome',
+        'browser_version': '128.0.6613.120',
+        'arch': 'x86_64',
+        'cpu_cores': 16,
+      },
+    });
+    expect(sWeb.platformCategory, 'Web');
+    expect(sWeb.osName, 'Linux');
+    expect(sWeb.browserName, 'Chrome');
+    expect(sWeb.browserVersion, '128.0.6613.120');
+    expect(sWeb.isWeb, isTrue);
+    expect(sWeb.isLinuxDesktop, isFalse);
+
     final dp = SessionDetail.fromJson({
       'id': 'x',
       'project_id': 1,

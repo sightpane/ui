@@ -865,6 +865,54 @@ class LEn extends L {
   String get itemBreadcrumbsBefore => 'Steps before the error';
 
   @override
+  String get sessionClientInfo => 'Client & Environment Info';
+
+  @override
+  String get clientPlatform => 'Platform';
+
+  @override
+  String get clientPlatformDesktop => 'Desktop';
+
+  @override
+  String get clientPlatformWeb => 'Web';
+
+  @override
+  String get clientPlatformMobile => 'Mobile';
+
+  @override
+  String get clientOS => 'Operating System';
+
+  @override
+  String get clientOsVersion => 'OS Version';
+
+  @override
+  String get clientKernel => 'Kernel';
+
+  @override
+  String get clientKernelVersion => 'Kernel Version';
+
+  @override
+  String get clientBrowser => 'Browser';
+
+  @override
+  String get clientBrowserVersion => 'Browser Version';
+
+  @override
+  String get clientArch => 'Architecture';
+
+  @override
+  String get clientCores => 'CPU Cores';
+
+  @override
+  String get clientScreen => 'Screen Resolution';
+
+  @override
+  String get clientLocale => 'Locale';
+
+  @override
+  String get clientSdk => 'SDK';
+
+  @override
   String get eventsTitle => 'Events';
 
   @override

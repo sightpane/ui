@@ -1,3 +1,4 @@
+import 'package:sightpane_dashboard/core/models.dart';
 import 'package:sightpane_dashboard/features/events/events_page.dart';
 import 'package:sightpane_dashboard/features/issues/issue_detail_page.dart';
 import 'package:sightpane_dashboard/features/sessions/session_detail_page.dart';
@@ -60,6 +61,13 @@ void main() {
       await settle(tester);
       expect(find.text('önbellek 0/2'), findsOneWidget);
       expect(find.textContaining('10.1.2.3'), findsOneWidget);
+      expect(find.text('İstemci ve Ortam Bilgileri'), findsOneWidget);
+      expect(find.text('Web'), findsWidgets);
+      expect(find.text('macOS'), findsWidgets);
+      expect(find.text('14.5'), findsOneWidget);
+      expect(find.text('Chrome'), findsWidgets);
+      expect(find.text('128.0.6613.120'), findsOneWidget);
+      expect(find.text('arm64'), findsOneWidget);
       expect(
         find.byType(TapMarker),
         findsOneWidget,
@@ -248,6 +256,37 @@ void main() {
     expect(find.text('Hatalar'), findsWidgets);
     expect(find.text('Oturumlar'), findsOneWidget);
   });
+
+  testWidgets(
+    'client environment card renders linux desktop kernel and cpu details',
+    (tester) async {
+      final session = Session(
+        id: 'ffff0000-1111',
+        projectId: 1,
+        startedAt: DateTime(2026, 9, 7, 11),
+        lastSeenAt: DateTime(2026, 9, 7, 11, 1),
+        platform: 'linux',
+        device: const {
+          'platform_category': 'desktop',
+          'os': 'Ubuntu',
+          'os_version': '24.04',
+          'kernel': 'Linux',
+          'kernel_version': '6.8.0-40-generic',
+          'arch': 'x86_64',
+          'cpu_cores': 16,
+        },
+      );
+      await pumpWidgetWithL10n(tester, ClientEnvironmentCard(session: session));
+      expect(find.text('İstemci ve Ortam Bilgileri'), findsOneWidget);
+      expect(find.text('Masaüstü (Desktop)'), findsOneWidget);
+      expect(find.text('Ubuntu'), findsOneWidget);
+      expect(find.text('24.04'), findsOneWidget);
+      expect(find.text('Linux'), findsOneWidget);
+      expect(find.text('6.8.0-40-generic'), findsOneWidget);
+      expect(find.text('x86_64'), findsOneWidget);
+      expect(find.text('16'), findsOneWidget);
+    },
+  );
 }
 
 

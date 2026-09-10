@@ -139,9 +139,11 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                 title: context.l10n.sessionHeader(context.fmt.shortId(s.id)),
                 subtitle:
                     '${s.userLabel.isEmpty ? context.l10n.commonAnonymous : s.userLabel}'
-                    '${s.ip.isEmpty ? '' : ' · ${s.ip}'} · ${s.platform} '
-                    '${s.device['os_version'] ?? ''} · '
-                    '${s.release.isEmpty ? '' : 'v${s.release} · '}'
+                    '${s.ip.isEmpty ? '' : ' · ${s.ip}'} · ${s.platformCategory} · ${s.osName}'
+                    '${s.osVersion.isNotEmpty ? ' ${s.osVersion}' : ''}'
+                    '${s.isLinuxDesktop && s.kernelVersion.isNotEmpty ? ' (${s.kernel} ${s.kernelVersion})' : ''}'
+                    '${s.isWeb && s.browserName.isNotEmpty ? ' · ${s.browserName}${s.browserVersion.isNotEmpty ? ' ${s.browserVersion}' : ''}' : ''}'
+                    '${s.release.isEmpty ? '' : ' · v${s.release}'} · '
                     '${context.fmt.dateTime(s.startedAt)}',
                 actions: [
                   GhostButton(
@@ -153,6 +155,8 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                   ),
                 ],
               ),
+              const Gap(12),
+              ClientEnvironmentCard(session: s),
               const Gap(12),
               if (isNarrow) ...[
                 player,
@@ -1447,4 +1451,199 @@ class CodeBlock extends StatelessWidget {
       ),
     ),
   );
+}
+
+/// The card displaying granular client and device runtime parameters:
+/// Platform, OS, OS Version, Linux Kernel & Version, Browser & Version, Architecture, CPU cores, Screen, etc.
+class ClientEnvironmentCard extends StatelessWidget {
+  const ClientEnvironmentCard({super.key, required this.session});
+  final Session session;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = session;
+    final l = context.l10n;
+
+    final IconData platformIcon;
+    final String platformLocalized;
+    switch (s.platformCategory) {
+      case 'Web':
+        platformIcon = LucideIcons.globe;
+        platformLocalized = l.clientPlatformWeb;
+        break;
+      case 'Mobile':
+        platformIcon = LucideIcons.smartphone;
+        platformLocalized = l.clientPlatformMobile;
+        break;
+      case 'Desktop':
+      default:
+        platformIcon = LucideIcons.monitor;
+        platformLocalized = l.clientPlatformDesktop;
+        break;
+    }
+
+    final items = <_EnvItem>[
+      _EnvItem(
+        label: l.clientPlatform,
+        value: platformLocalized,
+        icon: platformIcon,
+        highlight: true,
+      ),
+      _EnvItem(
+        label: l.clientOS,
+        value: s.osName,
+        icon: LucideIcons.hardDrive,
+      ),
+      if (s.osVersion.isNotEmpty)
+        _EnvItem(
+          label: l.clientOsVersion,
+          value: s.osVersion,
+          icon: LucideIcons.tag,
+        ),
+      if (s.isLinuxDesktop || s.kernel.isNotEmpty || s.kernelVersion.isNotEmpty) ...[
+        _EnvItem(
+          label: l.clientKernel,
+          value: s.kernel.isNotEmpty ? s.kernel : 'Linux',
+          icon: LucideIcons.cpu,
+        ),
+        if (s.kernelVersion.isNotEmpty)
+          _EnvItem(
+            label: l.clientKernelVersion,
+            value: s.kernelVersion,
+            icon: LucideIcons.binary,
+            mono: true,
+          ),
+      ],
+      if (s.isWeb || s.browserName.isNotEmpty || s.browserVersion.isNotEmpty) ...[
+        if (s.browserName.isNotEmpty)
+          _EnvItem(
+            label: l.clientBrowser,
+            value: s.browserName,
+            icon: LucideIcons.globe,
+          ),
+        if (s.browserVersion.isNotEmpty)
+          _EnvItem(
+            label: l.clientBrowserVersion,
+            value: s.browserVersion,
+            icon: LucideIcons.hash,
+            mono: true,
+          ),
+      ],
+      if (s.arch.isNotEmpty)
+        _EnvItem(
+          label: l.clientArch,
+          value: s.arch,
+          icon: LucideIcons.cpu,
+          mono: true,
+        ),
+      if (s.cpuCores != null)
+        _EnvItem(
+          label: l.clientCores,
+          value: '${s.cpuCores}',
+          icon: LucideIcons.gauge,
+        ),
+      if (s.screenResolution.isNotEmpty)
+        _EnvItem(
+          label: l.clientScreen,
+          value: s.screenResolution,
+          icon: LucideIcons.expand,
+          mono: true,
+        ),
+      if (s.locale.isNotEmpty)
+        _EnvItem(
+          label: l.clientLocale,
+          value: s.locale,
+          icon: LucideIcons.languages,
+        ),
+      if (s.sdkName.isNotEmpty)
+        _EnvItem(
+          label: l.clientSdk,
+          value: '${s.sdkName} ${s.sdkVersion}'.trim(),
+          icon: LucideIcons.box,
+          mono: true,
+        ),
+    ];
+
+    return PanelCard(
+      title: l.sessionClientInfo,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Wrap(
+          spacing: 10,
+          runSpacing: 8,
+          children: [
+            for (final item in items)
+              _EnvBadge(item: item),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EnvItem {
+  const _EnvItem({
+    required this.label,
+    required this.value,
+    required this.icon,
+    this.highlight = false,
+    this.mono = false,
+  });
+  final String label;
+  final String value;
+  final IconData icon;
+  final bool highlight;
+  final bool mono;
+}
+
+class _EnvBadge extends StatelessWidget {
+  const _EnvBadge({required this.item});
+  final _EnvItem item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: item.highlight ? Tokens.brand.withValues(alpha: 0.08) : Tokens.surface,
+        border: Border.all(
+          color: item.highlight ? Tokens.brand.withValues(alpha: 0.3) : Tokens.border,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            item.icon,
+            size: 13,
+            color: item.highlight ? Tokens.brand : Tokens.textDim,
+          ),
+          const Gap(6),
+          Text(
+            '${item.label}:',
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Tokens.textDim,
+            ),
+          ),
+          const Gap(4),
+          Text(
+            item.value,
+            style: item.mono
+                ? AppTheme.mono(
+                    size: 11.5,
+                    color: item.highlight ? Tokens.brand : Tokens.textStrong,
+                  )
+                : TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    color: item.highlight ? Tokens.brand : Tokens.textStrong,
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
 }

@@ -206,6 +206,17 @@ class FakeApi implements SightpaneApi {
       eventCount: 3,
       frameCount: 2,
       ip: '10.1.2.3',
+      device: const {
+        'platform_category': 'web',
+        'browser': 'Chrome',
+        'browser_version': '128.0.6613.120',
+        'os': 'macOS',
+        'os_version': '14.5',
+        'arch': 'arm64',
+        'cpu_cores': 8,
+        'locale': 'tr-TR',
+        'screen': {'w': 1920, 'h': 1080, 'dpr': 2.0},
+      },
     ),
     Session(
       id: 'ffff0000-1111',
@@ -214,6 +225,15 @@ class FakeApi implements SightpaneApi {
       lastSeenAt: DateTime(2026, 9, 7, 11, 1),
       endedAt: DateTime(2026, 9, 7, 11, 1),
       platform: 'linux',
+      device: const {
+        'platform_category': 'desktop',
+        'os': 'Ubuntu',
+        'os_version': '24.04',
+        'kernel': 'Linux',
+        'kernel_version': '6.8.0-40-generic',
+        'arch': 'x86_64',
+        'cpu_cores': 16,
+      },
     ),
   ];
   var issueList = <Issue>[
@@ -251,6 +271,13 @@ class FakeApi implements SightpaneApi {
           sdkVersion: '0.1.0',
           platform: 'web',
           currentRoute: 'https://app.local/shop',
+          device: const {
+            'platform_category': 'web',
+            'browser': 'Chrome',
+            'browser_version': '128.0.0.0',
+            'os': 'macOS',
+            'os_version': '14.5',
+          },
         ),
         items: [
           TimelineItem(

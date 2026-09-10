@@ -341,6 +341,102 @@ class Session {
   final int errorCount, eventCount, frameCount;
   Duration get duration => (endedAt ?? lastSeenAt).difference(startedAt);
 
+  /// Form factor category: 'Desktop', 'Web', 'Mobile'
+  String get platformCategory {
+    final cat = _s(device['platform_category']).toLowerCase();
+    if (cat == 'desktop') return 'Desktop';
+    if (cat == 'mobile') return 'Mobile';
+    if (cat == 'web') return 'Web';
+
+    final p = platform.toLowerCase();
+    if (p == 'web') return 'Web';
+    if (p == 'android' || p == 'ios' || p == 'fuchsia') return 'Mobile';
+    if (p == 'linux' || p == 'macos' || p == 'windows') return 'Desktop';
+    return 'Desktop';
+  }
+
+  /// OS name: 'Ubuntu', 'macOS', 'Windows', 'Android', 'iOS', 'Linux'
+  String get osName {
+    final os = _s(device['os']);
+    if (os.isNotEmpty && os.toLowerCase() != 'web') {
+      return os;
+    }
+    final p = platform.toLowerCase();
+    if (p == 'macos') return 'macOS';
+    if (p == 'linux') return 'Linux';
+    if (p == 'windows') return 'Windows';
+    if (p == 'android') return 'Android';
+    if (p == 'ios') return 'iOS';
+    return os.isNotEmpty ? os : (platform.isNotEmpty ? platform : '—');
+  }
+
+  /// OS version: e.g. '24.04', '14.5'
+  String get osVersion => _s(device['os_version']);
+
+  /// Linux kernel: 'Linux'
+  String get kernel => _s(device['kernel']);
+
+  /// Linux kernel version: e.g. '6.8.0-40-generic'
+  String get kernelVersion => _s(device['kernel_version']);
+
+  /// Whether this session is running on Linux Desktop
+  bool get isLinuxDesktop =>
+      platformCategory == 'Desktop' &&
+      (osName.toLowerCase().contains('linux') ||
+          osName.toLowerCase().contains('ubuntu') ||
+          platform.toLowerCase() == 'linux');
+
+  /// Browser name: 'Chrome', 'Firefox', etc.
+  String get browserName {
+    final b = _s(device['browser']);
+    if (b.isNotEmpty && b.toLowerCase() != 'web' && !b.endsWith(' app')) {
+      return b;
+    }
+    if (browser.isNotEmpty && browser.toLowerCase() != 'web' && !browser.endsWith(' app')) {
+      return browser;
+    }
+    return '';
+  }
+
+  /// Browser version: e.g. '128.0.6613.120'
+  String get browserVersion => _s(device['browser_version']);
+
+  /// Whether this session is from a web browser
+  bool get isWeb => platformCategory == 'Web' || platform.toLowerCase() == 'web';
+
+  /// Hardware architecture: e.g. 'x86_64', 'arm64'
+  String get arch => _s(device['arch']);
+
+  /// Number of CPU cores if reported
+  int? get cpuCores {
+    final c = device['cpu_cores'];
+    if (c is int) return c;
+    if (c is num) return c.toInt();
+    if (c is String) return int.tryParse(c);
+    return null;
+  }
+
+  /// Screen resolution: e.g. '1920×1080 (2.0x)'
+  String get screenResolution {
+    final scr = device['screen'];
+    if (scr is Map) {
+      final w = scr['w'];
+      final h = scr['h'];
+      final dpr = scr['dpr'];
+      if (w != null && h != null) {
+        if (dpr != null) {
+          return '$w×$h (${dpr}x)';
+        }
+        return '$w×$h';
+      }
+    }
+    return '';
+  }
+
+  /// Locale: e.g. 'tr-TR', 'en-US'
+  String get locale =>
+      _s(device['locale']).isNotEmpty ? _s(device['locale']) : _s(device['locale_name']);
+
   /// The user name to show; returns empty when there is none — the wording for
   /// "anonymous" comes from the translations, so the model keeps no text.
   String get userLabel => _s(user['email']).isNotEmpty
