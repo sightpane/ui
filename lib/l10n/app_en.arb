@@ -223,6 +223,8 @@
   "sessionHeader": "Session {id}",
   "sessionFullscreenTitle": "Session {id} · {user}",
   "replayNoFrames": "This session has no frames (SightpaneReplay is not wrapped, or replay is off).",
+  "replayNoFramesGeneric": "This session has no replay frames recorded (replay is disabled or not sent).",
+  "replayDomPlayerTitle": "DOM Replay ({count} events)",
   "replayPosition": "{position} / {total}s",
   "replayBuffer": "buffer {done}/{total}",
   "replayFullscreenHint": "ESC closes · space plays/pauses",

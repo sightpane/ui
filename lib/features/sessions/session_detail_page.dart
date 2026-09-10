@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/services.dart'
     show HardwareKeyboard, KeyDownEvent, KeyEvent, LogicalKeyboardKey;
@@ -66,30 +67,42 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
         )..start();
         final isNarrow =
             MediaQuery.sizeOf(context).width < Tokens.mobileBreakpoint;
+        final isDomSession =
+            d.hasDom || (d.frames.isEmpty && d.items.any((it) => it.type == 'dom'));
+        final domItems = d.items.where((it) => it.type == 'dom').toList();
         final player = PanelCard(
           title: context.l10n.sessionReplay,
-          subtitle: context.l10n.sessionFramesAndDuration(
-            d.frames.length,
-            context.fmt.duration(s.duration),
-          ),
-          child: ReplayPlayer(
-            controller: _player,
-            frameUrl: (seq) => api.frameUrl(s.id, seq),
-            prefetcher: _prefetcher,
-            onTimeChanged: (t) => setState(() {}),
-            onToggleFullscreen: () => FullscreenReplayPage.open(
-              context,
-              controller: _player,
-              frameUrl: (seq) => api.frameUrl(s.id, seq),
-              prefetcher: _prefetcher,
-              title: context.l10n.sessionFullscreenTitle(
-                context.fmt.shortId(s.id),
-                s.userLabel.isEmpty
-                    ? context.l10n.commonAnonymous
-                    : s.userLabel,
-              ),
-            ),
-          ),
+          subtitle: isDomSession
+              ? context.l10n.replayDomPlayerTitle(domItems.length)
+              : context.l10n.sessionFramesAndDuration(
+                  d.frames.length,
+                  context.fmt.duration(s.duration),
+                ),
+          child: isDomSession
+              ? DomReplayPlayer(
+                  detail: d,
+                  controller: _player,
+                  onTimeChanged: (t) => setState(() {}),
+                )
+              : ReplayPlayer(
+                  controller: _player,
+                  isFlutter: d.isFlutter,
+                  frameUrl: (seq) => api.frameUrl(s.id, seq),
+                  prefetcher: _prefetcher,
+                  onTimeChanged: (t) => setState(() {}),
+                  onToggleFullscreen: () => FullscreenReplayPage.open(
+                    context,
+                    controller: _player,
+                    frameUrl: (seq) => api.frameUrl(s.id, seq),
+                    prefetcher: _prefetcher,
+                    title: context.l10n.sessionFullscreenTitle(
+                      context.fmt.shortId(s.id),
+                      s.userLabel.isEmpty
+                          ? context.l10n.commonAnonymous
+                          : s.userLabel,
+                    ),
+                  ),
+                ),
         );
         final timeline = PanelCard(
           title: context.l10n.sessionTimeline,
@@ -294,6 +307,298 @@ class ReplayController extends ChangeNotifier {
   }
 }
 
+class DomReplayPlayer extends StatefulWidget {
+  const DomReplayPlayer({
+    super.key,
+    required this.detail,
+    required this.controller,
+    this.onTimeChanged,
+    this.expand = false,
+  });
+
+  final SessionDetail detail;
+  final ReplayController controller;
+  final void Function(Duration)? onTimeChanged;
+  final bool expand;
+
+  @override
+  State<DomReplayPlayer> createState() => _DomReplayPlayerState();
+}
+
+class _DomReplayPlayerState extends State<DomReplayPlayer> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_changed);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_changed);
+    super.dispose();
+  }
+
+  void _changed() {
+    if (mounted) setState(() {});
+    widget.onTimeChanged?.call(widget.controller.position);
+  }
+
+  TimelineItem? get _currentDomItem {
+    final dom = widget.detail.items.where((it) => it.type == 'dom').toList();
+    if (dom.isEmpty) return null;
+    final t = widget.controller.current;
+    TimelineItem? active;
+    for (final it in dom) {
+      if (!it.ts.isAfter(t)) {
+        active = it;
+      } else {
+        break;
+      }
+    }
+    return active ?? dom.first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = widget.controller;
+    final dom = widget.detail.items.where((it) => it.type == 'dom').toList();
+    final active = _currentDomItem;
+
+    final viewport = AspectRatio(
+      aspectRatio: 16 / 9,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E1E),
+          borderRadius: BorderRadius.circular(Tokens.radius),
+          border: Border.all(color: Tokens.border),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: const BoxDecoration(
+                color: Color(0xFF2D2D2D),
+                border: Border(bottom: BorderSide(color: Color(0xFF3D3D3D))),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFF5F56),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const Gap(6),
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFFFBD2E),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const Gap(6),
+                  Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF27C93F),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const Gap(16),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1E1E1E),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(LucideIcons.globe, size: 12, color: Tokens.textMuted),
+                          const Gap(6),
+                          Expanded(
+                            child: Text(
+                              widget.detail.session.currentRoute.isEmpty
+                                  ? 'https://app.local/'
+                                  : widget.detail.session.currentRoute,
+                              style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Gap(12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Tokens.brand.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Text(
+                      'DOM Replay',
+                      style: TextStyle(fontSize: 10, color: Tokens.brand, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Center(
+                    child: active == null
+                        ? Text(
+                            context.l10n.replayNoFramesGeneric,
+                            style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: active.name == 'snapshot'
+                                            ? const Color(0x33C084FC)
+                                            : const Color(0x3338BDF8),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        active.name.toUpperCase(),
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                          color: active.name == 'snapshot'
+                                              ? const Color(0xFFC084FC)
+                                              : const Color(0xFF38BDF8),
+                                        ),
+                                      ),
+                                    ),
+                                    const Gap(8),
+                                    Text(
+                                      context.fmt.clock(active.ts),
+                                      style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(12),
+                                Container(
+                                  constraints: const BoxConstraints(maxWidth: 480, maxHeight: 180),
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF141414),
+                                    border: Border.all(color: const Color(0xFF333333)),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: SelectableText(
+                                      jsonEncode(active.body),
+                                      style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+                  if (c.pointer.isNotEmpty)
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          painter: PointerOverlayPainter(
+                            cursor: c.cursor,
+                            trail: c.trail(),
+                            now: c.current,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
+      children: [
+        if (widget.expand) Expanded(child: Center(child: viewport)) else viewport,
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          decoration: const BoxDecoration(
+            border: Border(top: BorderSide(color: Tokens.border)),
+          ),
+          child: Row(
+            children: [
+              IconButton.primary(
+                size: ButtonSize.small,
+                icon: Icon(
+                  c.playing ? LucideIcons.pause : LucideIcons.play,
+                  size: 14,
+                ),
+                onPressed: dom.isEmpty ? null : c.toggle,
+              ),
+              const Gap(10),
+              Expanded(
+                child: Scrubber(
+                  value: c.total.inMilliseconds > 0
+                      ? c.position.inMilliseconds / c.total.inMilliseconds
+                      : 0.0,
+                  marks: [
+                    for (final it in dom)
+                      if (c.total.inMilliseconds > 0 && c.t0 != null)
+                        it.ts.difference(c.t0!).inMilliseconds / c.total.inMilliseconds,
+                  ],
+                  onChanged: (v) => c.seek(
+                    Duration(
+                      milliseconds: (v * c.total.inMilliseconds).round(),
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(10),
+              Text(
+                context.l10n.replayPosition(
+                  (c.position.inMilliseconds / 1000).toStringAsFixed(1),
+                  (c.total.inMilliseconds / 1000).toStringAsFixed(1),
+                ),
+                style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+              ),
+              const Gap(8),
+              for (final s in const [1.0, 2.0, 4.0])
+                c.speed == s
+                    ? SecondaryButton(
+                        size: ButtonSize.xSmall,
+                        onPressed: () {},
+                        child: Text('${s.toInt()}×'),
+                      )
+                    : GhostButton(
+                        size: ButtonSize.xSmall,
+                        onPressed: () => c.setSpeed(s),
+                        child: Text('${s.toInt()}×'),
+                      ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class ReplayPlayer extends StatefulWidget {
   const ReplayPlayer({
     super.key,
@@ -304,6 +609,7 @@ class ReplayPlayer extends StatefulWidget {
     this.expand = false,
     this.onToggleFullscreen,
     this.fullscreen = false,
+    this.isFlutter = true,
   });
   final ReplayController controller;
   final String Function(int seq) frameUrl;
@@ -313,6 +619,7 @@ class ReplayPlayer extends StatefulWidget {
   /// In fullscreen: the frame area fills the height it is given.
   final bool expand;
   final bool fullscreen;
+  final bool isFlutter;
   final VoidCallback? onToggleFullscreen;
   @override
   State<ReplayPlayer> createState() => _ReplayPlayerState();
@@ -370,7 +677,9 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
         child: f == null
             ? Center(
                 child: Text(
-                  context.l10n.replayNoFrames,
+                  widget.isFlutter
+                      ? context.l10n.replayNoFrames
+                      : context.l10n.replayNoFramesGeneric,
                   style: const TextStyle(fontSize: 12, color: Tokens.textDim),
                 ),
               )

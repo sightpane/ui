@@ -528,6 +528,15 @@
     }
   },
   "replayNoFrames": "Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).",
+  "replayNoFramesGeneric": "Bu oturumda kare yok (oturum kaydı kapalı veya gönderilmemiş).",
+  "replayDomPlayerTitle": "DOM Kaydı ({count} olay)",
+  "@replayDomPlayerTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "replayPosition": "{position} / {total} sn",
   "@replayPosition": {
     "placeholders": {

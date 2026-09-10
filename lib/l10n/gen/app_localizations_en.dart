@@ -830,6 +830,15 @@ class LEn extends L {
       'This session has no frames (SightpaneReplay is not wrapped, or replay is off).';
 
   @override
+  String get replayNoFramesGeneric =>
+      'This session has no replay frames recorded (replay is disabled or not sent).';
+
+  @override
+  String replayDomPlayerTitle(int count) {
+    return 'DOM Replay ($count events)';
+  }
+
+  @override
   String replayPosition(String position, String total) {
     return '$position / ${total}s';
   }

@@ -333,12 +333,35 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
   }
 }
 
-/// Project-specific setup: address + API key + the `Sightpane.init` snippet.
-class SetupSnippet extends StatelessWidget {
+enum SdkPlatform { flutter, web, reactNative }
+
+/// Project-specific setup: address + API key + SDK snippet.
+class SetupSnippet extends StatefulWidget {
   const SetupSnippet({super.key, required this.project});
   final Project project;
 
-  String get code =>
+  @override
+  State<SetupSnippet> createState() => _SetupSnippetState();
+}
+
+class _SetupSnippetState extends State<SetupSnippet> {
+  late SdkPlatform _platform;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.project.platform.toLowerCase();
+    if (p == 'web') {
+      _platform = SdkPlatform.web;
+    } else if (p.contains('native') || p.contains('rn')) {
+      _platform = SdkPlatform.reactNative;
+    } else {
+      _platform = SdkPlatform.flutter;
+    }
+  }
+
+  String get code => switch (_platform) {
+    SdkPlatform.flutter =>
       """
 import 'package:sightpane/sightpane.dart';
 
@@ -346,7 +369,7 @@ void main() {
   Sightpane.init(
     SightpaneOptions(
       endpoint: '${AppConfig.apiUrl}',
-      apiKey: '${project.apiKey}',
+      apiKey: '${widget.project.apiKey}',
       release: '1.0.0',
     ),
     appRunner: () => runApp(const MyApp()),
@@ -355,7 +378,27 @@ void main() {
 
 // Inside MaterialApp.builder / ShadcnApp.builder:
 // builder: (context, child) => SightpaneReplay(child: SightpaneUserInteractionWidget(child: child!)),
-// go_router: observers: [SightpaneNavigatorObserver()]""";
+// go_router: observers: [SightpaneNavigatorObserver()]""",
+    SdkPlatform.web =>
+      """
+import { init } from '@sightpane/browser';
+
+init({
+  endpoint: '${AppConfig.apiUrl}',
+  apiKey: '${widget.project.apiKey}',
+  release: '1.0.0',
+  replay: true, // records DOM mutations & snapshots
+});""",
+    SdkPlatform.reactNative =>
+      """
+import * as Sightpane from '@sightpane/react-native';
+
+Sightpane.init({
+  endpoint: '${AppConfig.apiUrl}',
+  apiKey: '${widget.project.apiKey}',
+  release: '1.0.0',
+});""",
+  };
 
   @override
   Widget build(BuildContext context) => Column(
@@ -364,9 +407,20 @@ void main() {
     children: [
       CopyField(label: context.l10n.setupAddress, value: AppConfig.apiUrl),
       const Gap(6),
-      CopyField(label: context.l10n.setupApiKey, value: project.apiKey),
+      CopyField(label: context.l10n.setupApiKey, value: widget.project.apiKey),
       const Gap(10),
-      FieldLabel(context.l10n.setupTitle),
+      Row(
+        children: [
+          FieldLabel(context.l10n.setupTitle),
+          const Spacer(),
+          _platformButton(SdkPlatform.flutter, 'Flutter'),
+          const Gap(4),
+          _platformButton(SdkPlatform.web, 'React / Web'),
+          const Gap(4),
+          _platformButton(SdkPlatform.reactNative, 'React Native'),
+        ],
+      ),
+      const Gap(6),
       Stack(
         children: [
           Container(
@@ -387,6 +441,31 @@ void main() {
       ),
     ],
   );
+
+  Widget _platformButton(SdkPlatform p, String label) {
+    final active = _platform == p;
+    return GestureDetector(
+      onTap: () => setState(() => _platform = p),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+        decoration: BoxDecoration(
+          color: active ? Tokens.brand.withValues(alpha: 0.15) : Tokens.surface,
+          border: Border.all(
+            color: active ? Tokens.brand : Tokens.border,
+          ),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 11,
+            fontWeight: active ? FontWeight.w600 : FontWeight.normal,
+            color: active ? Tokens.brand : Tokens.textMuted,
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class CopyButton extends StatelessWidget {

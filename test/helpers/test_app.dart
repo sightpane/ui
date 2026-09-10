@@ -237,7 +237,41 @@ class FakeApi implements SightpaneApi {
     const Member(userId: 2, email: 'can@x.io', name: 'Can', role: 'member'),
   ];
 
-  SessionDetail detailFor(String id) => SessionDetail.withPointer(
+  SessionDetail detailFor(String id) {
+    if (id == 'dom-session') {
+      return SessionDetail.withPointer(
+        pointer: const [],
+        hasDom: true,
+        session: Session(
+          id: 'dom-session',
+          projectId: 1,
+          startedAt: DateTime(2026, 9, 7, 10, 0, 0),
+          lastSeenAt: DateTime(2026, 9, 7, 10, 0, 10),
+          sdkName: '@sightpane/browser',
+          sdkVersion: '0.1.0',
+          platform: 'web',
+          currentRoute: 'https://app.local/shop',
+        ),
+        items: [
+          TimelineItem(
+            id: 101,
+            ts: DateTime(2026, 9, 7, 10, 0, 1),
+            type: 'dom',
+            name: 'snapshot',
+            body: const {'kind': 'snapshot', 'tree': '<div>Hello</div>'},
+          ),
+          TimelineItem(
+            id: 102,
+            ts: DateTime(2026, 9, 7, 10, 0, 3),
+            type: 'dom',
+            name: 'mutation',
+            body: const {'kind': 'mutation', 'changes': 2},
+          ),
+        ],
+        frames: const [],
+      );
+    }
+    return SessionDetail.withPointer(
     pointer: [
       PointerSample(
         ts: DateTime(2026, 9, 7, 10, 0, 0, 200),
@@ -314,6 +348,7 @@ class FakeApi implements SightpaneApi {
       Frame(seq: 2, ts: DateTime(2026, 9, 7, 10, 0, 3), width: 160, height: 90),
     ],
   );
+  }
 
   @override
   Future<AuthSession> login(String email, String password) async {

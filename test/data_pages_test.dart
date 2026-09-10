@@ -112,6 +112,22 @@ void main() {
     },
   );
 
+  testWidgets(
+    'session detail: dom replay player is picked for dom sessions',
+    (tester) async {
+      await go(
+        tester,
+        '/projects/1/sessions/dom-session',
+        size: tallDesktopSize,
+      );
+      expect(find.byType(DomReplayPlayer), findsOneWidget);
+      expect(find.text('DOM Replay'), findsOneWidget);
+      expect(find.text('DOM Kaydı (2 olay)'), findsOneWidget);
+      expect(find.text('SNAPSHOT'), findsOneWidget);
+      expect(find.text('https://app.local/shop'), findsOneWidget);
+    },
+  );
+
   testWidgets('issues list toggles resolved; detail resolves and reopens', (
     tester,
   ) async {

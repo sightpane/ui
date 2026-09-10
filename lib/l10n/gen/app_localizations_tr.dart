@@ -764,6 +764,15 @@ class LTr extends L {
       'Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).';
 
   @override
+  String get replayNoFramesGeneric =>
+      'Bu oturumda kare yok (oturum kaydı kapalı veya gönderilmemiş).';
+
+  @override
+  String replayDomPlayerTitle(int count) {
+    return 'DOM Kaydı ($count olay)';
+  }
+
+  @override
   String replayPosition(String position, String total) {
     return '$position / $total sn';
   }

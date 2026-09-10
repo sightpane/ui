@@ -63,6 +63,31 @@ void main() {
       ],
     });
     expect(d.items.single.message, 'E: m');
+    expect(d.isFlutter, isTrue);
+
+    final dDom = SessionDetail.fromJson({
+      'id': 'web-1',
+      'project_id': 1,
+      'started_at': '2026-09-07T10:00:00Z',
+      'last_seen_at': '2026-09-07T10:05:00Z',
+      'sdk_name': '@sightpane/browser',
+      'sdk_version': '0.1.0',
+      'has_dom': true,
+      'items': [
+        {
+          'id': 10,
+          'ts': '2026-09-07T10:00:01Z',
+          'type': 'dom',
+          'name': 'snapshot',
+          'body': {'kind': 'snapshot'},
+        },
+      ],
+      'frames': [],
+    });
+    expect(dDom.session.sdkName, '@sightpane/browser');
+    expect(dDom.session.sdkVersion, '0.1.0');
+    expect(dDom.hasDom, isTrue);
+    expect(dDom.isFlutter, isFalse);
     final dp = SessionDetail.fromJson({
       'id': 'x',
       'project_id': 1,

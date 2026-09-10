@@ -329,12 +329,14 @@ class Session {
     this.ip = '',
     this.browser = '',
     this.currentRoute = '',
+    this.sdkName = '',
+    this.sdkVersion = '',
   });
   final String id;
   final int projectId;
   final DateTime startedAt, lastSeenAt;
   final DateTime? endedAt;
-  final String userId, platform, release, ip, browser, currentRoute;
+  final String userId, platform, release, ip, browser, currentRoute, sdkName, sdkVersion;
   final Map<String, Object?> user, device, props;
   final int errorCount, eventCount, frameCount;
   Duration get duration => (endedAt ?? lastSeenAt).difference(startedAt);
@@ -362,6 +364,8 @@ class Session {
     ip: _s(j['ip']),
     browser: _s(j['browser']),
     currentRoute: _s(j['current_route']),
+    sdkName: _s(j['sdk_name']),
+    sdkVersion: _s(j['sdk_version']),
   );
 }
 
@@ -490,6 +494,7 @@ class SessionDetail {
     required this.session,
     required this.items,
     required this.frames,
+    this.hasDom = false,
   }) : pointer = const [];
   final Session session;
 
@@ -497,12 +502,19 @@ class SessionDetail {
   final List<TimelineItem> items;
   final List<Frame> frames;
   final List<PointerSample> pointer;
+  final bool hasDom;
+
+  bool get isFlutter =>
+      session.sdkName.isEmpty ||
+      session.sdkName == 'sightpane' ||
+      session.sdkName.contains('flutter');
 
   const SessionDetail.withPointer({
     required this.session,
     required this.items,
     required this.frames,
     required this.pointer,
+    this.hasDom = false,
   });
 
   factory SessionDetail.fromJson(Map<String, Object?> j) {
@@ -535,6 +547,7 @@ class SessionDetail {
           Frame.fromJson(_m(f)),
       ],
       pointer: pointer,
+      hasDom: j['has_dom'] == true || items.any((it) => it.type == 'dom'),
     );
   }
 }

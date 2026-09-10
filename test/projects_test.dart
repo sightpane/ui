@@ -37,6 +37,13 @@ void main() {
       expect(find.text('Garson oluşturuldu'), findsOneWidget);
       expect(find.text('newkey1234567890'), findsOneWidget);
       expect(find.textContaining("apiKey: 'newkey1234567890'"), findsOneWidget);
+      expect(find.textContaining('@sightpane/browser'), findsOneWidget);
+      await tester.tap(inDialog(find.text('Flutter')));
+      await settle(tester);
+      expect(find.textContaining('package:sightpane/sightpane.dart'), findsOneWidget);
+      await tester.tap(inDialog(find.text('React Native')));
+      await settle(tester);
+      expect(find.textContaining('@sightpane/react-native'), findsOneWidget);
       await tester.tap(find.text('Projeye git'));
       await settle(tester);
       expect(find.byType(OverviewPage), findsOneWidget);

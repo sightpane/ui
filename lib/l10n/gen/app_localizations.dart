@@ -1435,6 +1435,18 @@ abstract class L {
   /// **'Bu oturumda kare yok (SightpaneReplay sarılmamış ya da kayıt kapalı).'**
   String get replayNoFrames;
 
+  /// No description provided for @replayNoFramesGeneric.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu oturumda kare yok (oturum kaydı kapalı veya gönderilmemiş).'**
+  String get replayNoFramesGeneric;
+
+  /// No description provided for @replayDomPlayerTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'DOM Kaydı ({count} olay)'**
+  String replayDomPlayerTitle(int count);
+
   /// No description provided for @replayPosition.
   ///
   /// In tr, this message translates to:
