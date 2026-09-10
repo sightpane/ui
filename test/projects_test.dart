@@ -224,5 +224,37 @@ void main() {
       await dismissToasts(tester);
     },
   );
+
+  testWidgets(
+    'settings: scoped api tokens and audit log render and support actions',
+    (tester) async {
+      await go(tester, '/projects/1/settings', size: tallDesktopSize);
+      await settle(tester);
+
+      expect(find.text('Scoped API Tokens'), findsOneWidget);
+      expect(find.text('CI Token'), findsOneWidget);
+      expect(find.text('sourcemaps:write'), findsOneWidget);
+
+      expect(find.text('Audit Log'), findsOneWidget);
+      expect(find.text('key.rotate'), findsOneWidget);
+
+      // Generate a new token
+      await tester.tap(find.text('Generate Token'));
+      await settle(tester);
+      expect(find.text('Token Name'), findsOneWidget);
+      await tester.enterText(
+        inDialog(find.byType(TextField)).first,
+        'Deploy Bot',
+      );
+      await tester.tap(inDialog(find.text('Generate')));
+      await settle(tester);
+      expect(find.text('API Token Generated'), findsOneWidget);
+      expect(find.text('sp_fake_secret_token_123'), findsOneWidget);
+      await tester.tap(inDialog(find.text('Done')));
+      await settle(tester);
+
+      await dismissToasts(tester);
+    },
+  );
 }
 

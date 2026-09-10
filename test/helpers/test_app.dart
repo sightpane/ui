@@ -157,8 +157,9 @@ class FakeApi implements SightpaneApi {
       sessions24h: 3,
       errors24h: 1,
       openIssues: 2,
+      orgId: 1,
     ),
-    const Project(id: 2, name: 'Müfettiş', apiKey: 'k2', role: 'member'),
+    const Project(id: 2, name: 'Müfettiş', apiKey: 'k2', role: 'member', orgId: 1),
   ];
   var statsValue = ProjectStats(
     days: 7,
@@ -955,6 +956,117 @@ class FakeApi implements SightpaneApi {
         ),
       ],
     );
+  }
+
+  var orgList = <Org>[
+    const Org(id: 1, name: 'Default Org', slug: 'default-org', role: 'owner'),
+  ];
+  var orgMemberList = <OrgMember>[
+    const OrgMember(userId: 1, email: 'ayse@x.io', name: 'Ayşe Yılmaz', role: 'owner'),
+  ];
+  var auditLogList = <AuditLogEntry>[
+    AuditLogEntry(
+      id: 1,
+      orgId: 1,
+      action: 'key.rotate',
+      targetType: 'project',
+      targetId: '1',
+      ip: '127.0.0.1',
+      createdAt: DateTime(2026, 9, 10, 10, 0),
+    ),
+  ];
+  var apiTokenList = <ApiToken>[
+    ApiToken(
+      id: 1,
+      orgId: 1,
+      name: 'CI Token',
+      scopes: ['sourcemaps:write'],
+      createdBy: 1,
+      createdAt: DateTime(2026, 9, 10, 10, 0),
+    ),
+  ];
+
+  @override
+  Future<List<Org>> orgs() async {
+    calls.add('orgs');
+    return orgList;
+  }
+
+  @override
+  Future<Org> createOrg(String name) async {
+    calls.add('createOrg $name');
+    final o = Org(id: orgList.length + 1, name: name, slug: name.toLowerCase(), role: 'owner');
+    orgList.add(o);
+    return o;
+  }
+
+  @override
+  Future<Org> org(int id) async {
+    calls.add('org $id');
+    return orgList.firstWhere(
+      (o) => o.id == id,
+      orElse: () => Org(id: id, name: 'Org $id', slug: 'org-$id', role: 'owner'),
+    );
+  }
+
+  @override
+  Future<List<OrgMember>> orgMembers(int orgId) async {
+    calls.add('orgMembers $orgId');
+    return orgMemberList;
+  }
+
+  @override
+  Future<List<OrgMember>> addOrgMember(int orgId, String email, {String role = 'member'}) async {
+    calls.add('addOrgMember $orgId email=$email role=$role');
+    final m = OrgMember(userId: orgMemberList.length + 1, email: email, name: email.split('@').first, role: role);
+    orgMemberList.add(m);
+    return orgMemberList;
+  }
+
+  @override
+  Future<void> updateOrgMemberRole(int orgId, int userId, String role) async {
+    calls.add('updateOrgMemberRole $orgId userId=$userId role=$role');
+  }
+
+  @override
+  Future<void> removeOrgMember(int orgId, int userId) async {
+    calls.add('removeOrgMember $orgId userId=$userId');
+    orgMemberList.removeWhere((m) => m.userId == userId);
+  }
+
+  @override
+  Future<List<AuditLogEntry>> auditLogs(int orgId, {int? projectId, int limit = 100}) async {
+    calls.add('auditLogs $orgId projectId=$projectId limit=$limit');
+    return auditLogList;
+  }
+
+  @override
+  Future<List<ApiToken>> apiTokens(int orgId) async {
+    calls.add('apiTokens $orgId');
+    return apiTokenList;
+  }
+
+  @override
+  Future<ApiToken> createApiToken(int orgId, {required String name, required List<String> scopes, DateTime? expiresAt}) async {
+    calls.add('createApiToken $orgId name=$name scopes=$scopes');
+    final t = ApiToken(
+      id: apiTokenList.length + 1,
+      orgId: orgId,
+      name: name,
+      scopes: scopes,
+      createdBy: 1,
+      createdAt: DateTime.now(),
+      expiresAt: expiresAt,
+      secret: 'sp_fake_secret_token_123',
+    );
+    apiTokenList.add(t);
+    return t;
+  }
+
+  @override
+  Future<void> deleteApiToken(int orgId, int tokenId) async {
+    calls.add('deleteApiToken $orgId tokenId=$tokenId');
+    apiTokenList.removeWhere((t) => t.id == tokenId);
   }
 }
 

@@ -101,6 +101,22 @@ final transactionDetailProvider = FutureProvider.autoDispose
       ),
 );
 
+final orgsProvider = FutureProvider.autoDispose<List<Org>>(
+  (ref) => ref.watch(apiProvider).orgs(),
+);
 
+final orgMembersProvider =
+    FutureProvider.autoDispose.family<List<OrgMember>, int>(
+  (ref, orgId) => ref.watch(apiProvider).orgMembers(orgId),
+);
 
+typedef AuditLogKey = ({int orgId, int? projectId});
+final auditLogsProvider =
+    FutureProvider.autoDispose.family<List<AuditLogEntry>, AuditLogKey>(
+  (ref, k) => ref.watch(apiProvider).auditLogs(k.orgId, projectId: k.projectId),
+);
 
+final apiTokensProvider =
+    FutureProvider.autoDispose.family<List<ApiToken>, int>(
+  (ref, orgId) => ref.watch(apiProvider).apiTokens(orgId),
+);

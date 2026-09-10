@@ -153,6 +153,31 @@ abstract class SightpaneApi {
     required bool enabled,
   });
   Future<void> deleteAlertRule(int projectId, int ruleId);
+
+  Future<List<Org>> orgs();
+  Future<Org> createOrg(String name);
+  Future<Org> org(int id);
+  Future<List<OrgMember>> orgMembers(int orgId);
+  Future<List<OrgMember>> addOrgMember(
+    int orgId,
+    String email, {
+    String role = 'member',
+  });
+  Future<void> updateOrgMemberRole(int orgId, int userId, String role);
+  Future<void> removeOrgMember(int orgId, int userId);
+  Future<List<AuditLogEntry>> auditLogs(
+    int orgId, {
+    int? projectId,
+    int limit = 100,
+  });
+  Future<List<ApiToken>> apiTokens(int orgId);
+  Future<ApiToken> createApiToken(
+    int orgId, {
+    required String name,
+    required List<String> scopes,
+    DateTime? expiresAt,
+  });
+  Future<void> deleteApiToken(int orgId, int tokenId);
 }
 
 /// The real HTTP client. [token] is supplied once a session is opened.
@@ -693,6 +718,90 @@ class HttpSightpaneApi implements SightpaneApi {
   @override
   Future<void> deleteAlertRule(int projectId, int ruleId) =>
       _send('DELETE', '/api/v1/projects/$projectId/alerts/$ruleId');
+
+  @override
+  Future<List<Org>> orgs() async =>
+      _list(await _send('GET', '/api/v1/orgs')).map(Org.fromJson).toList();
+
+  @override
+  Future<Org> createOrg(String name) async =>
+      Org.fromJson(_map(await _send('POST', '/api/v1/orgs', body: {'name': name})));
+
+  @override
+  Future<Org> org(int id) async =>
+      Org.fromJson(_map(await _send('GET', '/api/v1/orgs/$id')));
+
+  @override
+  Future<List<OrgMember>> orgMembers(int orgId) async =>
+      _list(await _send('GET', '/api/v1/orgs/$orgId/members')).map(OrgMember.fromJson).toList();
+
+  @override
+  Future<List<OrgMember>> addOrgMember(
+    int orgId,
+    String email, {
+    String role = 'member',
+  }) async =>
+      _list(
+        await _send(
+          'POST',
+          '/api/v1/orgs/$orgId/members',
+          body: {'email': email, 'role': role},
+        ),
+      ).map(OrgMember.fromJson).toList();
+
+  @override
+  Future<void> updateOrgMemberRole(int orgId, int userId, String role) =>
+      _send('PUT', '/api/v1/orgs/$orgId/members/$userId', body: {'role': role});
+
+  @override
+  Future<void> removeOrgMember(int orgId, int userId) =>
+      _send('DELETE', '/api/v1/orgs/$orgId/members/$userId');
+
+  @override
+  Future<List<AuditLogEntry>> auditLogs(
+    int orgId, {
+    int? projectId,
+    int limit = 100,
+  }) async =>
+      _list(
+        await _send(
+          'GET',
+          '/api/v1/orgs/$orgId/audit',
+          query: {
+            if (projectId != null) 'projectId': '$projectId',
+            'limit': '$limit',
+          },
+        ),
+      ).map(AuditLogEntry.fromJson).toList();
+
+  @override
+  Future<List<ApiToken>> apiTokens(int orgId) async =>
+      _list(await _send('GET', '/api/v1/orgs/$orgId/tokens')).map(ApiToken.fromJson).toList();
+
+  @override
+  Future<ApiToken> createApiToken(
+    int orgId, {
+    required String name,
+    required List<String> scopes,
+    DateTime? expiresAt,
+  }) async =>
+      ApiToken.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/orgs/$orgId/tokens',
+            body: {
+              'name': name,
+              'scopes': scopes,
+              if (expiresAt != null) 'expires_at': expiresAt.toUtc().toIso8601String(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteApiToken(int orgId, int tokenId) =>
+      _send('DELETE', '/api/v1/orgs/$orgId/tokens/$tokenId');
 }
 
 /// A single API for the whole app; [tokenStoreProvider] supplies the token.

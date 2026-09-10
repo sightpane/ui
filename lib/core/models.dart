@@ -71,6 +71,7 @@ class Project {
     this.sessions24h = 0,
     this.errors24h = 0,
     this.openIssues = 0,
+    this.orgId,
   });
   final int id;
   final String name, apiKey, platform, role;
@@ -78,6 +79,7 @@ class Project {
   final int retentionDays, quotaItemsPerMinute;
   final String storeIp, scrubRulesJson;
   final int sessions24h, errors24h, openIssues;
+  final int? orgId;
   bool get isOwner => role == 'owner';
   factory Project.fromJson(Map<String, Object?> j) => Project(
     id: _i(j['id']),
@@ -93,6 +95,119 @@ class Project {
     sessions24h: _i(j['sessions_24h']),
     errors24h: _i(j['errors_24h']),
     openIssues: _i(j['open_issues']),
+    orgId: j['org_id'] != null ? _i(j['org_id']) : null,
+  );
+}
+
+class Org {
+  const Org({
+    required this.id,
+    required this.name,
+    required this.slug,
+    this.role = '',
+    this.createdAt,
+  });
+  final int id;
+  final String name, slug, role;
+  final DateTime? createdAt;
+
+  bool get isOwner => role == 'owner';
+  bool get isAdmin => role == 'admin' || role == 'owner';
+
+  factory Org.fromJson(Map<String, Object?> j) => Org(
+    id: _i(j['id']),
+    name: _s(j['name']),
+    slug: _s(j['slug']),
+    role: _s(j['role']),
+    createdAt: _t(j['created_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'name': name,
+    'slug': slug,
+    'role': role,
+    if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+  };
+}
+
+class OrgMember {
+  const OrgMember({
+    required this.userId,
+    required this.email,
+    required this.name,
+    required this.role,
+  });
+  final int userId;
+  final String email, name, role;
+
+  factory OrgMember.fromJson(Map<String, Object?> j) => OrgMember(
+    userId: _i(j['user_id']),
+    email: _s(j['email']),
+    name: _s(j['name']),
+    role: _s(j['role']),
+  );
+}
+
+class AuditLogEntry {
+  const AuditLogEntry({
+    required this.id,
+    required this.orgId,
+    this.projectId,
+    this.userId,
+    required this.action,
+    required this.targetType,
+    required this.targetId,
+    this.meta = const {},
+    this.ip = '',
+    this.createdAt,
+  });
+  final int id, orgId;
+  final int? projectId, userId;
+  final String action, targetType, targetId, ip;
+  final Map<String, Object?> meta;
+  final DateTime? createdAt;
+
+  factory AuditLogEntry.fromJson(Map<String, Object?> j) => AuditLogEntry(
+    id: _i(j['id']),
+    orgId: _i(j['org_id']),
+    projectId: j['project_id'] != null ? _i(j['project_id']) : null,
+    userId: j['user_id'] != null ? _i(j['user_id']) : null,
+    action: _s(j['action']),
+    targetType: _s(j['target_type']),
+    targetId: _s(j['target_id']),
+    meta: _m(j['meta']),
+    ip: _s(j['ip']),
+    createdAt: _t(j['created_at']),
+  );
+}
+
+class ApiToken {
+  const ApiToken({
+    required this.id,
+    required this.orgId,
+    required this.name,
+    this.scopes = const [],
+    this.createdBy = 0,
+    this.createdAt,
+    this.expiresAt,
+    this.secret,
+  });
+  final int id, orgId, createdBy;
+  final String name;
+  final List<String> scopes;
+  final DateTime? createdAt, expiresAt;
+  final String? secret;
+
+  factory ApiToken.fromJson(Map<String, Object?> j) => ApiToken(
+    id: _i(j['id']),
+    orgId: _i(j['org_id']),
+    name: _s(j['name']),
+    scopes: (j['scopes'] as List?)?.map((e) => '$e').toList() ?? const [],
+    createdBy: _i(j['created_by']),
+    createdAt: _t(j['created_at']),
+    expiresAt: _t(j['expires_at']),
+    secret: j['secret'] != null ? _s(j['secret']) : null,
   );
 }
 

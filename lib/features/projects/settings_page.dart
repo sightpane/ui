@@ -26,6 +26,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   final _memberEmail = TextEditingController();
   final _retention = TextEditingController();
   final _quota = TextEditingController();
+  String _memberRole = 'member';
   bool _busy = false;
   String? _loadedFor;
 
@@ -270,10 +271,17 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                       Pill(
                                         m.role == 'owner'
                                             ? context.l10n.commonOwner
-                                            : context.l10n.commonMember,
-                                        color: m.role == 'owner'
-                                            ? Tokens.accent
-                                            : Tokens.textMuted,
+                                            : m.role == 'admin'
+                                                ? 'Admin'
+                                                : m.role == 'viewer'
+                                                    ? 'Viewer'
+                                                    : context.l10n.commonMember,
+                                        color: switch (m.role) {
+                                          'owner' => Tokens.accent,
+                                          'admin' => Tokens.warning,
+                                          'viewer' => Tokens.border,
+                                          _ => Tokens.textMuted,
+                                        },
                                       ),
                                       if (owner && m.userId != me?.id) ...[
                                         const Gap(6),
@@ -322,6 +330,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 ),
                               ),
                               const Gap(8),
+                              for (final r in const ['viewer', 'member', 'admin', 'owner']) ...[
+                                _memberRole == r
+                                    ? SecondaryButton(
+                                        size: ButtonSize.small,
+                                        onPressed: () {},
+                                        child: Text(r[0].toUpperCase() + r.substring(1)),
+                                      )
+                                    : GhostButton(
+                                        size: ButtonSize.small,
+                                        onPressed: () => setState(() => _memberRole = r),
+                                        child: Text(r[0].toUpperCase() + r.substring(1)),
+                                      ),
+                                const Gap(4),
+                              ],
+                              const Gap(4),
                               OutlineButton(
                                 size: ButtonSize.small,
                                 leading: const Icon(
@@ -335,6 +358,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                           await api.addMember(
                                             pid,
                                             _memberEmail.text.trim(),
+                                            role: _memberRole,
                                           );
                                           _memberEmail.clear();
                                           ref.invalidate(membersProvider(pid));
@@ -369,6 +393,19 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     busy: _busy,
                     onRun: _run,
                   ),
+                  if (p.orgId != null) ...[
+                    const Gap(12),
+                    _ApiTokensPanel(
+                      orgId: p.orgId!,
+                      busy: _busy,
+                      onRun: _run,
+                    ),
+                    const Gap(12),
+                    _AuditLogPanel(
+                      orgId: p.orgId!,
+                      projectId: pid,
+                    ),
+                  ],
                   const Gap(12),
                   PanelCard(
                     title: context.l10n.settingsDangerZone,
@@ -1299,6 +1336,407 @@ class _PrivacyPanelState extends State<_PrivacyPanel> {
           ),
         );
       },
+    );
+  }
+}
+
+class _ApiTokensPanel extends ConsumerWidget {
+  const _ApiTokensPanel({
+    required this.orgId,
+    required this.busy,
+    required this.onRun,
+  });
+  final int orgId;
+  final bool busy;
+  final Future<void> Function(Future<void> Function() f, {String? done}) onRun;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tokens = ref.watch(apiTokensProvider(orgId));
+    final api = ref.read(apiProvider);
+    return PanelCard(
+      title: 'Scoped API Tokens',
+      subtitle: 'API tokens for CI/CD, sourcemap uploads, and external ingest',
+      action: OutlineButton(
+        size: ButtonSize.small,
+        leading: const Icon(LucideIcons.plus, size: 14),
+        onPressed: busy
+            ? null
+            : () => showAppDialog(
+                  context,
+                  _CreateApiTokenDialog(orgId: orgId),
+                ),
+        child: const Text('Generate Token'),
+      ),
+      child: tokens.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (e, _) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            'Failed to load API tokens: $e',
+            style: const TextStyle(color: Tokens.danger, fontSize: 12),
+          ),
+        ),
+        data: (list) => list.isEmpty
+            ? const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'No API tokens yet. Generate one for automated uploads and pipelines.',
+                  style: TextStyle(color: Tokens.textMuted, fontSize: 12),
+                ),
+              )
+            : Column(
+                children: [
+                  for (var i = 0; i < list.length; i++) ...[
+                    if (i > 0) const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            LucideIcons.key,
+                            size: 16,
+                            color: Tokens.accent,
+                          ),
+                          const Gap(10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  list[i].name,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: Tokens.text,
+                                  ),
+                                ),
+                                const Gap(4),
+                                Wrap(
+                                  spacing: 4,
+                                  children: [
+                                    for (final s in list[i].scopes)
+                                      Pill(s, color: Tokens.accent),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (list[i].createdAt != null) ...[
+                            Text(
+                              context.fmt.dateTime(list[i].createdAt!),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Tokens.textMuted,
+                              ),
+                            ),
+                            const Gap(10),
+                          ],
+                          IconButton.ghost(
+                            size: ButtonSize.small,
+                            icon: const Icon(LucideIcons.trash2, size: 14),
+                            onPressed: busy
+                                ? null
+                                : () => onRun(
+                                      () async {
+                                        await api.deleteApiToken(
+                                          orgId,
+                                          list[i].id,
+                                        );
+                                        ref.invalidate(
+                                          apiTokensProvider(orgId),
+                                        );
+                                      },
+                                      done: 'API token deleted',
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+      ),
+    );
+  }
+}
+
+class _CreateApiTokenDialog extends ConsumerStatefulWidget {
+  const _CreateApiTokenDialog({required this.orgId});
+  final int orgId;
+
+  @override
+  ConsumerState<_CreateApiTokenDialog> createState() =>
+      _CreateApiTokenDialogState();
+}
+
+class _CreateApiTokenDialogState extends ConsumerState<_CreateApiTokenDialog> {
+  final _name = TextEditingController();
+  final _scopes = <String>{'sourcemaps:write'};
+  bool _busy = false;
+  String? _error;
+  String? _createdSecret;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final name = _name.text.trim();
+    if (name.isEmpty) {
+      setState(() => _error = 'Token name is required');
+      return;
+    }
+    if (_scopes.isEmpty) {
+      setState(() => _error = 'Select at least one scope');
+      return;
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final res = await ref.read(apiProvider).createApiToken(
+            widget.orgId,
+            name: name,
+            scopes: _scopes.toList(),
+          );
+      ref.invalidate(apiTokensProvider(widget.orgId));
+      if (mounted) {
+        setState(() {
+          _createdSecret = res.secret ?? 'Token created';
+          _busy = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _error = describeError(context.l10n, e));
+    } finally {
+      if (mounted && _createdSecret == null) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_createdSecret != null) {
+      return AlertDialog(
+        title: const Text('API Token Generated'),
+        content: SizedBox(
+          width: 440,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Make sure to copy your API token now. You will not be able to see it again!',
+                style: TextStyle(fontSize: 12.5, color: Tokens.warning),
+              ),
+              const Gap(12),
+              SelectableText(
+                _createdSecret!,
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Tokens.accent,
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          PrimaryButton(
+            size: ButtonSize.small,
+            onPressed: () => closeOverlay(context),
+            child: const Text('Done'),
+          ),
+        ],
+      );
+    }
+
+    return AlertDialog(
+      title: const Text('Generate API Token'),
+      content: SizedBox(
+        width: 440,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const FieldLabel('Token Name'),
+            TextField(
+              controller: _name,
+              enabled: !_busy,
+              autofocus: true,
+              placeholder: const Text('e.g. GitHub Actions Sourcemaps'),
+            ),
+            const Gap(14),
+            const FieldLabel('Scopes'),
+            Wrap(
+              spacing: 6,
+              children: [
+                for (final s in const [
+                  'sourcemaps:write',
+                  'read',
+                  'admin',
+                  'ingest',
+                ]) ...[
+                  _scopes.contains(s)
+                      ? SecondaryButton(
+                          size: ButtonSize.small,
+                          onPressed: () {
+                            setState(() => _scopes.remove(s));
+                          },
+                          child: Text(s),
+                        )
+                      : GhostButton(
+                          size: ButtonSize.small,
+                          onPressed: () {
+                            setState(() => _scopes.add(s));
+                          },
+                          child: Text(s),
+                        ),
+                ],
+              ],
+            ),
+            if (_error != null) ...[
+              const Gap(10),
+              Text(
+                _error!,
+                style: const TextStyle(color: Tokens.danger, fontSize: 12),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        GhostButton(
+          size: ButtonSize.small,
+          onPressed: _busy ? null : () => closeOverlay(context),
+          child: Text(context.l10n.commonCancel),
+        ),
+        PrimaryButton(
+          size: ButtonSize.small,
+          onPressed: _busy ? null : _submit,
+          child: const Text('Generate'),
+        ),
+      ],
+    );
+  }
+}
+
+class _AuditLogPanel extends ConsumerWidget {
+  const _AuditLogPanel({
+    required this.orgId,
+    required this.projectId,
+  });
+  final int orgId;
+  final int projectId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final audit = ref.watch(
+      auditLogsProvider((orgId: orgId, projectId: projectId)),
+    );
+    return PanelCard(
+      title: 'Audit Log',
+      subtitle: 'Security, key rotation, and administrative event history',
+      child: audit.when(
+        loading: () => const Padding(
+          padding: EdgeInsets.all(16),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        error: (e, _) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Text(
+            'Failed to load audit logs: $e',
+            style: const TextStyle(color: Tokens.danger, fontSize: 12),
+          ),
+        ),
+        data: (list) => list.isEmpty
+            ? const Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'No audit log events recorded yet.',
+                  style: TextStyle(color: Tokens.textMuted, fontSize: 12),
+                ),
+              )
+            : Column(
+                children: [
+                  for (var i = 0; i < list.length; i++) ...[
+                    if (i > 0) const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            list[i].action.contains('delete')
+                                ? LucideIcons.trash2
+                                : list[i].action.contains('rotate')
+                                    ? LucideIcons.refreshCw
+                                    : LucideIcons.shield,
+                            size: 16,
+                            color: Tokens.accent,
+                          ),
+                          const Gap(10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Pill(
+                                      list[i].action,
+                                      color: Tokens.accent,
+                                    ),
+                                    const Gap(8),
+                                    Text(
+                                      '${list[i].targetType}:${list[i].targetId}',
+                                      style: const TextStyle(
+                                        fontSize: 12.5,
+                                        fontWeight: FontWeight.w600,
+                                        color: Tokens.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                if (list[i].ip.isNotEmpty) ...[
+                                  const Gap(4),
+                                  Text(
+                                    'IP: ${list[i].ip}',
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Tokens.textMuted,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          if (list[i].createdAt != null)
+                            Text(
+                              context.fmt.dateTime(list[i].createdAt!),
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: Tokens.textMuted,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+      ),
     );
   }
 }
