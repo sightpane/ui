@@ -30,6 +30,12 @@ final sessionDetailProvider = FutureProvider.autoDispose
       (ref, id) => ref.watch(apiProvider).session(id),
     );
 
+typedef UsersKey = ({int project, int days, String query});
+final usersProvider = FutureProvider.autoDispose
+    .family<ProjectUsersData, UsersKey>(
+      (ref, k) => ref.watch(apiProvider).users(k.project, days: k.days, query: k.query),
+    );
+
 typedef IssuesKey = ({int project, bool includeResolved, String query});
 final issuesProvider = FutureProvider.autoDispose
     .family<List<Issue>, IssuesKey>(

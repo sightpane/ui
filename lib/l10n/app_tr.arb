@@ -108,6 +108,7 @@
   "navOverview": "Genel bakış",
   "navIssues": "Hatalar",
   "navSessions": "Oturumlar",
+  "navUsers": "Kullanıcılar",
   "navReleases": "Sürümler",
   "navEvents": "Olaylar",
   "navSettings": "Ayarlar",
@@ -698,5 +699,40 @@
   "performanceViewReplay": "Kaydı Aç",
   "performanceDays7": "Son 7 Gün",
   "performanceDays14": "Son 14 Gün",
-  "performanceDays30": "Son 30 Gün"
+  "performanceDays30": "Son 30 Gün",
+  "usersTitle": "Kullanıcılar",
+  "usersSubtitle": "{count} kullanıcı",
+  "@usersSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usersSearchPlaceholder": "Kullanıcı veya e-posta ara...",
+  "usersLoadFailed": "Kullanıcılar alınamadı: {error}",
+  "@usersLoadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "usersEmpty": "Kullanıcı bulunamadı.",
+  "kpiTotalUsers": "Toplam Kullanıcı",
+  "kpiActiveUsers": "Aktif Kullanıcı (Dönem)",
+  "kpiAvgDuration": "Ortalama Süre",
+  "kpiSessionsPerUser": "Kullanıcı Başı Oturum",
+  "chartActiveUsers": "Günlük Aktif Kullanıcılar (DAU)",
+  "chartActiveUsersSub": "mavi aktif kullanıcılar · kırmızı hatalı kullanıcılar",
+  "colAvgDuration": "Ort. Süre",
+  "colFirstSeen": "İlk Görülme",
+  "colLastSeen": "Son Görülme",
+  "userDetailTitle": "Kullanıcı Detayları",
+  "actionViewSessions": "Oturumları Gör",
+  "actionExportData": "Veriyi İndir (JSON)",
+  "actionDeleteData": "Kullanıcı Verisini Sil",
+  "userDeleteConfirm": "Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?",
+  "userDeleteSuccess": "Kullanıcı verisi başarıyla silindi.",
+  "userCustomProps": "Özel Nitelikler"
 }

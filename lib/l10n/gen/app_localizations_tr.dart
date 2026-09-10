@@ -166,6 +166,9 @@ class LTr extends L {
   String get navSessions => 'Oturumlar';
 
   @override
+  String get navUsers => 'Kullanıcılar';
+
+  @override
   String get navReleases => 'Sürümler';
 
   @override
@@ -1077,4 +1080,73 @@ class LTr extends L {
 
   @override
   String get performanceDays30 => 'Son 30 Gün';
+
+  @override
+  String get usersTitle => 'Kullanıcılar';
+
+  @override
+  String usersSubtitle(int count) {
+    return '$count kullanıcı';
+  }
+
+  @override
+  String get usersSearchPlaceholder => 'Kullanıcı veya e-posta ara...';
+
+  @override
+  String usersLoadFailed(String error) {
+    return 'Kullanıcılar alınamadı: $error';
+  }
+
+  @override
+  String get usersEmpty => 'Kullanıcı bulunamadı.';
+
+  @override
+  String get kpiTotalUsers => 'Toplam Kullanıcı';
+
+  @override
+  String get kpiActiveUsers => 'Aktif Kullanıcı (Dönem)';
+
+  @override
+  String get kpiAvgDuration => 'Ortalama Süre';
+
+  @override
+  String get kpiSessionsPerUser => 'Kullanıcı Başı Oturum';
+
+  @override
+  String get chartActiveUsers => 'Günlük Aktif Kullanıcılar (DAU)';
+
+  @override
+  String get chartActiveUsersSub =>
+      'mavi aktif kullanıcılar · kırmızı hatalı kullanıcılar';
+
+  @override
+  String get colAvgDuration => 'Ort. Süre';
+
+  @override
+  String get colFirstSeen => 'İlk Görülme';
+
+  @override
+  String get colLastSeen => 'Son Görülme';
+
+  @override
+  String get userDetailTitle => 'Kullanıcı Detayları';
+
+  @override
+  String get actionViewSessions => 'Oturumları Gör';
+
+  @override
+  String get actionExportData => 'Veriyi İndir (JSON)';
+
+  @override
+  String get actionDeleteData => 'Kullanıcı Verisini Sil';
+
+  @override
+  String get userDeleteConfirm =>
+      'Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?';
+
+  @override
+  String get userDeleteSuccess => 'Kullanıcı verisi başarıyla silindi.';
+
+  @override
+  String get userCustomProps => 'Özel Nitelikler';
 }

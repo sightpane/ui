@@ -85,7 +85,8 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                   GhostButton(
                     size: ButtonSize.small,
                     leading: const Icon(LucideIcons.chevronLeft, size: 14),
-                    onPressed: () => context.go('/projects/${widget.projectId}/issues'),
+                    onPressed: () =>
+                        context.go('/projects/${widget.projectId}/issues'),
                     child: Text(context.l10n.issuesTitle),
                   ),
                   if (!isOpen)
@@ -93,8 +94,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       size: ButtonSize.small,
                       leading: const Icon(LucideIcons.rotateCcw, size: 14),
                       onPressed: () async {
-                        await ref.read(apiProvider).setIssueStatus(widget.issueId, 'open');
-                        await ref.read(apiProvider).resolveIssue(widget.issueId, undo: true);
+                        await ref
+                            .read(apiProvider)
+                            .setIssueStatus(widget.issueId, 'open');
+                        await ref
+                            .read(apiProvider)
+                            .resolveIssue(widget.issueId, undo: true);
                         ref.invalidate(issueDetailProvider(widget.issueId));
                       },
                       child: Text(context.l10n.issueReopen),
@@ -104,7 +109,9 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       size: ButtonSize.small,
                       leading: const Icon(LucideIcons.eyeOff, size: 14),
                       onPressed: () async {
-                        await ref.read(apiProvider).setIssueStatus(widget.issueId, 'ignored');
+                        await ref
+                            .read(apiProvider)
+                            .setIssueStatus(widget.issueId, 'ignored');
                         ref.invalidate(issueDetailProvider(widget.issueId));
                         if (context.mounted) {
                           toast(context, context.l10n.issueIgnoredToast);
@@ -119,17 +126,28 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                         showAppDialog(
                           context,
                           _SnoozeDialog(
-                            onSnooze: ({DateTime? until, int countThreshold = 0}) async {
-                              await ref.read(apiProvider).snoozeIssue(
-                                widget.issueId,
-                                until: until,
-                                countThreshold: countThreshold,
-                              );
-                              ref.invalidate(issueDetailProvider(widget.issueId));
-                              if (context.mounted) {
-                                toast(context, context.l10n.issueSnoozedToast);
-                              }
-                            },
+                            onSnooze:
+                                ({
+                                  DateTime? until,
+                                  int countThreshold = 0,
+                                }) async {
+                                  await ref
+                                      .read(apiProvider)
+                                      .snoozeIssue(
+                                        widget.issueId,
+                                        until: until,
+                                        countThreshold: countThreshold,
+                                      );
+                                  ref.invalidate(
+                                    issueDetailProvider(widget.issueId),
+                                  );
+                                  if (context.mounted) {
+                                    toast(
+                                      context,
+                                      context.l10n.issueSnoozedToast,
+                                    );
+                                  }
+                                },
                           ),
                         );
                       },
@@ -139,8 +157,12 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       size: ButtonSize.small,
                       leading: const Icon(LucideIcons.check, size: 14),
                       onPressed: () async {
-                        await ref.read(apiProvider).setIssueStatus(widget.issueId, 'resolved');
-                        await ref.read(apiProvider).resolveIssue(widget.issueId);
+                        await ref
+                            .read(apiProvider)
+                            .setIssueStatus(widget.issueId, 'resolved');
+                        await ref
+                            .read(apiProvider)
+                            .resolveIssue(widget.issueId);
                         ref.invalidate(issueDetailProvider(widget.issueId));
                         if (context.mounted) {
                           toast(
@@ -158,7 +180,10 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
               const Gap(12),
               // Status & Assignee Bar
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: Tokens.panel,
                   borderRadius: BorderRadius.circular(Tokens.radius),
@@ -168,45 +193,54 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                   children: [
                     Text(
                       '${context.l10n.issueStatus}: ',
-                      style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Tokens.textDim,
+                      ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: i.status == 'resolved' || i.resolved
                             ? Tokens.ok.withValues(alpha: 0.15)
                             : i.status == 'snoozed'
-                                ? Tokens.brand.withValues(alpha: 0.15)
-                                : i.status == 'ignored'
-                                    ? Tokens.textMuted.withValues(alpha: 0.15)
-                                    : Tokens.info.withValues(alpha: 0.15),
+                            ? Tokens.brand.withValues(alpha: 0.15)
+                            : i.status == 'ignored'
+                            ? Tokens.textMuted.withValues(alpha: 0.15)
+                            : Tokens.info.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Text(
                         i.status == 'resolved' || i.resolved
                             ? context.l10n.issueStatusResolved
                             : i.status == 'snoozed'
-                                ? context.l10n.issueStatusSnoozed
-                                : i.status == 'ignored'
-                                    ? context.l10n.issueStatusIgnored
-                                    : context.l10n.issueStatusOpen,
+                            ? context.l10n.issueStatusSnoozed
+                            : i.status == 'ignored'
+                            ? context.l10n.issueStatusIgnored
+                            : context.l10n.issueStatusOpen,
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           color: i.status == 'resolved' || i.resolved
                               ? Tokens.ok
                               : i.status == 'snoozed'
-                                  ? Tokens.brand
-                                  : i.status == 'ignored'
-                                      ? Tokens.textMuted
-                                      : Tokens.info,
+                              ? Tokens.brand
+                              : i.status == 'ignored'
+                              ? Tokens.textMuted
+                              : Tokens.info,
                         ),
                       ),
                     ),
                     const Gap(24),
                     Text(
                       '${context.l10n.issueAssignee}: ',
-                      style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Tokens.textDim,
+                      ),
                     ),
                     OutlineButton(
                       size: ButtonSize.small,
@@ -218,48 +252,81 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                             projectId: widget.projectId,
                             currentUserId: i.assigneeUserId,
                             onAssign: (userId) async {
-                              await ref.read(apiProvider).assignIssue(widget.issueId, userId);
-                              ref.invalidate(issueDetailProvider(widget.issueId));
+                              await ref
+                                  .read(apiProvider)
+                                  .assignIssue(widget.issueId, userId);
+                              ref.invalidate(
+                                issueDetailProvider(widget.issueId),
+                              );
                             },
                           ),
                         );
                       },
-                      child: Text(i.assigneeEmail ?? context.l10n.issueUnassigned),
+                      child: Text(
+                        i.assigneeEmail ?? context.l10n.issueUnassigned,
+                      ),
                     ),
-                    if (i.firstRelease.isNotEmpty || i.lastRelease.isNotEmpty || i.resolvedInRelease.isNotEmpty) ...[
+                    if (i.firstRelease.isNotEmpty ||
+                        i.lastRelease.isNotEmpty ||
+                        i.resolvedInRelease.isNotEmpty) ...[
                       const Gap(24),
-                      const Icon(LucideIcons.tag, size: 13, color: Tokens.textDim),
+                      const Icon(
+                        LucideIcons.tag,
+                        size: 13,
+                        color: Tokens.textDim,
+                      ),
                       const Gap(6),
                       if (i.firstRelease.isNotEmpty) ...[
                         Text(
                           '${context.l10n.issueReleaseFirst}: ',
-                          style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Tokens.textDim,
+                          ),
                         ),
                         Text(
                           i.firstRelease,
-                          style: AppTheme.mono(size: 12, weight: FontWeight.w600, color: Tokens.text),
+                          style: AppTheme.mono(
+                            size: 12,
+                            weight: FontWeight.w600,
+                            color: Tokens.text,
+                          ),
                         ),
                         const Gap(12),
                       ],
                       if (i.lastRelease.isNotEmpty) ...[
                         Text(
                           '${context.l10n.issueReleaseLast}: ',
-                          style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Tokens.textDim,
+                          ),
                         ),
                         Text(
                           i.lastRelease,
-                          style: AppTheme.mono(size: 12, weight: FontWeight.w600, color: Tokens.text),
+                          style: AppTheme.mono(
+                            size: 12,
+                            weight: FontWeight.w600,
+                            color: Tokens.text,
+                          ),
                         ),
                         const Gap(12),
                       ],
                       if (i.resolvedInRelease.isNotEmpty) ...[
                         Text(
                           '${context.l10n.issueReleaseResolvedIn}: ',
-                          style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Tokens.textDim,
+                          ),
                         ),
                         Text(
                           i.resolvedInRelease,
-                          style: AppTheme.mono(size: 12, weight: FontWeight.w600, color: Tokens.ok),
+                          style: AppTheme.mono(
+                            size: 12,
+                            weight: FontWeight.w600,
+                            color: Tokens.ok,
+                          ),
                         ),
                       ],
                     ],
@@ -282,7 +349,9 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
               const Gap(12),
               PanelCard(
                 title: context.l10n.issueOccurrences,
-                subtitle: context.l10n.issueOccurrencesNote(d.occurrences.length),
+                subtitle: context.l10n.issueOccurrencesNote(
+                  d.occurrences.length,
+                ),
                 child: DataTable<TimelineItem>(
                   columns: [
                     (context.l10n.colTime, 2, false),
@@ -331,10 +400,14 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       comments.when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
                         error: (e, _) => Text(
                           describeError(context.l10n, e),
-                          style: const TextStyle(color: Tokens.danger, fontSize: 12),
+                          style: const TextStyle(
+                            color: Tokens.danger,
+                            fontSize: 12,
+                          ),
                         ),
                         data: (list) {
                           if (list.isEmpty) {
@@ -342,7 +415,10 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: Text(
                                 context.l10n.issueCommentsEmpty,
-                                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Tokens.textMuted,
+                                ),
                               ),
                             );
                           }
@@ -358,12 +434,15 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                     border: Border.all(color: Tokens.border),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Text(
-                                            c.userName ?? c.userEmail ?? 'User #${c.userId}',
+                                            c.userName.isNotEmpty
+                                                ? c.userName
+                                                : 'User #${c.userId}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w600,
                                               fontSize: 12,
@@ -383,7 +462,10 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                       const Gap(6),
                                       Text(
                                         c.body,
-                                        style: const TextStyle(fontSize: 13, color: Tokens.text),
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Tokens.text,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -411,10 +493,14 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                                 ? const SizedBox(
                                     width: 12,
                                     height: 12,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   )
                                 : const Icon(LucideIcons.send, size: 14),
-                            onPressed: _submittingComment ? null : _submitComment,
+                            onPressed: _submittingComment
+                                ? null
+                                : _submitComment,
                             child: Text(context.l10n.issueCommentSend),
                           ),
                         ],
@@ -455,7 +541,9 @@ class _SnoozeDialog extends StatelessWidget {
                   size: ButtonSize.small,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onSnooze(until: DateTime.now().add(const Duration(hours: 1)));
+                    onSnooze(
+                      until: DateTime.now().add(const Duration(hours: 1)),
+                    );
                   },
                   child: Text(context.l10n.issueSnooze1Hour),
                 ),
@@ -463,7 +551,9 @@ class _SnoozeDialog extends StatelessWidget {
                   size: ButtonSize.small,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onSnooze(until: DateTime.now().add(const Duration(hours: 24)));
+                    onSnooze(
+                      until: DateTime.now().add(const Duration(hours: 24)),
+                    );
                   },
                   child: Text(context.l10n.issueSnooze24Hours),
                 ),
@@ -471,7 +561,9 @@ class _SnoozeDialog extends StatelessWidget {
                   size: ButtonSize.small,
                   onPressed: () {
                     Navigator.of(context).pop();
-                    onSnooze(until: DateTime.now().add(const Duration(days: 7)));
+                    onSnooze(
+                      until: DateTime.now().add(const Duration(days: 7)),
+                    );
                   },
                   child: Text(context.l10n.issueSnooze7Days),
                 ),
@@ -558,7 +650,9 @@ class _AssignDialog extends ConsumerWidget {
                     child: Text(
                       context.l10n.issueUnassigned,
                       style: TextStyle(
-                        fontWeight: currentUserId == null ? FontWeight.bold : FontWeight.normal,
+                        fontWeight: currentUserId == null
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                       ),
                     ),
                   ),
@@ -578,7 +672,9 @@ class _AssignDialog extends ConsumerWidget {
                             child: Text(
                               '${m.name} (${m.email})',
                               style: TextStyle(
-                                fontWeight: currentUserId == m.userId ? FontWeight.bold : FontWeight.normal,
+                                fontWeight: currentUserId == m.userId
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),

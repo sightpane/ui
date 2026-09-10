@@ -73,6 +73,11 @@ abstract class SightpaneApi {
     String query = '',
     int limit = 100,
   });
+  Future<ProjectUsersData> users(
+    int projectId, {
+    int days = 14,
+    String query = '',
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -412,6 +417,26 @@ class HttpSightpaneApi implements SightpaneApi {
     ))
       Session.fromJson(s),
   ];
+
+  @override
+  Future<ProjectUsersData> users(
+    int projectId, {
+    int days = 14,
+    String query = '',
+  }) async =>
+      ProjectUsersData.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/users',
+            query: {
+              'days': '$days',
+              if (query.isNotEmpty) 'q': query,
+            },
+          ),
+        ),
+      );
+
   @override
   Future<SessionDetail> session(String id) async =>
       SessionDetail.fromJson(_map(await _send('GET', '/api/v1/sessions/$id')));

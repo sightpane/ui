@@ -1117,4 +1117,139 @@ class TransactionDetailResponse {
       );
 }
 
+class UserSummary {
+  const UserSummary({
+    required this.userId,
+    this.email,
+    this.name,
+    this.user = const {},
+    required this.sessionCount,
+    required this.totalDurationSec,
+    required this.avgDurationSec,
+    required this.errorCount,
+    required this.errorSessionCount,
+    required this.firstSeen,
+    required this.lastSeen,
+    this.lastPlatform = '',
+    this.lastBrowser = '',
+    this.lastIP = '',
+  });
+
+  final String userId;
+  final String? email;
+  final String? name;
+  final Map<String, Object?> user;
+  final int sessionCount;
+  final double totalDurationSec;
+  final double avgDurationSec;
+  final int errorCount;
+  final int errorSessionCount;
+  final DateTime firstSeen;
+  final DateTime lastSeen;
+  final String lastPlatform;
+  final String lastBrowser;
+  final String lastIP;
+
+  String get displayName =>
+      (name != null && name!.trim().isNotEmpty)
+          ? name!
+          : (email != null && email!.trim().isNotEmpty)
+              ? email!
+              : userId;
+
+  String get initials {
+    final d = displayName.trim();
+    if (d.isEmpty) return '?';
+    final parts = d.split(RegExp(r'\s+'));
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
+  }
+
+  Duration get avgDuration => Duration(seconds: avgDurationSec.round());
+  Duration get totalDuration => Duration(seconds: totalDurationSec.round());
+
+  double get crashFreeRate => sessionCount > 0
+      ? ((sessionCount - errorSessionCount) / sessionCount * 100)
+      : 100.0;
+
+  factory UserSummary.fromJson(Map<String, Object?> j) => UserSummary(
+    userId: _s(j['user_id']),
+    email: j['email'] is String ? j['email'] as String : null,
+    name: j['name'] is String ? j['name'] as String : null,
+    user: _m(j['user_json']),
+    sessionCount: _i(j['session_count']),
+    totalDurationSec: _d(j['total_duration_sec']),
+    avgDurationSec: _d(j['avg_duration_sec']),
+    errorCount: _i(j['error_count']),
+    errorSessionCount: _i(j['error_session_count']),
+    firstSeen: _t(j['first_seen']) ?? DateTime.now(),
+    lastSeen: _t(j['last_seen']) ?? DateTime.now(),
+    lastPlatform: _s(j['last_platform']),
+    lastBrowser: _s(j['last_browser']),
+    lastIP: _s(j['last_ip']),
+  );
+}
+
+class UserDailyStat {
+  const UserDailyStat({
+    required this.day,
+    required this.activeUsers,
+    required this.errorUsers,
+    required this.avgDurationSec,
+  });
+
+  final String day;
+  final int activeUsers;
+  final int errorUsers;
+  final double avgDurationSec;
+
+  factory UserDailyStat.fromJson(Map<String, Object?> j) => UserDailyStat(
+    day: _s(j['day']),
+    activeUsers: _i(j['active_users']),
+    errorUsers: _i(j['error_users']),
+    avgDurationSec: _d(j['avg_duration_sec']),
+  );
+}
+
+class ProjectUsersData {
+  const ProjectUsersData({
+    required this.totalUsers,
+    required this.activeUsers,
+    required this.avgDurationSec,
+    required this.sessionsPerUser,
+    required this.errorUserCount,
+    this.daily = const [],
+    this.users = const [],
+  });
+
+  final int totalUsers;
+  final int activeUsers;
+  final double avgDurationSec;
+  final double sessionsPerUser;
+  final int errorUserCount;
+  final List<UserDailyStat> daily;
+  final List<UserSummary> users;
+
+  Duration get avgDuration => Duration(seconds: avgDurationSec.round());
+
+  factory ProjectUsersData.fromJson(Map<String, Object?> j) => ProjectUsersData(
+    totalUsers: _i(j['total_users']),
+    activeUsers: _i(j['active_users']),
+    avgDurationSec: _d(j['avg_duration_sec']),
+    sessionsPerUser: _d(j['sessions_per_user']),
+    errorUserCount: _i(j['error_user_count']),
+    daily: [
+      for (final d in (j['daily'] as List? ?? const []))
+        UserDailyStat.fromJson(_m(d)),
+    ],
+    users: [
+      for (final u in (j['users'] as List? ?? const []))
+        UserSummary.fromJson(_m(u)),
+    ],
+  );
+}
+
+
 

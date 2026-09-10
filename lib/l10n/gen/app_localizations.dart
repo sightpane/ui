@@ -379,6 +379,12 @@ abstract class L {
   /// **'Oturumlar'**
   String get navSessions;
 
+  /// No description provided for @navUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcılar'**
+  String get navUsers;
+
   /// No description provided for @navReleases.
   ///
   /// In tr, this message translates to:
@@ -2004,6 +2010,132 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Son 30 Gün'**
   String get performanceDays30;
+
+  /// No description provided for @usersTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcılar'**
+  String get usersTitle;
+
+  /// No description provided for @usersSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} kullanıcı'**
+  String usersSubtitle(int count);
+
+  /// No description provided for @usersSearchPlaceholder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı veya e-posta ara...'**
+  String get usersSearchPlaceholder;
+
+  /// No description provided for @usersLoadFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcılar alınamadı: {error}'**
+  String usersLoadFailed(String error);
+
+  /// No description provided for @usersEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı bulunamadı.'**
+  String get usersEmpty;
+
+  /// No description provided for @kpiTotalUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Kullanıcı'**
+  String get kpiTotalUsers;
+
+  /// No description provided for @kpiActiveUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif Kullanıcı (Dönem)'**
+  String get kpiActiveUsers;
+
+  /// No description provided for @kpiAvgDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ortalama Süre'**
+  String get kpiAvgDuration;
+
+  /// No description provided for @kpiSessionsPerUser.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Başı Oturum'**
+  String get kpiSessionsPerUser;
+
+  /// No description provided for @chartActiveUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük Aktif Kullanıcılar (DAU)'**
+  String get chartActiveUsers;
+
+  /// No description provided for @chartActiveUsersSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'mavi aktif kullanıcılar · kırmızı hatalı kullanıcılar'**
+  String get chartActiveUsersSub;
+
+  /// No description provided for @colAvgDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ort. Süre'**
+  String get colAvgDuration;
+
+  /// No description provided for @colFirstSeen.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlk Görülme'**
+  String get colFirstSeen;
+
+  /// No description provided for @colLastSeen.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Görülme'**
+  String get colLastSeen;
+
+  /// No description provided for @userDetailTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Detayları'**
+  String get userDetailTitle;
+
+  /// No description provided for @actionViewSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oturumları Gör'**
+  String get actionViewSessions;
+
+  /// No description provided for @actionExportData.
+  ///
+  /// In tr, this message translates to:
+  /// **'Veriyi İndir (JSON)'**
+  String get actionExportData;
+
+  /// No description provided for @actionDeleteData.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Verisini Sil'**
+  String get actionDeleteData;
+
+  /// No description provided for @userDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?'**
+  String get userDeleteConfirm;
+
+  /// No description provided for @userDeleteSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı verisi başarıyla silindi.'**
+  String get userDeleteSuccess;
+
+  /// No description provided for @userCustomProps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Nitelikler'**
+  String get userCustomProps;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

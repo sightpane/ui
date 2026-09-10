@@ -541,6 +541,62 @@ class FakeApi implements SightpaneApi {
         : sessionList;
   }
 
+  var usersValue = ProjectUsersData(
+    totalUsers: 2,
+    activeUsers: 2,
+    avgDurationSec: 150.0,
+    sessionsPerUser: 1.5,
+    errorUserCount: 1,
+    daily: [
+      const UserDailyStat(
+        day: '2026-09-07',
+        activeUsers: 2,
+        errorUsers: 1,
+        avgDurationSec: 150.0,
+      ),
+    ],
+    users: [
+      UserSummary(
+        userId: 'u1',
+        email: 'ops@casino.local',
+        name: 'Ops User',
+        sessionCount: 2,
+        totalDurationSec: 300.0,
+        avgDurationSec: 150.0,
+        errorCount: 1,
+        errorSessionCount: 1,
+        firstSeen: DateTime(2026, 9, 1),
+        lastSeen: DateTime(2026, 9, 7),
+        lastPlatform: 'web',
+        lastBrowser: 'Chrome',
+        lastIP: '10.1.2.3',
+        user: const {'email': 'ops@casino.local', 'role': 'admin'},
+      ),
+      UserSummary(
+        userId: 'u2',
+        sessionCount: 1,
+        totalDurationSec: 60.0,
+        avgDurationSec: 60.0,
+        errorCount: 0,
+        errorSessionCount: 0,
+        firstSeen: DateTime(2026, 9, 6),
+        lastSeen: DateTime(2026, 9, 7),
+        lastPlatform: 'linux',
+        lastIP: '10.1.2.4',
+      ),
+    ],
+  );
+
+  @override
+  Future<ProjectUsersData> users(
+    int projectId, {
+    int days = 14,
+    String query = '',
+  }) async {
+    calls.add('users $projectId days=$days query=$query');
+    return usersValue;
+  }
+
   @override
   Future<SessionDetail> session(String id) async => detailFor(id);
   @override

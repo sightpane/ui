@@ -2,6 +2,7 @@ import 'package:sightpane_dashboard/core/models.dart';
 import 'package:sightpane_dashboard/features/events/events_page.dart';
 import 'package:sightpane_dashboard/features/issues/issue_detail_page.dart';
 import 'package:sightpane_dashboard/features/sessions/session_detail_page.dart';
+import 'package:sightpane_dashboard/features/users/users_page.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -287,6 +288,45 @@ void main() {
       expect(find.text('16'), findsOneWidget);
     },
   );
+
+  testWidgets('users page renders KPIs, DAU chart, users table and navigates', (tester) async {
+    final r = await go(tester, '/projects/1/users');
+    expect(find.byType(UsersPage), findsOneWidget);
+    expect(find.text('Kullanıcılar'), findsWidgets);
+    expect(find.text('Toplam Kullanıcı'), findsOneWidget);
+    expect(find.text('Aktif Kullanıcı (Dönem)'), findsOneWidget);
+    expect(find.text('Ortalama Süre'), findsOneWidget);
+    expect(find.text('Kullanıcı Başı Oturum'), findsOneWidget);
+    expect(find.text('Günlük Aktif Kullanıcılar (DAU)'), findsOneWidget);
+    expect(find.text('Ops User'), findsOneWidget);
+    expect(find.text('ops@casino.local'), findsOneWidget);
+    expect(find.text('u2'), findsOneWidget);
+    expect(find.text('web'), findsOneWidget);
+    expect(find.text('Chrome'), findsOneWidget);
+
+    // Click on user to open detail dialog
+    await tester.tap(find.text('Ops User'));
+    await settle(tester);
+    expect(find.text('Kullanıcı Detayları'), findsNothing); // title has initials + display name
+    expect(find.text('IP: 10.1.2.3'), findsOneWidget);
+    expect(find.text('Özel Nitelikler'), findsOneWidget);
+    expect(find.text('role: admin'), findsOneWidget);
+    expect(find.text('Oturumları Gör'), findsOneWidget);
+    expect(find.text('Veriyi İndir (JSON)'), findsOneWidget);
+
+    // Close dialog
+    await tester.tap(find.text('Kapat'));
+    await settle(tester);
+
+    // Sidebar navigation check
+    await tester.tap(find.text('Oturumlar'));
+    await settle(tester);
+    expect(r.state.uri.toString(), '/projects/1/sessions');
+
+    await tester.tap(find.text('Kullanıcılar'));
+    await settle(tester);
+    expect(r.state.uri.toString(), '/projects/1/users');
+  });
 }
 
 

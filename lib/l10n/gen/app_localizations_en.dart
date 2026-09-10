@@ -186,6 +186,9 @@ class LEn extends L {
   String get navSessions => 'Sessions';
 
   @override
+  String get navUsers => 'Users';
+
+  @override
   String get navReleases => 'Releases';
 
   @override
@@ -1143,4 +1146,79 @@ class LEn extends L {
 
   @override
   String get performanceDays30 => 'Last 30 Days';
+
+  @override
+  String get usersTitle => 'Users';
+
+  @override
+  String usersSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count users',
+      one: '1 user',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get usersSearchPlaceholder => 'Search user or email...';
+
+  @override
+  String usersLoadFailed(String error) {
+    return 'Could not load users: $error';
+  }
+
+  @override
+  String get usersEmpty => 'No users found.';
+
+  @override
+  String get kpiTotalUsers => 'Total Users';
+
+  @override
+  String get kpiActiveUsers => 'Active Users (Period)';
+
+  @override
+  String get kpiAvgDuration => 'Avg Session Duration';
+
+  @override
+  String get kpiSessionsPerUser => 'Sessions / User';
+
+  @override
+  String get chartActiveUsers => 'Daily Active Users (DAU)';
+
+  @override
+  String get chartActiveUsersSub =>
+      'blue active users · red error-affected users';
+
+  @override
+  String get colAvgDuration => 'Avg Duration';
+
+  @override
+  String get colFirstSeen => 'First Seen';
+
+  @override
+  String get colLastSeen => 'Last Seen';
+
+  @override
+  String get userDetailTitle => 'User Details';
+
+  @override
+  String get actionViewSessions => 'View Sessions';
+
+  @override
+  String get actionExportData => 'Export Data (JSON)';
+
+  @override
+  String get actionDeleteData => 'Delete User Data';
+
+  @override
+  String get userDeleteConfirm =>
+      'Delete all sessions and error records for this user?';
+
+  @override
+  String get userDeleteSuccess => 'User data deleted successfully.';
+
+  @override
+  String get userCustomProps => 'Custom Attributes';
 }

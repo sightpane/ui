@@ -15,6 +15,7 @@ import '../features/releases/releases_page.dart';
 import '../features/sessions/session_detail_page.dart';
 
 import '../features/sessions/sessions_page.dart';
+import '../features/users/users_page.dart';
 import '../shell/app_shell.dart';
 
 final _authRefreshProvider = Provider<Listenable>((ref) {
@@ -71,6 +72,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 builder: (_, s) => SessionDetailPage(
                   projectId: _id(s),
                   sessionId: s.pathParameters['sid']!,
+                ),
+              ),
+              GoRoute(
+                path: 'users',
+                builder: (_, s) => UsersPage(
+                  projectId: _id(s),
+                  query: s.uri.queryParameters['q'] ?? '',
                 ),
               ),
               GoRoute(

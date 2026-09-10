@@ -64,6 +64,7 @@ k('fmtClockPattern', 'HH:mm:ss', 'HH:mm:ss', None, 'Clock pattern for the replay
 k('navOverview', 'Genel bakış', 'Overview')
 k('navIssues', 'Hatalar', 'Issues')
 k('navSessions', 'Oturumlar', 'Sessions')
+k('navUsers', 'Kullanıcılar', 'Users')
 k('navReleases', 'Sürümler', 'Releases')
 k('navEvents', 'Olaylar', 'Events')
 k('navSettings', 'Ayarlar', 'Settings')
@@ -363,6 +364,30 @@ k('performanceViewReplay', 'Kaydı Aç', 'View Replay')
 k('performanceDays7', 'Son 7 Gün', 'Last 7 Days')
 k('performanceDays14', 'Son 14 Gün', 'Last 14 Days')
 k('performanceDays30', 'Son 30 Gün', 'Last 30 Days')
+
+# ---------------- users ----------------
+k('usersTitle', 'Kullanıcılar', 'Users')
+k('usersSubtitle', '{count} kullanıcı', '{count, plural, =1{1 user} other{{count} users}}', {'count': 'int'})
+k('usersSearchPlaceholder', 'Kullanıcı veya e-posta ara...', 'Search user or email...')
+k('usersLoadFailed', 'Kullanıcılar alınamadı: {error}', 'Could not load users: {error}', {'error': 'String'})
+k('usersEmpty', 'Kullanıcı bulunamadı.', 'No users found.')
+k('kpiTotalUsers', 'Toplam Kullanıcı', 'Total Users')
+k('kpiActiveUsers', 'Aktif Kullanıcı (Dönem)', 'Active Users (Period)')
+k('kpiAvgDuration', 'Ortalama Süre', 'Avg Session Duration')
+k('kpiSessionsPerUser', 'Kullanıcı Başı Oturum', 'Sessions / User')
+k('chartActiveUsers', 'Günlük Aktif Kullanıcılar (DAU)', 'Daily Active Users (DAU)')
+k('chartActiveUsersSub', 'mavi aktif kullanıcılar · kırmızı hatalı kullanıcılar', 'blue active users · red error-affected users')
+k('colAvgDuration', 'Ort. Süre', 'Avg Duration')
+k('colFirstSeen', 'İlk Görülme', 'First Seen')
+k('colLastSeen', 'Son Görülme', 'Last Seen')
+k('userDetailTitle', 'Kullanıcı Detayları', 'User Details')
+k('actionViewSessions', 'Oturumları Gör', 'View Sessions')
+k('actionExportData', 'Veriyi İndir (JSON)', 'Export Data (JSON)')
+k('actionDeleteData', 'Kullanıcı Verisini Sil', 'Delete User Data')
+k('userDeleteConfirm', 'Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?', 'Delete all sessions and error records for this user?')
+k('userDeleteSuccess', 'Kullanıcı verisi başarıyla silindi.', 'User data deleted successfully.')
+k('userCustomProps', 'Özel Nitelikler', 'Custom Attributes')
+
 
 
 def arb(lang, idx):
