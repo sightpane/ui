@@ -5,6 +5,8 @@ import '../app/theme/app_theme.dart';
 import '../app/theme/tokens.dart';
 import '../core/format.dart';
 
+export 'environment_card.dart';
+
 class PageHeader extends StatelessWidget {
   const PageHeader({
     super.key,

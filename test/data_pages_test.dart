@@ -170,6 +170,11 @@ void main() {
     await go(tester, '/projects/1/issues/7');
     expect(find.byType(IssueDetailPage), findsOneWidget);
 
+    // Client & environment info
+    expect(find.byType(ClientEnvironmentCard), findsOneWidget);
+    expect(find.text('macOS'), findsWidgets);
+    expect(find.text('14.5'), findsWidgets);
+
     // 1. Comments
     expect(find.text('Looking into this crash'), findsOneWidget);
     await tester.enterText(find.byType(TextField).last, 'Fix in progress');

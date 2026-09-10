@@ -507,6 +507,13 @@ class TimelineItem {
     this.issueId,
     this.sessionId = '',
     this.frames = const [],
+    this.platform = '',
+    this.browser = '',
+    this.release = '',
+    this.ip = '',
+    this.sdkName = '',
+    this.sdkVersion = '',
+    this.device = const {},
   });
   final int id;
   final DateTime ts;
@@ -517,6 +524,23 @@ class TimelineItem {
   /// release this error came from. Empty otherwise, which is every native build
   /// and any web build without a map.
   final List<SourceFrame> frames;
+  final String platform, browser, release, ip, sdkName, sdkVersion;
+  final Map<String, Object?> device;
+
+  Session toSession() => Session(
+    id: sessionId,
+    projectId: 0,
+    startedAt: ts,
+    lastSeenAt: ts,
+    platform: platform,
+    browser: browser,
+    release: release,
+    ip: ip,
+    sdkName: sdkName,
+    sdkVersion: sdkVersion,
+    device: device,
+  );
+
   String get message => switch (type) {
     'error' => '${_s(body['exception'])}: ${_s(body['message'])}',
     'event' =>
@@ -532,6 +556,13 @@ class TimelineItem {
     body: _m(j['body']),
     issueId: j['issue_id'] == null ? null : _i(j['issue_id']),
     sessionId: _s(j['session_id']),
+    platform: _s(j['platform']),
+    browser: _s(j['browser']),
+    release: _s(j['release']),
+    ip: _s(j['ip']),
+    sdkName: _s(j['sdk_name']),
+    sdkVersion: _s(j['sdk_version']),
+    device: _m(j['device']),
     // `symbolicated` sits beside `body` rather than inside it: the body is what
     // the SDK sent and the backend hands it back untouched.
     frames: [
@@ -799,15 +830,27 @@ class FingerprintRule {
 }
 
 class IssueDetail {
-  const IssueDetail({required this.issue, required this.occurrences});
+  const IssueDetail({
+    required this.issue,
+    required this.occurrences,
+    this.latestSession,
+  });
   final Issue issue;
   final List<TimelineItem> occurrences;
+  final Session? latestSession;
+
+  Session? get activeSession =>
+      latestSession ?? (occurrences.isNotEmpty ? occurrences.first.toSession() : null);
+
   factory IssueDetail.fromJson(Map<String, Object?> j) => IssueDetail(
     issue: Issue.fromJson(j),
     occurrences: [
       for (final o in (j['occurrences'] as List? ?? const []))
         TimelineItem.fromJson(_m(o)),
     ],
+    latestSession: j['latest_session'] is Map
+        ? Session.fromJson(_m(j['latest_session']))
+        : null,
   );
 }
 

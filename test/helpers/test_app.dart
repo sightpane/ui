@@ -353,6 +353,16 @@ class FakeApi implements SightpaneApi {
         type: 'error',
         name: 'StateError: Bad state: boom',
         issueId: 7,
+        sessionId: id,
+        platform: 'web',
+        browser: 'Chrome',
+        device: const {
+          'platform_category': 'web',
+          'browser': 'Chrome',
+          'browser_version': '128.0.6613.120',
+          'os': 'macOS',
+          'os_version': '14.5',
+        },
         body: const {
           'exception': 'StateError',
           'message': 'Bad state: boom',
@@ -617,6 +627,7 @@ class FakeApi implements SightpaneApi {
   Future<IssueDetail> issue(int id) async => IssueDetail(
     issue: issueList.firstWhere((i) => i.id == id),
     occurrences: [detailFor('abcdef12-3456').items.last],
+    latestSession: sessionList.firstWhere((s) => s.id == 'abcdef12-3456'),
   );
   @override
   Future<void> resolveIssue(int id, {bool undo = false}) async {

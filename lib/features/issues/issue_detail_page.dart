@@ -330,9 +330,18 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                         ),
                       ],
                     ],
+                    if (d.activeSession != null) ...[
+                      const Spacer(),
+                      ClientEnvironmentPill(session: d.activeSession!),
+                    ],
                   ],
                 ),
               ),
+
+              if (d.activeSession != null) ...[
+                const Gap(12),
+                ClientEnvironmentCard(session: d.activeSession!),
+              ],
 
               const Gap(12),
               PanelCard(
@@ -356,9 +365,10 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                   columns: [
                     (context.l10n.colTime, 2, false),
                     (context.l10n.colSession, 2, false),
+                    (context.l10n.clientPlatform, 3, false),
                     (context.l10n.colRoute, 2, false),
                     (context.l10n.colFrame, 1, true),
-                    (context.l10n.colMessage, 5, false),
+                    (context.l10n.colMessage, 4, false),
                   ],
                   rows: d.occurrences,
                   onTap: (o) => context.go(
@@ -373,6 +383,7 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
                       context.fmt.shortId(o.sessionId),
                       style: AppTheme.mono(size: 12, color: Tokens.info),
                     ),
+                    ClientEnvironmentPill(session: o.toSession()),
                     Text(
                       '${o.body['route'] ?? context.l10n.commonEmpty}',
                       style: AppTheme.mono(size: 12, color: Tokens.textMuted),
