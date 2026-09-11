@@ -3,6 +3,7 @@ import 'package:sightpane_dashboard/features/events/events_page.dart';
 import 'package:sightpane_dashboard/features/issues/issue_detail_page.dart';
 import 'package:sightpane_dashboard/features/sessions/session_detail_page.dart';
 import 'package:sightpane_dashboard/features/users/users_page.dart';
+import 'package:sightpane_dashboard/shared/widgets.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -41,9 +42,18 @@ void main() {
   testWidgets('sessions search query and filter chips', (tester) async {
     final r = await go(tester, '/projects/1/sessions');
     expect(find.text('Hızlı Filtreler'), findsOneWidget);
-    await tester.tap(find.text('browser:Chrome'));
+    final chromeChip = find.widgetWithText(QuickFilterChip, 'browser:Chrome');
+    expect(chromeChip, findsOneWidget);
+    // Tap to add filter
+    await tester.tap(chromeChip);
     await settle(tester);
     expect(r.state.uri.toString(), contains('q=browser%3AChrome'));
+    // Clear button appears when query is present
+    expect(find.text('Temizle'), findsOneWidget);
+    // Tap chip again to toggle off
+    await tester.tap(chromeChip);
+    await settle(tester);
+    expect(r.state.uri.toString(), isNot(contains('q=browser%3AChrome')));
   });
 
   testWidgets(

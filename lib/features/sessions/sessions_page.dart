@@ -65,12 +65,23 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
     );
   }
 
-  void _addFilter(String token) {
+  bool _hasFilter(String token) => _query.text.contains(token);
+
+  void _toggleFilter(String token) {
     final cur = _query.text.trim();
-    if (cur.contains(token)) return;
-    final updated = cur.isEmpty ? token : '$cur $token';
-    _query.text = updated;
-    _go(query: updated);
+    if (cur.contains(token)) {
+      final updated = cur
+          .split(RegExp(r'\s+'))
+          .where((t) => t != token)
+          .join(' ')
+          .trim();
+      _query.text = updated;
+      _go(query: updated);
+    } else {
+      final updated = cur.isEmpty ? token : '$cur $token';
+      _query.text = updated;
+      _go(query: updated);
+    }
   }
 
   @override
@@ -132,50 +143,38 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
               ),
             ],
           ),
-          const Gap(10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                context.l10n.searchFilterQuick,
-                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+          const Gap(12),
+          QuickFilterBar(
+            showClear: _query.text.isNotEmpty,
+            onClear: () {
+              _query.clear();
+              _go(query: '');
+            },
+            chips: [
+              QuickFilterChip(
+                token: 'browser:Chrome',
+                icon: LucideIcons.globe,
+                selected: _hasFilter('browser:Chrome'),
+                onTap: () => _toggleFilter('browser:Chrome'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('browser:Chrome'),
-                child: const Text('browser:Chrome'),
+              QuickFilterChip(
+                token: 'platform:web',
+                icon: LucideIcons.layers,
+                selected: _hasFilter('platform:web'),
+                onTap: () => _toggleFilter('platform:web'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('platform:web'),
-                child: const Text('platform:web'),
+              QuickFilterChip(
+                token: 'release:1.0',
+                icon: LucideIcons.gitBranch,
+                selected: _hasFilter('release:1.0'),
+                onTap: () => _toggleFilter('release:1.0'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('release:1.0'),
-                child: const Text('release:1.0'),
+              QuickFilterChip(
+                token: 'route:/cashier',
+                icon: LucideIcons.mapPin,
+                selected: _hasFilter('route:/cashier'),
+                onTap: () => _toggleFilter('route:/cashier'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('route:/cashier'),
-                child: const Text('route:/cashier'),
-              ),
-              if (_query.text.isNotEmpty)
-                GhostButton(
-                  size: ButtonSize.xSmall,
-                  density: ButtonDensity.compact,
-                  onPressed: () {
-                    _query.clear();
-                    _go(query: '');
-                  },
-                  child: Text(context.l10n.searchClear),
-                ),
             ],
           ),
           const Gap(14),

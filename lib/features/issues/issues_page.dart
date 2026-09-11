@@ -57,12 +57,23 @@ class _IssuesPageState extends ConsumerState<IssuesPage> {
     );
   }
 
-  void _addFilter(String token) {
+  bool _hasFilter(String token) => _query.text.contains(token);
+
+  void _toggleFilter(String token) {
     final cur = _query.text.trim();
-    if (cur.contains(token)) return;
-    final updated = cur.isEmpty ? token : '$cur $token';
-    _query.text = updated;
-    _go(query: updated);
+    if (cur.contains(token)) {
+      final updated = cur
+          .split(RegExp(r'\s+'))
+          .where((t) => t != token)
+          .join(' ')
+          .trim();
+      _query.text = updated;
+      _go(query: updated);
+    } else {
+      final updated = cur.isEmpty ? token : '$cur $token';
+      _query.text = updated;
+      _go(query: updated);
+    }
   }
 
   @override
@@ -122,38 +133,26 @@ class _IssuesPageState extends ConsumerState<IssuesPage> {
               ),
             ],
           ),
-          const Gap(10),
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                context.l10n.searchFilterQuick,
-                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+          const Gap(12),
+          QuickFilterBar(
+            showClear: _query.text.isNotEmpty,
+            onClear: () {
+              _query.clear();
+              _go(query: '');
+            },
+            chips: [
+              QuickFilterChip(
+                token: 'resolved:false',
+                icon: LucideIcons.circleDot,
+                selected: _hasFilter('resolved:false'),
+                onTap: () => _toggleFilter('resolved:false'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('resolved:false'),
-                child: const Text('resolved:false'),
+              QuickFilterChip(
+                token: 'resolved:true',
+                icon: LucideIcons.circleCheck,
+                selected: _hasFilter('resolved:true'),
+                onTap: () => _toggleFilter('resolved:true'),
               ),
-              OutlineButton(
-                size: ButtonSize.xSmall,
-                density: ButtonDensity.compact,
-                onPressed: () => _addFilter('resolved:true'),
-                child: const Text('resolved:true'),
-              ),
-              if (_query.text.isNotEmpty)
-                GhostButton(
-                  size: ButtonSize.xSmall,
-                  density: ButtonDensity.compact,
-                  onPressed: () {
-                    _query.clear();
-                    _go(query: '');
-                  },
-                  child: Text(context.l10n.searchClear),
-                ),
             ],
           ),
           const Gap(14),
