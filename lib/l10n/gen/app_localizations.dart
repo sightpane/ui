@@ -3978,6 +3978,384 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Profili Görüntüle'**
   String get profilingViewProfile;
+
+  /// No description provided for @navDashboards.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Panolar'**
+  String get navDashboards;
+
+  /// No description provided for @dashboardsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Panolar'**
+  String get dashboardsTitle;
+
+  /// No description provided for @dashboardsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Takımınız için özelleştirilmiş panolar oluşturun ve metrikleri görselleştirin.'**
+  String get dashboardsSubtitle;
+
+  /// No description provided for @dashboardCreate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Pano'**
+  String get dashboardCreate;
+
+  /// No description provided for @dashboardEdit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Panoyu Düzenle'**
+  String get dashboardEdit;
+
+  /// No description provided for @dashboardDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Panoyu Sil'**
+  String get dashboardDelete;
+
+  /// No description provided for @dashboardName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pano Adı'**
+  String get dashboardName;
+
+  /// No description provided for @dashboardNameHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn. Yönetici Özeti'**
+  String get dashboardNameHint;
+
+  /// No description provided for @dashboardDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get dashboardDescription;
+
+  /// No description provided for @dashboardDescriptionHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pano amacını kısaca belirtin...'**
+  String get dashboardDescriptionHint;
+
+  /// No description provided for @dashboardSetDefault.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varsayılan Yap'**
+  String get dashboardSetDefault;
+
+  /// No description provided for @dashboardIsDefault.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varsayılan Pano'**
+  String get dashboardIsDefault;
+
+  /// No description provided for @dashboardEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir özel pano oluşturulmadı.'**
+  String get dashboardEmpty;
+
+  /// No description provided for @dashboardTileAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görü Ekle'**
+  String get dashboardTileAdd;
+
+  /// No description provided for @dashboardAutoRefresh.
+  ///
+  /// In tr, this message translates to:
+  /// **'Otomatik Yenileme'**
+  String get dashboardAutoRefresh;
+
+  /// No description provided for @dashboardRefreshOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kapalı'**
+  String get dashboardRefreshOff;
+
+  /// No description provided for @dashboardDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu panoyu silmek istediğinizden emin misiniz?'**
+  String get dashboardDeleteConfirm;
+
+  /// No description provided for @dashboardInsightRemove.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görüyü Kaldır'**
+  String get dashboardInsightRemove;
+
+  /// No description provided for @dashboardLayoutSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Düzeni Kaydet'**
+  String get dashboardLayoutSave;
+
+  /// No description provided for @insightBuilderTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görü Oluşturucu'**
+  String get insightBuilderTitle;
+
+  /// No description provided for @insightBuilderSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olayları, filtreleri ve gruplamaları belirleyerek metrikleri anlık görselleştirin.'**
+  String get insightBuilderSubtitle;
+
+  /// No description provided for @insightName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görü Adı'**
+  String get insightName;
+
+  /// No description provided for @insightNameHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn. Günlük Satın Alma Hacmi'**
+  String get insightNameHint;
+
+  /// No description provided for @insightChartType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Grafik Türü'**
+  String get insightChartType;
+
+  /// No description provided for @chartTypeLine.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çizgi'**
+  String get chartTypeLine;
+
+  /// No description provided for @chartTypeBar.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çubuk'**
+  String get chartTypeBar;
+
+  /// No description provided for @chartTypeArea.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alan'**
+  String get chartTypeArea;
+
+  /// No description provided for @chartTypeNumber.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayısal (KPI)'**
+  String get chartTypeNumber;
+
+  /// No description provided for @chartTypeDonut.
+  ///
+  /// In tr, this message translates to:
+  /// **'Halka (Donut)'**
+  String get chartTypeDonut;
+
+  /// No description provided for @chartTypeTable.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tablo'**
+  String get chartTypeTable;
+
+  /// No description provided for @insightDateRange.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman Aralığı'**
+  String get insightDateRange;
+
+  /// No description provided for @insightInterval.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman Dilimi'**
+  String get insightInterval;
+
+  /// No description provided for @intervalHour.
+  ///
+  /// In tr, this message translates to:
+  /// **'Saatlik'**
+  String get intervalHour;
+
+  /// No description provided for @intervalDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük'**
+  String get intervalDay;
+
+  /// No description provided for @intervalWeek.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haftalık'**
+  String get intervalWeek;
+
+  /// No description provided for @intervalMonth.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aylık'**
+  String get intervalMonth;
+
+  /// No description provided for @insightEvents.
+  ///
+  /// In tr, this message translates to:
+  /// **'Analiz Olayları'**
+  String get insightEvents;
+
+  /// No description provided for @insightEventAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay Ekle'**
+  String get insightEventAdd;
+
+  /// No description provided for @insightEventName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay Adı'**
+  String get insightEventName;
+
+  /// No description provided for @insightEventNameHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn. purchase, click, pageview'**
+  String get insightEventNameHint;
+
+  /// No description provided for @insightMath.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hesaplama (Math)'**
+  String get insightMath;
+
+  /// No description provided for @mathCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Adet (Count)'**
+  String get mathCount;
+
+  /// No description provided for @mathUniqueUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tekil Kullanıcılar (Unique Users)'**
+  String get mathUniqueUsers;
+
+  /// No description provided for @mathAvg.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ortalama (Avg)'**
+  String get mathAvg;
+
+  /// No description provided for @mathSum.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam (Sum)'**
+  String get mathSum;
+
+  /// No description provided for @mathMin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Minimum (Min)'**
+  String get mathMin;
+
+  /// No description provided for @mathMax.
+  ///
+  /// In tr, this message translates to:
+  /// **'Maksimum (Max)'**
+  String get mathMax;
+
+  /// No description provided for @mathP90.
+  ///
+  /// In tr, this message translates to:
+  /// **'90. Yüzdelik (p90)'**
+  String get mathP90;
+
+  /// No description provided for @insightProperty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özellik Adı'**
+  String get insightProperty;
+
+  /// No description provided for @insightPropertyHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn. amount, duration_ms'**
+  String get insightPropertyHint;
+
+  /// No description provided for @insightBreakdown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gruplama (Breakdown)'**
+  String get insightBreakdown;
+
+  /// No description provided for @insightBreakdownNone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gruplama Yok'**
+  String get insightBreakdownNone;
+
+  /// No description provided for @insightBreakdownPlatform.
+  ///
+  /// In tr, this message translates to:
+  /// **'Platform'**
+  String get insightBreakdownPlatform;
+
+  /// No description provided for @insightBreakdownBrowser.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarayıcı (Browser)'**
+  String get insightBreakdownBrowser;
+
+  /// No description provided for @insightBreakdownCustom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özel Özellik...'**
+  String get insightBreakdownCustom;
+
+  /// No description provided for @insightRunQuery.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sorguyu Çalıştır'**
+  String get insightRunQuery;
+
+  /// No description provided for @insightSave.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görüyü Kaydet'**
+  String get insightSave;
+
+  /// No description provided for @insightPreview.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görselleştirme Önizlemesi'**
+  String get insightPreview;
+
+  /// No description provided for @insightEmptyResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu sorgu için gösterilecek veri noktası bulunamadı.'**
+  String get insightEmptyResults;
+
+  /// No description provided for @insightCached.
+  ///
+  /// In tr, this message translates to:
+  /// **'Önbellekten geldi (60s)'**
+  String get insightCached;
+
+  /// No description provided for @insightDelete.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görüyü Sil'**
+  String get insightDelete;
+
+  /// No description provided for @insightDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu görüyü silmek istediğinizden emin misiniz?'**
+  String get insightDeleteConfirm;
+
+  /// No description provided for @dashboardsCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} pano'**
+  String dashboardsCount(int count);
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

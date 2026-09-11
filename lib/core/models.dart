@@ -8,6 +8,7 @@ DateTime? _t(Object? v) =>
     v == null ? null : DateTime.tryParse('$v')?.toLocal();
 Map<String, Object?> _m(Object? v) =>
     v is Map ? v.cast<String, Object?>() : const {};
+bool _b(Object? v) => v == true || v == 1 || '$v' == 'true';
 
 class SightpaneUser {
   const SightpaneUser({
@@ -2819,3 +2820,317 @@ class SlowFunction {
         callCount: _i(j['call_count']),
       );
 }
+
+// ---------------------------------------------------------------------------
+// Dashboards & Insights (#18)
+// ---------------------------------------------------------------------------
+
+class DashboardTile {
+  const DashboardTile({
+    required this.insightId,
+    this.col = 0,
+    this.row = 0,
+    this.w = 6,
+    this.h = 4,
+  });
+
+  final String insightId;
+  final int col;
+  final int row;
+  final int w;
+  final int h;
+
+  factory DashboardTile.fromJson(Map<String, Object?> j) => DashboardTile(
+    insightId: _s(j['insight_id']),
+    col: _i(j['col']),
+    row: _i(j['row']),
+    w: _i(j['w']) > 0 ? _i(j['w']) : 6,
+    h: _i(j['h']) > 0 ? _i(j['h']) : 4,
+  );
+
+  Map<String, Object?> toJson() => {
+    'insight_id': insightId,
+    'col': col,
+    'row': row,
+    'w': w,
+    'h': h,
+  };
+
+  DashboardTile copyWith({String? insightId, int? col, int? row, int? w, int? h}) => DashboardTile(
+    insightId: insightId ?? this.insightId,
+    col: col ?? this.col,
+    row: row ?? this.row,
+    w: w ?? this.w,
+    h: h ?? this.h,
+  );
+}
+
+class Dashboard {
+  const Dashboard({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    this.description = '',
+    this.isDefault = false,
+    this.layout = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final int projectId;
+  final String name;
+  final String description;
+  final bool isDefault;
+  final List<DashboardTile> layout;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory Dashboard.fromJson(Map<String, Object?> j) => Dashboard(
+    id: _s(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    description: _s(j['description']),
+    isDefault: _b(j['is_default']),
+    layout: [
+      for (final t in (j['layout'] as List? ?? const []))
+        if (t is Map) DashboardTile.fromJson(Map<String, Object?>.from(t)),
+    ],
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'description': description,
+    'is_default': isDefault,
+    'layout': [for (final t in layout) t.toJson()],
+  };
+}
+
+class InsightEvent {
+  const InsightEvent({
+    required this.name,
+    this.math = 'count',
+    this.property = '',
+  });
+
+  final String name;
+  final String math;
+  final String property;
+
+  factory InsightEvent.fromJson(Map<String, Object?> j) => InsightEvent(
+    name: _s(j['name']),
+    math: _s(j['math']).isEmpty ? 'count' : _s(j['math']),
+    property: _s(j['property']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'name': name,
+    'math': math,
+    if (property.isNotEmpty) 'property': property,
+  };
+
+  InsightEvent copyWith({String? name, String? math, String? property}) => InsightEvent(
+    name: name ?? this.name,
+    math: math ?? this.math,
+    property: property ?? this.property,
+  );
+}
+
+class InsightFilter {
+  const InsightFilter({
+    required this.property,
+    this.operator = 'exact',
+    required this.value,
+  });
+
+  final String property;
+  final String operator;
+  final String value;
+
+  factory InsightFilter.fromJson(Map<String, Object?> j) => InsightFilter(
+    property: _s(j['property']),
+    operator: _s(j['operator']).isEmpty ? 'exact' : _s(j['operator']),
+    value: _s(j['value']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'property': property,
+    'operator': operator,
+    'value': value,
+  };
+}
+
+class InsightQuery {
+  const InsightQuery({
+    this.dateRange = '14d',
+    this.interval = 'day',
+    this.events = const [],
+    this.breakdown = '',
+    this.filters = const [],
+  });
+
+  final String dateRange;
+  final String interval;
+  final List<InsightEvent> events;
+  final String breakdown;
+  final List<InsightFilter> filters;
+
+  factory InsightQuery.fromJson(Map<String, Object?> j) => InsightQuery(
+    dateRange: _s(j['date_range']).isEmpty ? '14d' : _s(j['date_range']),
+    interval: _s(j['interval']).isEmpty ? 'day' : _s(j['interval']),
+    events: [
+      for (final e in (j['events'] as List? ?? const []))
+        if (e is Map) InsightEvent.fromJson(Map<String, Object?>.from(e)),
+    ],
+    breakdown: _s(j['breakdown']),
+    filters: [
+      for (final f in (j['filters'] as List? ?? const []))
+        if (f is Map) InsightFilter.fromJson(Map<String, Object?>.from(f)),
+    ],
+  );
+
+  Map<String, Object?> toJson() => {
+    'date_range': dateRange,
+    'interval': interval,
+    'events': [for (final e in events) e.toJson()],
+    if (breakdown.isNotEmpty) 'breakdown': breakdown,
+    if (filters.isNotEmpty) 'filters': [for (final f in filters) f.toJson()],
+  };
+
+  InsightQuery copyWith({
+    String? dateRange,
+    String? interval,
+    List<InsightEvent>? events,
+    String? breakdown,
+    List<InsightFilter>? filters,
+  }) => InsightQuery(
+    dateRange: dateRange ?? this.dateRange,
+    interval: interval ?? this.interval,
+    events: events ?? this.events,
+    breakdown: breakdown ?? this.breakdown,
+    filters: filters ?? this.filters,
+  );
+}
+
+class InsightDataPoint {
+  const InsightDataPoint({
+    required this.time,
+    required this.value,
+  });
+
+  final String time;
+  final double value;
+
+  factory InsightDataPoint.fromJson(Map<String, Object?> j) => InsightDataPoint(
+    time: _s(j['time']),
+    value: _d(j['value']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'time': time,
+    'value': value,
+  };
+}
+
+class InsightSeries {
+  const InsightSeries({
+    required this.label,
+    this.data = const [],
+    this.aggregatedValue = 0,
+  });
+
+  final String label;
+  final List<InsightDataPoint> data;
+  final double aggregatedValue;
+
+  factory InsightSeries.fromJson(Map<String, Object?> j) => InsightSeries(
+    label: _s(j['label']),
+    data: [
+      for (final d in (j['data'] as List? ?? const []))
+        if (d is Map) InsightDataPoint.fromJson(Map<String, Object?>.from(d)),
+    ],
+    aggregatedValue: _d(j['aggregated_value']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'label': label,
+    'data': [for (final d in data) d.toJson()],
+    'aggregated_value': aggregatedValue,
+  };
+}
+
+class InsightQueryResult {
+  const InsightQueryResult({
+    this.series = const [],
+    this.cached = false,
+    this.executedAt,
+  });
+
+  final List<InsightSeries> series;
+  final bool cached;
+  final DateTime? executedAt;
+
+  factory InsightQueryResult.fromJson(Map<String, Object?> j) => InsightQueryResult(
+    series: [
+      for (final s in (j['series'] as List? ?? const []))
+        if (s is Map) InsightSeries.fromJson(Map<String, Object?>.from(s)),
+    ],
+    cached: _b(j['cached']),
+    executedAt: _t(j['executed_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'series': [for (final s in series) s.toJson()],
+    'cached': cached,
+    'executed_at': executedAt?.toIso8601String(),
+  };
+}
+
+class Insight {
+  const Insight({
+    required this.id,
+    required this.projectId,
+    this.dashboardId,
+    required this.name,
+    this.chartType = 'line',
+    required this.query,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final String id;
+  final int projectId;
+  final String? dashboardId;
+  final String name;
+  final String chartType; // line, bar, area, number, donut, table
+  final InsightQuery query;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory Insight.fromJson(Map<String, Object?> j) => Insight(
+    id: _s(j['id']),
+    projectId: _i(j['project_id']),
+    dashboardId: j['dashboard_id'] == null ? null : _s(j['dashboard_id']),
+    name: _s(j['name']),
+    chartType: _s(j['chart_type']).isEmpty ? 'line' : _s(j['chart_type']),
+    query: j['query'] is Map
+        ? InsightQuery.fromJson(Map<String, Object?>.from(j['query'] as Map))
+        : const InsightQuery(),
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    if (dashboardId != null) 'dashboard_id': dashboardId,
+    'name': name,
+    'chart_type': chartType,
+    'query': query.toJson(),
+  };
+}
+

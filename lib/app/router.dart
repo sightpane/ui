@@ -39,6 +39,9 @@ import '../features/profiling/profile_detail_page.dart';
 import '../features/users/user_detail_page.dart';
 
 import '../features/users/users_page.dart';
+import '../features/dashboards/dashboards_page.dart';
+import '../features/dashboards/dashboard_view_page.dart';
+import '../features/insights/insight_builder_page.dart';
 import '../shell/app_shell.dart';
 
 final _authRefreshProvider = Provider<Listenable>((ref) {
@@ -81,6 +84,27 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/projects/:id',
             builder: (_, s) => OverviewPage(projectId: _id(s)),
             routes: [
+              GoRoute(
+                path: 'dashboards',
+                builder: (_, s) => DashboardsPage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':dashboardId',
+                    builder: (_, s) => DashboardViewPage(
+                      projectId: _id(s),
+                      dashboardId: s.pathParameters['dashboardId']!,
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'insights',
+                builder: (_, s) => InsightBuilderPage(
+                  projectId: _id(s),
+                  insightId: s.uri.queryParameters['insightId'],
+                  dashboardId: s.uri.queryParameters['dashboardId'],
+                ),
+              ),
               GoRoute(
                 path: 'sessions',
                 builder: (_, s) => SessionsPage(

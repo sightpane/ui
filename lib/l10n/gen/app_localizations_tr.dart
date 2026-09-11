@@ -2105,4 +2105,200 @@ class LTr extends L {
 
   @override
   String get profilingViewProfile => 'Profili Görüntüle';
+
+  @override
+  String get navDashboards => 'Özel Panolar';
+
+  @override
+  String get dashboardsTitle => 'Özel Panolar';
+
+  @override
+  String get dashboardsSubtitle =>
+      'Takımınız için özelleştirilmiş panolar oluşturun ve metrikleri görselleştirin.';
+
+  @override
+  String get dashboardCreate => 'Yeni Pano';
+
+  @override
+  String get dashboardEdit => 'Panoyu Düzenle';
+
+  @override
+  String get dashboardDelete => 'Panoyu Sil';
+
+  @override
+  String get dashboardName => 'Pano Adı';
+
+  @override
+  String get dashboardNameHint => 'Örn. Yönetici Özeti';
+
+  @override
+  String get dashboardDescription => 'Açıklama';
+
+  @override
+  String get dashboardDescriptionHint => 'Pano amacını kısaca belirtin...';
+
+  @override
+  String get dashboardSetDefault => 'Varsayılan Yap';
+
+  @override
+  String get dashboardIsDefault => 'Varsayılan Pano';
+
+  @override
+  String get dashboardEmpty => 'Henüz bir özel pano oluşturulmadı.';
+
+  @override
+  String get dashboardTileAdd => 'Görü Ekle';
+
+  @override
+  String get dashboardAutoRefresh => 'Otomatik Yenileme';
+
+  @override
+  String get dashboardRefreshOff => 'Kapalı';
+
+  @override
+  String get dashboardDeleteConfirm =>
+      'Bu panoyu silmek istediğinizden emin misiniz?';
+
+  @override
+  String get dashboardInsightRemove => 'Görüyü Kaldır';
+
+  @override
+  String get dashboardLayoutSave => 'Düzeni Kaydet';
+
+  @override
+  String get insightBuilderTitle => 'Görü Oluşturucu';
+
+  @override
+  String get insightBuilderSubtitle =>
+      'Olayları, filtreleri ve gruplamaları belirleyerek metrikleri anlık görselleştirin.';
+
+  @override
+  String get insightName => 'Görü Adı';
+
+  @override
+  String get insightNameHint => 'Örn. Günlük Satın Alma Hacmi';
+
+  @override
+  String get insightChartType => 'Grafik Türü';
+
+  @override
+  String get chartTypeLine => 'Çizgi';
+
+  @override
+  String get chartTypeBar => 'Çubuk';
+
+  @override
+  String get chartTypeArea => 'Alan';
+
+  @override
+  String get chartTypeNumber => 'Sayısal (KPI)';
+
+  @override
+  String get chartTypeDonut => 'Halka (Donut)';
+
+  @override
+  String get chartTypeTable => 'Tablo';
+
+  @override
+  String get insightDateRange => 'Zaman Aralığı';
+
+  @override
+  String get insightInterval => 'Zaman Dilimi';
+
+  @override
+  String get intervalHour => 'Saatlik';
+
+  @override
+  String get intervalDay => 'Günlük';
+
+  @override
+  String get intervalWeek => 'Haftalık';
+
+  @override
+  String get intervalMonth => 'Aylık';
+
+  @override
+  String get insightEvents => 'Analiz Olayları';
+
+  @override
+  String get insightEventAdd => 'Olay Ekle';
+
+  @override
+  String get insightEventName => 'Olay Adı';
+
+  @override
+  String get insightEventNameHint => 'Örn. purchase, click, pageview';
+
+  @override
+  String get insightMath => 'Hesaplama (Math)';
+
+  @override
+  String get mathCount => 'Toplam Adet (Count)';
+
+  @override
+  String get mathUniqueUsers => 'Tekil Kullanıcılar (Unique Users)';
+
+  @override
+  String get mathAvg => 'Ortalama (Avg)';
+
+  @override
+  String get mathSum => 'Toplam (Sum)';
+
+  @override
+  String get mathMin => 'Minimum (Min)';
+
+  @override
+  String get mathMax => 'Maksimum (Max)';
+
+  @override
+  String get mathP90 => '90. Yüzdelik (p90)';
+
+  @override
+  String get insightProperty => 'Özellik Adı';
+
+  @override
+  String get insightPropertyHint => 'Örn. amount, duration_ms';
+
+  @override
+  String get insightBreakdown => 'Gruplama (Breakdown)';
+
+  @override
+  String get insightBreakdownNone => 'Gruplama Yok';
+
+  @override
+  String get insightBreakdownPlatform => 'Platform';
+
+  @override
+  String get insightBreakdownBrowser => 'Tarayıcı (Browser)';
+
+  @override
+  String get insightBreakdownCustom => 'Özel Özellik...';
+
+  @override
+  String get insightRunQuery => 'Sorguyu Çalıştır';
+
+  @override
+  String get insightSave => 'Görüyü Kaydet';
+
+  @override
+  String get insightPreview => 'Görselleştirme Önizlemesi';
+
+  @override
+  String get insightEmptyResults =>
+      'Bu sorgu için gösterilecek veri noktası bulunamadı.';
+
+  @override
+  String get insightCached => 'Önbellekten geldi (60s)';
+
+  @override
+  String get insightDelete => 'Görüyü Sil';
+
+  @override
+  String get insightDeleteConfirm =>
+      'Bu görüyü silmek istediğinizden emin misiniz?';
+
+  @override
+  String dashboardsCount(int count) {
+    return '$count pano';
+  }
 }

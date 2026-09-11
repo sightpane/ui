@@ -2191,4 +2191,206 @@ class LEn extends L {
 
   @override
   String get profilingViewProfile => 'View Profile';
+
+  @override
+  String get navDashboards => 'Dashboards';
+
+  @override
+  String get dashboardsTitle => 'Custom Dashboards';
+
+  @override
+  String get dashboardsSubtitle =>
+      'Build customized team dashboards and visualize analytical insights.';
+
+  @override
+  String get dashboardCreate => 'New Dashboard';
+
+  @override
+  String get dashboardEdit => 'Edit Dashboard';
+
+  @override
+  String get dashboardDelete => 'Delete Dashboard';
+
+  @override
+  String get dashboardName => 'Dashboard Name';
+
+  @override
+  String get dashboardNameHint => 'e.g. Executive Overview';
+
+  @override
+  String get dashboardDescription => 'Description';
+
+  @override
+  String get dashboardDescriptionHint =>
+      'Briefly describe dashboard purpose...';
+
+  @override
+  String get dashboardSetDefault => 'Set as Default';
+
+  @override
+  String get dashboardIsDefault => 'Default Dashboard';
+
+  @override
+  String get dashboardEmpty => 'No custom dashboards created yet.';
+
+  @override
+  String get dashboardTileAdd => 'Add Insight';
+
+  @override
+  String get dashboardAutoRefresh => 'Auto Refresh';
+
+  @override
+  String get dashboardRefreshOff => 'Off';
+
+  @override
+  String get dashboardDeleteConfirm =>
+      'Are you sure you want to delete this dashboard?';
+
+  @override
+  String get dashboardInsightRemove => 'Remove Insight';
+
+  @override
+  String get dashboardLayoutSave => 'Save Layout';
+
+  @override
+  String get insightBuilderTitle => 'Insight Query Builder';
+
+  @override
+  String get insightBuilderSubtitle =>
+      'Define events, filters, and breakdowns to visualize metrics on the fly.';
+
+  @override
+  String get insightName => 'Insight Name';
+
+  @override
+  String get insightNameHint => 'e.g. Daily Purchase Volume';
+
+  @override
+  String get insightChartType => 'Chart Type';
+
+  @override
+  String get chartTypeLine => 'Line';
+
+  @override
+  String get chartTypeBar => 'Bar';
+
+  @override
+  String get chartTypeArea => 'Area';
+
+  @override
+  String get chartTypeNumber => 'Number (KPI)';
+
+  @override
+  String get chartTypeDonut => 'Donut';
+
+  @override
+  String get chartTypeTable => 'Table';
+
+  @override
+  String get insightDateRange => 'Date Range';
+
+  @override
+  String get insightInterval => 'Interval';
+
+  @override
+  String get intervalHour => 'Hourly';
+
+  @override
+  String get intervalDay => 'Daily';
+
+  @override
+  String get intervalWeek => 'Weekly';
+
+  @override
+  String get intervalMonth => 'Monthly';
+
+  @override
+  String get insightEvents => 'Analytics Events';
+
+  @override
+  String get insightEventAdd => 'Add Event';
+
+  @override
+  String get insightEventName => 'Event Name';
+
+  @override
+  String get insightEventNameHint => 'e.g. purchase, click, pageview';
+
+  @override
+  String get insightMath => 'Aggregation (Math)';
+
+  @override
+  String get mathCount => 'Total Count';
+
+  @override
+  String get mathUniqueUsers => 'Unique Users';
+
+  @override
+  String get mathAvg => 'Average';
+
+  @override
+  String get mathSum => 'Sum';
+
+  @override
+  String get mathMin => 'Minimum';
+
+  @override
+  String get mathMax => 'Maximum';
+
+  @override
+  String get mathP90 => '90th Percentile';
+
+  @override
+  String get insightProperty => 'Property Key';
+
+  @override
+  String get insightPropertyHint => 'e.g. amount, duration_ms';
+
+  @override
+  String get insightBreakdown => 'Breakdown by';
+
+  @override
+  String get insightBreakdownNone => 'No Breakdown';
+
+  @override
+  String get insightBreakdownPlatform => 'Platform';
+
+  @override
+  String get insightBreakdownBrowser => 'Browser';
+
+  @override
+  String get insightBreakdownCustom => 'Custom Property...';
+
+  @override
+  String get insightRunQuery => 'Run Query';
+
+  @override
+  String get insightSave => 'Save Insight';
+
+  @override
+  String get insightPreview => 'Visualization Preview';
+
+  @override
+  String get insightEmptyResults => 'No data points found for this query.';
+
+  @override
+  String get insightCached => 'Cached (60s)';
+
+  @override
+  String get insightDelete => 'Delete Insight';
+
+  @override
+  String get insightDeleteConfirm =>
+      'Are you sure you want to delete this insight?';
+
+  @override
+  String dashboardsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dashboards',
+      one: '1 dashboard',
+    );
+    return '$_temp0';
+  }
 }

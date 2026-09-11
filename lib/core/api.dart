@@ -459,6 +459,48 @@ abstract class SightpaneApi {
     DateTime? expiresAt,
   });
   Future<void> deleteApiToken(int orgId, int tokenId);
+
+  // Dashboards & Insights (#18)
+  Future<List<Dashboard>> dashboards(int projectId);
+  Future<Dashboard> dashboard(int projectId, String dashboardId);
+  Future<Dashboard> createDashboard(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  });
+  Future<Dashboard> updateDashboard(
+    int projectId,
+    String dashboardId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  });
+  Future<void> deleteDashboard(int projectId, String dashboardId);
+  Future<void> setDefaultDashboard(int projectId, String dashboardId);
+
+  Future<List<Insight>> insights(int projectId, {String? dashboardId});
+  Future<Insight> insight(int projectId, String insightId);
+  Future<Insight> createInsight(
+    int projectId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  });
+  Future<Insight> updateInsight(
+    int projectId,
+    String insightId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  });
+  Future<void> deleteInsight(int projectId, String insightId);
+  Future<InsightQueryResult> queryInsight(int projectId, InsightQuery query);
+  Future<InsightQueryResult> insightResults(int projectId, String insightId);
 }
 
 /// The real HTTP client. [token] is supplied once a session is opened.
@@ -2055,6 +2097,160 @@ class HttpSightpaneApi implements SightpaneApi {
   @override
   Future<void> deleteApiToken(int orgId, int tokenId) =>
       _send('DELETE', '/api/v1/orgs/$orgId/tokens/$tokenId');
+
+  // Dashboards & Insights (#18)
+  @override
+  Future<List<Dashboard>> dashboards(int projectId) async => [
+    for (final d in _list(await _send('GET', '/api/v1/projects/$projectId/dashboards')))
+      Dashboard.fromJson(d),
+  ];
+
+  @override
+  Future<Dashboard> dashboard(int projectId, String dashboardId) async =>
+      Dashboard.fromJson(
+        _map(await _send('GET', '/api/v1/projects/$projectId/dashboards/$dashboardId')),
+      );
+
+  @override
+  Future<Dashboard> createDashboard(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  }) async =>
+      Dashboard.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/dashboards',
+            body: {
+              'name': name,
+              'description': description,
+              'is_default': isDefault,
+              'layout': layout.map((t) => t.toJson()).toList(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Dashboard> updateDashboard(
+    int projectId,
+    String dashboardId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  }) async =>
+      Dashboard.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/dashboards/$dashboardId',
+            body: {
+              'name': name,
+              'description': description,
+              'is_default': isDefault,
+              'layout': layout.map((t) => t.toJson()).toList(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteDashboard(int projectId, String dashboardId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/dashboards/$dashboardId');
+
+  @override
+  Future<void> setDefaultDashboard(int projectId, String dashboardId) =>
+      _send('POST', '/api/v1/projects/$projectId/dashboards/$dashboardId/default');
+
+  @override
+  Future<List<Insight>> insights(int projectId, {String? dashboardId}) async {
+    final query = dashboardId != null && dashboardId.isNotEmpty
+        ? '?dashboard_id=$dashboardId'
+        : '';
+    return [
+      for (final i in _list(await _send('GET', '/api/v1/projects/$projectId/insights$query')))
+        Insight.fromJson(i),
+    ];
+  }
+
+  @override
+  Future<Insight> insight(int projectId, String insightId) async =>
+      Insight.fromJson(
+        _map(await _send('GET', '/api/v1/projects/$projectId/insights/$insightId')),
+      );
+
+  @override
+  Future<Insight> createInsight(
+    int projectId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  }) async =>
+      Insight.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/insights',
+            body: {
+              'dashboard_id': ?dashboardId,
+              'name': name,
+              'chart_type': chartType,
+              'query': query.toJson(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Insight> updateInsight(
+    int projectId,
+    String insightId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  }) async =>
+      Insight.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/insights/$insightId',
+            body: {
+              'dashboard_id': ?dashboardId,
+              'name': name,
+              'chart_type': chartType,
+              'query': query.toJson(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteInsight(int projectId, String insightId) =>
+      _send('DELETE', '/api/v1/projects/$projectId/insights/$insightId');
+
+  @override
+  Future<InsightQueryResult> queryInsight(int projectId, InsightQuery query) async =>
+      InsightQueryResult.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/insights/query',
+            body: query.toJson(),
+          ),
+        ),
+      );
+
+  @override
+  Future<InsightQueryResult> insightResults(int projectId, String insightId) async =>
+      InsightQueryResult.fromJson(
+        _map(await _send('GET', '/api/v1/projects/$projectId/insights/$insightId/results')),
+      );
 }
 
 /// A single API for the whole app; [tokenStoreProvider] supplies the token.

@@ -2761,6 +2761,257 @@ class FakeApi implements SightpaneApi {
     calls.add('topSlowFunctions $projectId');
     return topSlowFunctionsValue;
   }
+
+  var dashboardsValue = <Dashboard>[
+    Dashboard(
+      id: 'dash-1',
+      projectId: 1,
+      name: 'Executive Overview',
+      description: 'Key business metrics and engagement',
+      isDefault: true,
+      layout: const [
+        DashboardTile(insightId: 'ins-1', col: 0, row: 0, w: 6, h: 4),
+        DashboardTile(insightId: 'ins-2', col: 6, row: 0, w: 6, h: 4),
+      ],
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      updatedAt: DateTime.now(),
+    ),
+  ];
+
+  var insightsValue = <Insight>[
+    Insight(
+      id: 'ins-1',
+      projectId: 1,
+      dashboardId: 'dash-1',
+      name: 'Weekly Purchases',
+      chartType: 'bar',
+      query: const InsightQuery(
+        dateRange: '7d',
+        interval: 'day',
+        events: [InsightEvent(name: 'purchase', math: 'count')],
+      ),
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      updatedAt: DateTime.now(),
+    ),
+    Insight(
+      id: 'ins-2',
+      projectId: 1,
+      dashboardId: 'dash-1',
+      name: 'Active Users by Platform',
+      chartType: 'donut',
+      query: const InsightQuery(
+        dateRange: '7d',
+        interval: 'day',
+        events: [InsightEvent(name: 'pageview', math: 'unique_users')],
+        breakdown: 'platform',
+      ),
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      updatedAt: DateTime.now(),
+    ),
+  ];
+
+  @override
+  Future<List<Dashboard>> dashboards(int projectId) async {
+    calls.add('dashboards $projectId');
+    return dashboardsValue.where((d) => d.projectId == projectId).toList();
+  }
+
+  @override
+  Future<Dashboard> dashboard(int projectId, String dashboardId) async {
+    calls.add('dashboard $projectId id=$dashboardId');
+    return dashboardsValue.firstWhere((d) => d.id == dashboardId);
+  }
+
+  @override
+  Future<Dashboard> createDashboard(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  }) async {
+    calls.add('createDashboard $projectId name=$name');
+    final d = Dashboard(
+      id: 'dash-${dashboardsValue.length + 1}',
+      projectId: projectId,
+      name: name,
+      description: description,
+      isDefault: isDefault,
+      layout: layout,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    dashboardsValue.add(d);
+    return d;
+  }
+
+  @override
+  Future<Dashboard> updateDashboard(
+    int projectId,
+    String dashboardId, {
+    required String name,
+    String description = '',
+    bool isDefault = false,
+    List<DashboardTile> layout = const [],
+  }) async {
+    calls.add('updateDashboard $projectId id=$dashboardId');
+    final idx = dashboardsValue.indexWhere((d) => d.id == dashboardId);
+    if (idx != -1) {
+      final old = dashboardsValue[idx];
+      final updated = Dashboard(
+        id: old.id,
+        projectId: old.projectId,
+        name: name,
+        description: description,
+        isDefault: isDefault,
+        layout: layout,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      dashboardsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Dashboard not found');
+  }
+
+  @override
+  Future<void> deleteDashboard(int projectId, String dashboardId) async {
+    calls.add('deleteDashboard $projectId id=$dashboardId');
+    dashboardsValue.removeWhere((d) => d.id == dashboardId);
+  }
+
+  @override
+  Future<void> setDefaultDashboard(int projectId, String dashboardId) async {
+    calls.add('setDefaultDashboard $projectId id=$dashboardId');
+    for (int i = 0; i < dashboardsValue.length; i++) {
+      dashboardsValue[i] = Dashboard(
+        id: dashboardsValue[i].id,
+        projectId: dashboardsValue[i].projectId,
+        name: dashboardsValue[i].name,
+        description: dashboardsValue[i].description,
+        isDefault: dashboardsValue[i].id == dashboardId,
+        layout: dashboardsValue[i].layout,
+        createdAt: dashboardsValue[i].createdAt,
+        updatedAt: dashboardsValue[i].updatedAt,
+      );
+    }
+  }
+
+  @override
+  Future<List<Insight>> insights(int projectId, {String? dashboardId}) async {
+    calls.add('insights $projectId dashboardId=$dashboardId');
+    return insightsValue.where((i) {
+      if (i.projectId != projectId) return false;
+      if (dashboardId != null && dashboardId.isNotEmpty && i.dashboardId != dashboardId) return false;
+      return true;
+    }).toList();
+  }
+
+  @override
+  Future<Insight> insight(int projectId, String insightId) async {
+    calls.add('insight $projectId id=$insightId');
+    return insightsValue.firstWhere((i) => i.id == insightId);
+  }
+
+  @override
+  Future<Insight> createInsight(
+    int projectId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  }) async {
+    calls.add('createInsight $projectId name=$name');
+    final ins = Insight(
+      id: 'ins-${insightsValue.length + 1}',
+      projectId: projectId,
+      dashboardId: dashboardId,
+      name: name,
+      chartType: chartType,
+      query: query,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    insightsValue.add(ins);
+    return ins;
+  }
+
+  @override
+  Future<Insight> updateInsight(
+    int projectId,
+    String insightId, {
+    String? dashboardId,
+    required String name,
+    String chartType = 'line',
+    required InsightQuery query,
+  }) async {
+    calls.add('updateInsight $projectId id=$insightId');
+    final idx = insightsValue.indexWhere((i) => i.id == insightId);
+    if (idx != -1) {
+      final old = insightsValue[idx];
+      final updated = Insight(
+        id: old.id,
+        projectId: old.projectId,
+        dashboardId: dashboardId ?? old.dashboardId,
+        name: name,
+        chartType: chartType,
+        query: query,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      insightsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Insight not found');
+  }
+
+  @override
+  Future<void> deleteInsight(int projectId, String insightId) async {
+    calls.add('deleteInsight $projectId id=$insightId');
+    insightsValue.removeWhere((i) => i.id == insightId);
+  }
+
+  @override
+  Future<InsightQueryResult> queryInsight(int projectId, InsightQuery query) async {
+    calls.add('queryInsight $projectId');
+    return InsightQueryResult(
+      series: [
+        InsightSeries(
+          label: query.events.isNotEmpty ? query.events.first.name : 'Event',
+          data: [
+            const InsightDataPoint(time: '2026-09-01', value: 12),
+            const InsightDataPoint(time: '2026-09-02', value: 24),
+            const InsightDataPoint(time: '2026-09-03', value: 18),
+            const InsightDataPoint(time: '2026-09-04', value: 32),
+            const InsightDataPoint(time: '2026-09-05', value: 45),
+          ],
+          aggregatedValue: 131,
+        ),
+      ],
+      cached: false,
+      executedAt: DateTime.now(),
+    );
+  }
+
+  @override
+  Future<InsightQueryResult> insightResults(int projectId, String insightId) async {
+    calls.add('insightResults $projectId id=$insightId');
+    return InsightQueryResult(
+      series: [
+        const InsightSeries(
+          label: 'Data',
+          data: [
+            InsightDataPoint(time: '2026-09-01', value: 10),
+            InsightDataPoint(time: '2026-09-02', value: 25),
+            InsightDataPoint(time: '2026-09-03', value: 40),
+          ],
+          aggregatedValue: 75,
+        ),
+      ],
+      cached: false,
+      executedAt: DateTime.now(),
+    );
+  }
 }
 
 

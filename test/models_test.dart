@@ -247,4 +247,90 @@ void main() {
     expect(tr.upper('İstisna'), 'İSTİSNA');
     expect(en.upper('Exception'), 'EXCEPTION');
   });
+
+  test('dashboard and insight models parse and serialize correctly', () {
+    final dJson = {
+      'id': 'dash-1',
+      'project_id': 1,
+      'name': 'Overview',
+      'description': 'Main dashboard',
+      'is_default': true,
+      'layout': [
+        {'insight_id': 'ins-1', 'col': 0, 'row': 0, 'w': 6, 'h': 4},
+      ],
+      'created_at': '2026-09-01T10:00:00Z',
+      'updated_at': '2026-09-02T10:00:00Z',
+    };
+    final d = Dashboard.fromJson(dJson);
+    expect(d.id, 'dash-1');
+    expect(d.projectId, 1);
+    expect(d.name, 'Overview');
+    expect(d.description, 'Main dashboard');
+    expect(d.isDefault, isTrue);
+    expect(d.layout.length, 1);
+    expect(d.layout.first.insightId, 'ins-1');
+    expect(d.layout.first.col, 0);
+    expect(d.layout.first.row, 0);
+    expect(d.layout.first.w, 6);
+    expect(d.layout.first.h, 4);
+
+    final dOut = d.toJson();
+    expect(dOut['id'], 'dash-1');
+    expect(dOut['name'], 'Overview');
+    expect(dOut['is_default'], isTrue);
+
+    final insJson = {
+      'id': 'ins-1',
+      'project_id': 1,
+      'dashboard_id': 'dash-1',
+      'name': 'Pageviews',
+      'chart_type': 'line',
+      'query': {
+        'date_range': '14d',
+        'interval': 'day',
+        'events': [
+          {'name': 'pageview', 'math': 'count', 'property': ''},
+        ],
+        'breakdown': 'browser',
+      },
+      'created_at': '2026-09-01T10:00:00Z',
+      'updated_at': '2026-09-02T10:00:00Z',
+    };
+    final ins = Insight.fromJson(insJson);
+    expect(ins.id, 'ins-1');
+    expect(ins.name, 'Pageviews');
+    expect(ins.chartType, 'line');
+    expect(ins.query.dateRange, '14d');
+    expect(ins.query.interval, 'day');
+    expect(ins.query.events.length, 1);
+    expect(ins.query.events.first.name, 'pageview');
+    expect(ins.query.events.first.math, 'count');
+    expect(ins.query.breakdown, 'browser');
+
+    final insOut = ins.toJson();
+    expect(insOut['name'], 'Pageviews');
+    expect(insOut['chart_type'], 'line');
+
+    final qResJson = {
+      'series': [
+        {
+          'label': 'Chrome',
+          'aggregated_value': 265.5,
+          'data': [
+            {'time': '2026-09-01T00:00:00Z', 'value': 120.5},
+            {'time': '2026-09-02T00:00:00Z', 'value': 145.0},
+          ],
+        },
+      ],
+      'cached': true,
+      'executed_at': '2026-09-02T12:00:00Z',
+    };
+    final qRes = InsightQueryResult.fromJson(qResJson);
+    expect(qRes.cached, isTrue);
+    expect(qRes.series.length, 1);
+    expect(qRes.series.first.label, 'Chrome');
+    expect(qRes.series.first.aggregatedValue, 265.5);
+    expect(qRes.series.first.data.length, 2);
+    expect(qRes.series.first.data.first.value, 120.5);
+  });
 }

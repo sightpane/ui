@@ -147,6 +147,7 @@ class NavEntry {
 }
 
 String _navOverview(L l) => l.navOverview;
+String _navDashboards(L l) => l.navDashboards;
 String _navIssues(L l) => l.navIssues;
 String _navSessions(L l) => l.navSessions;
 String _navUsers(L l) => l.navUsers;
@@ -169,6 +170,7 @@ String _navSettings(L l) => l.navSettings;
 
 const projectNavEntries = [
   NavEntry(_navOverview, LucideIcons.layoutDashboard, ''),
+  NavEntry(_navDashboards, LucideIcons.layoutGrid, '/dashboards'),
   NavEntry(_navIssues, LucideIcons.bug, '/issues'),
   NavEntry(_navSessions, LucideIcons.video, '/sessions'),
   NavEntry(_navUsers, LucideIcons.users, '/users'),

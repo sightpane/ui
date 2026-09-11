@@ -389,3 +389,43 @@ final topSlowFunctionsProvider =
     limit: k.limit,
   ),
 );
+
+// ---------------------------------------------------------------------------
+// Dashboards & Insights (#18)
+// ---------------------------------------------------------------------------
+
+typedef DashboardsKey = ({int projectId});
+
+final dashboardsProvider =
+    FutureProvider.autoDispose.family<List<Dashboard>, DashboardsKey>(
+  (ref, k) => ref.watch(apiProvider).dashboards(k.projectId),
+);
+
+typedef DashboardDetailKey = ({int projectId, String dashboardId});
+
+final dashboardDetailProvider =
+    FutureProvider.autoDispose.family<Dashboard, DashboardDetailKey>(
+  (ref, k) => ref.watch(apiProvider).dashboard(k.projectId, k.dashboardId),
+);
+
+typedef InsightsKey = ({int projectId, String? dashboardId});
+
+final insightsProvider =
+    FutureProvider.autoDispose.family<List<Insight>, InsightsKey>(
+  (ref, k) => ref.watch(apiProvider).insights(k.projectId, dashboardId: k.dashboardId),
+);
+
+typedef InsightDetailKey = ({int projectId, String insightId});
+
+final insightDetailProvider =
+    FutureProvider.autoDispose.family<Insight, InsightDetailKey>(
+  (ref, k) => ref.watch(apiProvider).insight(k.projectId, k.insightId),
+);
+
+typedef InsightResultsKey = ({int projectId, String insightId});
+
+final insightResultsProvider =
+    FutureProvider.autoDispose.family<InsightQueryResult, InsightResultsKey>(
+  (ref, k) => ref.watch(apiProvider).insightResults(k.projectId, k.insightId),
+);
+
