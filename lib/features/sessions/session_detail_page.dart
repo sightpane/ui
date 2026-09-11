@@ -138,6 +138,18 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PageHeader(
+                breadcrumb: AppBreadcrumb(
+                  items: [
+                    BreadcrumbItem(
+                      label: context.l10n.sessionsTitle,
+                      path: '/projects/${widget.projectId}/sessions',
+                    ),
+                    BreadcrumbItem(
+                      label:
+                          context.l10n.sessionHeader(context.fmt.shortId(s.id)),
+                    ),
+                  ],
+                ),
                 title: context.l10n.sessionHeader(context.fmt.shortId(s.id)),
                 subtitle:
                     '${s.userLabel.isEmpty ? context.l10n.commonAnonymous : s.userLabel}'

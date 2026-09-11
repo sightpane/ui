@@ -4,14 +4,11 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../app/theme/app_theme.dart';
 import '../../app/theme/tokens.dart';
-import '../../core/api.dart';
 import '../../core/auth.dart';
 import '../../core/format.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../shared/widgets.dart';
-import '../projects/export_downloader_stub.dart'
-    if (dart.library.js_interop) '../projects/export_downloader_web.dart';
 
 class UsersPage extends ConsumerStatefulWidget {
   const UsersPage({
@@ -48,19 +45,9 @@ class _UsersPageState extends ConsumerState<UsersPage> {
   }
 
   void _showUserDetail(BuildContext context, UserSummary user) {
-    showAppDialog(
-      context,
-      _UserDetailDialog(
-        projectId: widget.projectId,
-        user: user,
-        onRefresh: () => ref.invalidate(
-          usersProvider((
-            project: widget.projectId,
-            days: _days,
-            query: _searchController.text.trim(),
-          )),
-        ),
-      ),
+    context.go(
+      '/projects/${widget.projectId}/users/detail?userId=${Uri.encodeQueryComponent(user.userId)}',
+      extra: user,
     );
   }
 
@@ -352,204 +339,3 @@ class _UsersPageState extends ConsumerState<UsersPage> {
   }
 }
 
-class _UserDetailDialog extends ConsumerStatefulWidget {
-  const _UserDetailDialog({
-    required this.projectId,
-    required this.user,
-    required this.onRefresh,
-  });
-
-  final int projectId;
-  final UserSummary user;
-  final VoidCallback onRefresh;
-
-  @override
-  ConsumerState<_UserDetailDialog> createState() => _UserDetailDialogState();
-}
-
-class _UserDetailDialogState extends ConsumerState<_UserDetailDialog> {
-  final bool _busy = false;
-
-  Future<void> _deleteUser() async {
-    final ok = await showAppDialog<bool>(
-      context,
-      ConfirmDialog(
-        title: context.l10n.actionDeleteData,
-        message: context.l10n.userDeleteConfirm,
-        confirmLabel: context.l10n.commonDelete,
-        destructive: true,
-        onConfirm: () async {
-          await ref.read(apiProvider).deleteUserData(widget.projectId, widget.user.userId);
-        },
-      ),
-    );
-    if (ok == true && mounted) {
-      toast(context, context.l10n.userDeleteSuccess);
-      widget.onRefresh();
-      closeOverlay(context, true);
-    }
-  }
-
-  void _exportUser() {
-    final url = ref.read(apiProvider).userExportUrl(widget.projectId, widget.user.userId);
-    downloadExportUrl(url);
-    toast(context, '${widget.user.userId} export started');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final u = widget.user;
-    final isAnon = u.userId.isEmpty;
-
-    return AlertDialog(
-      title: Row(
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: Tokens.accent.withValues(alpha: 0.15),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Center(
-              child: Text(
-                u.initials,
-                style: AppTheme.mono(size: 13, weight: FontWeight.w700, color: Tokens.accent),
-              ),
-            ),
-          ),
-          const Gap(10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  isAnon ? context.l10n.commonAnonymous : u.displayName,
-                  style: AppTheme.mono(size: 15, weight: FontWeight.w600),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (u.lastIP.isNotEmpty)
-                  Text(
-                    'IP: ${u.lastIP}',
-                    style: const TextStyle(fontSize: 11, color: Tokens.textDim),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      content: SizedBox(
-        width: 580,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              KpiRow([
-                KpiTile(
-                  label: context.l10n.kpiSessions,
-                  value: context.fmt.integer(u.sessionCount),
-                ),
-                KpiTile(
-                  label: context.l10n.colAvgDuration,
-                  value: context.fmt.duration(u.avgDuration),
-                ),
-                KpiTile(
-                  label: context.l10n.kpiErrors,
-                  value: context.fmt.integer(u.errorCount),
-                  valueColor: u.errorCount > 0 ? Tokens.danger : Tokens.ok,
-                ),
-              ]),
-              const Gap(14),
-              PanelCard(
-                title: context.l10n.colPlatform,
-                child: Column(
-                  children: [
-                    if (u.lastPlatform.isNotEmpty)
-                      CopyField(label: context.l10n.colPlatform, value: u.lastPlatform),
-                    if (u.lastBrowser.isNotEmpty) ...[
-                      const Gap(8),
-                      CopyField(label: 'Browser', value: u.lastBrowser),
-                    ],
-                    if (u.lastIP.isNotEmpty) ...[
-                      const Gap(8),
-                      CopyField(label: 'IP', value: u.lastIP),
-                    ],
-                    const Gap(8),
-                    CopyField(
-                      label: context.l10n.colFirstSeen,
-                      value: context.fmt.dateTime(u.firstSeen),
-                    ),
-                    const Gap(8),
-                    CopyField(
-                      label: context.l10n.colLastSeen,
-                      value: context.fmt.dateTime(u.lastSeen),
-                    ),
-                  ],
-                ),
-              ),
-              if (u.user.isNotEmpty) ...[
-                const Gap(14),
-                PanelCard(
-                  title: context.l10n.userCustomProps,
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final entry in u.user.entries)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Tokens.surface,
-                            border: Border.all(color: Tokens.hairline),
-                            borderRadius: BorderRadius.circular(Tokens.radius),
-                          ),
-                          child: Text(
-                            '${entry.key}: ${entry.value}',
-                            style: AppTheme.mono(size: 11, color: Tokens.text),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        OutlineButton(
-          size: ButtonSize.small,
-          leading: const Icon(LucideIcons.video, size: 14),
-          onPressed: () {
-            closeOverlay(context, false);
-            context.go(
-              '/projects/${widget.projectId}/sessions?q=user:${Uri.encodeComponent(u.userId)}',
-            );
-          },
-          child: Text(context.l10n.actionViewSessions),
-        ),
-        if (!isAnon) ...[
-          OutlineButton(
-            size: ButtonSize.small,
-            leading: const Icon(LucideIcons.download, size: 14),
-            onPressed: _exportUser,
-            child: Text(context.l10n.actionExportData),
-          ),
-          DestructiveButton(
-            size: ButtonSize.small,
-            leading: const Icon(LucideIcons.trash2, size: 14),
-            onPressed: _busy ? null : _deleteUser,
-            child: Text(context.l10n.actionDeleteData),
-          ),
-        ],
-        PrimaryButton(
-          size: ButtonSize.small,
-          onPressed: () => closeOverlay(context, false),
-          child: Text(context.l10n.commonClose),
-        ),
-      ],
-    );
-  }
-}

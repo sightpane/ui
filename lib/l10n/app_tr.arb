@@ -709,6 +709,7 @@
   "colAvg": "Ort.",
   "colCalls": "Çağrı",
   "colErrorRate": "Hata %",
+  "colAction": "İşlem",
   "performanceSlowestSamples": "En Yavaş Örnekler",
   "performanceViewReplay": "Kaydı Aç",
   "performanceDays7": "Son 7 Gün",

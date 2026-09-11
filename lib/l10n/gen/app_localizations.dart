@@ -2065,6 +2065,12 @@ abstract class L {
   /// **'Hata %'**
   String get colErrorRate;
 
+  /// No description provided for @colAction.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem'**
+  String get colAction;
+
   /// No description provided for @performanceSlowestSamples.
   ///
   /// In tr, this message translates to:

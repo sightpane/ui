@@ -1,7 +1,9 @@
 import 'package:sightpane_dashboard/core/models.dart';
 import 'package:sightpane_dashboard/features/events/events_page.dart';
 import 'package:sightpane_dashboard/features/issues/issue_detail_page.dart';
+import 'package:sightpane_dashboard/features/performance/transaction_detail_page.dart';
 import 'package:sightpane_dashboard/features/sessions/session_detail_page.dart';
+import 'package:sightpane_dashboard/features/users/user_detail_page.dart';
 import 'package:sightpane_dashboard/features/users/users_page.dart';
 import 'package:sightpane_dashboard/shared/widgets.dart';
 import 'package:flutter/services.dart' show LogicalKeyboardKey;
@@ -280,10 +282,11 @@ void main() {
     expect(find.text('GET /api/v1/sessions'), findsOneWidget);
     expect(api.calls, contains('performance 1 days=14 op='));
 
-    // Tap on transaction to open detail dialog
+    // Tap on transaction to open detail page
     await tester.tap(find.text('route:/dashboard'));
     await tester.pumpAndSettle();
 
+    expect(find.byType(TransactionDetailPage), findsOneWidget);
     expect(find.text('En Yavaş Örnekler'), findsOneWidget);
     expect(find.text('Kaydı Aç'), findsOneWidget);
     expect(api.calls, contains('transactionDetail 1 name=route:/dashboard op=navigation days=14'));
@@ -366,19 +369,20 @@ void main() {
     expect(find.text('web'), findsOneWidget);
     expect(find.text('Chrome'), findsOneWidget);
 
-    // Click on user to open detail dialog
+    // Click on user to open detail page
     await tester.tap(find.text('Ops User'));
     await settle(tester);
-    expect(find.text('Kullanıcı Detayları'), findsNothing); // title has initials + display name
+    expect(find.byType(UserDetailPage), findsOneWidget);
     expect(find.text('IP: 10.1.2.3'), findsOneWidget);
     expect(find.text('Özel Nitelikler'), findsOneWidget);
     expect(find.text('role: admin'), findsOneWidget);
     expect(find.text('Oturumları Gör'), findsOneWidget);
     expect(find.text('Veriyi İndir (JSON)'), findsOneWidget);
 
-    // Close dialog
-    await tester.tap(find.text('Kapat'));
+    // Breadcrumb navigation back to Users
+    await tester.tap(find.widgetWithText(GhostButton, 'Kullanıcılar'));
     await settle(tester);
+    expect(find.byType(UsersPage), findsOneWidget);
 
     // Sidebar navigation check
     await tester.tap(find.text('Oturumlar'));

@@ -7,6 +7,7 @@ export 'environment_card.dart';
 export 'filter_search_field.dart';
 export 'widgets/app_dialog.dart';
 export 'widgets/bar_chart.dart';
+export 'widgets/breadcrumb.dart';
 export 'widgets/confirm_dialog.dart';
 export 'widgets/copy_field.dart';
 export 'widgets/data_table.dart';

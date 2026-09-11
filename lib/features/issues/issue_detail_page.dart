@@ -75,6 +75,15 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               PageHeader(
+                breadcrumb: AppBreadcrumb(
+                  items: [
+                    BreadcrumbItem(
+                      label: context.l10n.issuesTitle,
+                      path: '/projects/${widget.projectId}/issues',
+                    ),
+                    BreadcrumbItem(label: i.title),
+                  ],
+                ),
                 title: i.title,
                 subtitle: context.l10n.issueSeenSummary(
                   context.fmt.integer(i.count),

@@ -328,6 +328,7 @@
   "colAvg": "Avg",
   "colCalls": "Calls",
   "colErrorRate": "Error %",
+  "colAction": "Action",
   "performanceSlowestSamples": "Slowest Samples",
   "performanceViewReplay": "View Replay",
   "performanceDays7": "Last 7 Days",

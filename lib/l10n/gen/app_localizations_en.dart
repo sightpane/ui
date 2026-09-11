@@ -1175,6 +1175,9 @@ class LEn extends L {
   String get colErrorRate => 'Error %';
 
   @override
+  String get colAction => 'Action';
+
+  @override
   String get performanceSlowestSamples => 'Slowest Samples';
 
   @override

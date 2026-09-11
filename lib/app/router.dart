@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../core/auth.dart';
+import '../core/models.dart';
 import '../features/auth/auth_pages.dart';
 import '../features/events/events_page.dart';
 import '../features/issues/issue_detail_page.dart';
@@ -11,10 +12,11 @@ import '../features/projects/overview_page.dart';
 import '../features/projects/projects_page.dart';
 import '../features/projects/settings_page.dart';
 import '../features/performance/performance_page.dart';
+import '../features/performance/transaction_detail_page.dart';
 import '../features/releases/releases_page.dart';
 import '../features/sessions/session_detail_page.dart';
-
 import '../features/sessions/sessions_page.dart';
+import '../features/users/user_detail_page.dart';
 import '../features/users/users_page.dart';
 import '../shell/app_shell.dart';
 
@@ -80,6 +82,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                   projectId: _id(s),
                   query: s.uri.queryParameters['q'] ?? '',
                 ),
+                routes: [
+                  GoRoute(
+                    path: 'detail',
+                    builder: (_, s) => UserDetailPage(
+                      projectId: _id(s),
+                      userId: s.uri.queryParameters['userId'] ?? '',
+                      initialUser: s.extra is UserSummary
+                          ? s.extra as UserSummary
+                          : null,
+                    ),
+                  ),
+                ],
               ),
               GoRoute(
                 path: 'issues',
@@ -99,6 +113,18 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'performance',
                 builder: (_, s) => PerformancePage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: 'transaction',
+                    builder: (_, s) => TransactionDetailPage(
+                      projectId: _id(s),
+                      name: s.uri.queryParameters['name'] ?? '',
+                      op: s.uri.queryParameters['op'] ?? '',
+                      days: int.tryParse(s.uri.queryParameters['days'] ?? '') ??
+                          14,
+                    ),
+                  ),
+                ],
               ),
               GoRoute(
                 path: 'releases',

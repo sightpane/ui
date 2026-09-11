@@ -1109,6 +1109,9 @@ class LTr extends L {
   String get colErrorRate => 'Hata %';
 
   @override
+  String get colAction => 'İşlem';
+
+  @override
   String get performanceSlowestSamples => 'En Yavaş Örnekler';
 
   @override
