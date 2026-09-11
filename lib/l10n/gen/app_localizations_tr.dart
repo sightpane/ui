@@ -1453,4 +1453,68 @@ class LTr extends L {
 
   @override
   String get pathsExit => 'Terk (Exit)';
+
+  @override
+  String get navFeatureFlags => 'Özellik Bayrakları (Flags)';
+
+  @override
+  String get flagsTitle => 'Özellik Bayrakları & Uzaktan Yapılandırma';
+
+  @override
+  String get flagsSubtitle =>
+      'Kod yayınlamadan özellikleri anında açıp kapatın, kademeli dağıtım (canary) ve kural hedeflemesi yapın.';
+
+  @override
+  String get flagsNew => 'Yeni Bayrak';
+
+  @override
+  String get flagsKey => 'Bayrak Anahtarı (Key)';
+
+  @override
+  String get flagsKeyHint => 'Örn: new_checkout_flow';
+
+  @override
+  String get flagsName => 'Ad';
+
+  @override
+  String get flagsDesc => 'Açıklama';
+
+  @override
+  String get flagsRollout => 'Kademeli Dağıtım (%)';
+
+  @override
+  String get flagsActive => 'Aktif';
+
+  @override
+  String get flagsDisabled => 'Devre Dışı';
+
+  @override
+  String get flagsVariants => 'Çoklu Varyantlar (Multivariant)';
+
+  @override
+  String get flagsFilters => 'Hedefleme Kuralları';
+
+  @override
+  String get flagsAddFilter => 'Kural Ekle';
+
+  @override
+  String get flagsAddVariant => 'Varyant Ekle';
+
+  @override
+  String get flagsTestTitle => 'Canlı Değerlendirme Testi';
+
+  @override
+  String get flagsTestDistinctId => 'Kullanıcı ID (distinct_id)';
+
+  @override
+  String get flagsTestResult => 'Değerlendirme Sonucu';
+
+  @override
+  String get flagsDeleted => 'Bayrak silindi.';
+
+  @override
+  String get flagsSaved => 'Bayrak kaydedildi.';
+
+  @override
+  String get flagsEmpty => 'Henüz bir özellik bayrağı oluşturulmadı.';
 }

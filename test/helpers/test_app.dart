@@ -1520,6 +1520,137 @@ class FakeApi implements SightpaneApi {
     calls.add('pathSessions $projectId src=$source tgt=$target');
     return ['sess-p1', 'sess-p2'];
   }
+
+  var featureFlagsValue = <FeatureFlag>[
+    const FeatureFlag(
+      id: 1,
+      projectId: 1,
+      key: 'new_checkout_flow',
+      name: 'New Checkout Flow',
+      description: 'Streamlined multi-step checkout',
+      enabled: true,
+      rolloutPercentage: 100,
+      filters: [],
+      variants: [],
+    ),
+    const FeatureFlag(
+      id: 2,
+      projectId: 1,
+      key: 'beta_dashboard_v2',
+      name: 'Beta Dashboard v2',
+      description: 'Admin and power user interface',
+      enabled: true,
+      rolloutPercentage: 50,
+      filters: [
+        FlagFilter(property: 'role', operator: 'exact', value: 'admin'),
+      ],
+      variants: [],
+    ),
+    const FeatureFlag(
+      id: 3,
+      projectId: 1,
+      key: 'pricing_experiment',
+      name: 'Pricing Tier Experiment',
+      description: 'Test monthly vs yearly emphasis',
+      enabled: true,
+      rolloutPercentage: 100,
+      variants: [
+        FlagVariant(key: 'control', rollout: 50),
+        FlagVariant(key: 'treatment_yearly', rollout: 50),
+      ],
+    ),
+  ];
+
+  @override
+  Future<List<FeatureFlag>> featureFlags(int projectId) async {
+    calls.add('featureFlags $projectId');
+    return featureFlagsValue;
+  }
+
+  @override
+  Future<FeatureFlag> createFeatureFlag(
+    int projectId, {
+    required String key,
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  }) async {
+    calls.add('createFeatureFlag $projectId key=$key');
+    final f = FeatureFlag(
+      id: featureFlagsValue.length + 1,
+      projectId: projectId,
+      key: key,
+      name: name,
+      description: description,
+      enabled: enabled,
+      rolloutPercentage: rolloutPercentage,
+      filters: filters,
+      variants: variants,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    featureFlagsValue.add(f);
+    return f;
+  }
+
+  @override
+  Future<FeatureFlag> updateFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  }) async {
+    calls.add('updateFeatureFlag $projectId id=$flagId');
+    final idx = featureFlagsValue.indexWhere((f) => f.id == flagId);
+    if (idx != -1) {
+      final old = featureFlagsValue[idx];
+      final updated = FeatureFlag(
+        id: old.id,
+        projectId: old.projectId,
+        key: old.key,
+        name: name,
+        description: description,
+        enabled: enabled,
+        rolloutPercentage: rolloutPercentage,
+        filters: filters,
+        variants: variants,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      featureFlagsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Flag not found');
+  }
+
+  @override
+  Future<void> deleteFeatureFlag(int projectId, int flagId) async {
+    calls.add('deleteFeatureFlag $projectId id=$flagId');
+    featureFlagsValue.removeWhere((f) => f.id == flagId);
+  }
+
+  @override
+  Future<Map<String, dynamic>> testFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String distinctId,
+    Map<String, dynamic> properties = const {},
+  }) async {
+    calls.add('testFeatureFlag $projectId id=$flagId user=$distinctId');
+    return {
+      'key': 'test_flag',
+      'value': true,
+      'active': true,
+      'enabled': true,
+    };
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

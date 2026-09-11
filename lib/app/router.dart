@@ -7,6 +7,7 @@ import '../core/models.dart';
 import '../features/auth/auth_pages.dart';
 import '../features/cohorts/cohorts_page.dart';
 import '../features/events/events_page.dart';
+import '../features/flags/feature_flags_page.dart';
 import '../features/funnels/funnel_detail_page.dart';
 import '../features/funnels/funnels_page.dart';
 import '../features/issues/issue_detail_page.dart';
@@ -163,6 +164,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'paths',
                 builder: (_, s) => PathsPage(projectId: _id(s)),
+              ),
+              GoRoute(
+                path: 'feature-flags',
+                builder: (_, s) => FeatureFlagsPage(projectId: _id(s)),
               ),
               GoRoute(
                 path: 'settings',

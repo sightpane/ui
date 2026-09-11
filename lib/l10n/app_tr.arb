@@ -861,5 +861,26 @@
     }
   },
   "pathsReplaysModalTitle": "Yolculuk Oturum Kayıtları",
-  "pathsExit": "Terk (Exit)"
+  "pathsExit": "Terk (Exit)",
+  "navFeatureFlags": "Özellik Bayrakları (Flags)",
+  "flagsTitle": "Özellik Bayrakları & Uzaktan Yapılandırma",
+  "flagsSubtitle": "Kod yayınlamadan özellikleri anında açıp kapatın, kademeli dağıtım (canary) ve kural hedeflemesi yapın.",
+  "flagsNew": "Yeni Bayrak",
+  "flagsKey": "Bayrak Anahtarı (Key)",
+  "flagsKeyHint": "Örn: new_checkout_flow",
+  "flagsName": "Ad",
+  "flagsDesc": "Açıklama",
+  "flagsRollout": "Kademeli Dağıtım (%)",
+  "flagsActive": "Aktif",
+  "flagsDisabled": "Devre Dışı",
+  "flagsVariants": "Çoklu Varyantlar (Multivariant)",
+  "flagsFilters": "Hedefleme Kuralları",
+  "flagsAddFilter": "Kural Ekle",
+  "flagsAddVariant": "Varyant Ekle",
+  "flagsTestTitle": "Canlı Değerlendirme Testi",
+  "flagsTestDistinctId": "Kullanıcı ID (distinct_id)",
+  "flagsTestResult": "Değerlendirme Sonucu",
+  "flagsDeleted": "Bayrak silindi.",
+  "flagsSaved": "Bayrak kaydedildi.",
+  "flagsEmpty": "Henüz bir özellik bayrağı oluşturulmadı."
 }

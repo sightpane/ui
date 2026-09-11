@@ -1630,3 +1630,108 @@ class PathResult {
   );
 }
 
+class FlagFilter {
+  const FlagFilter({
+    required this.property,
+    required this.operator,
+    required this.value,
+  });
+
+  final String property;
+  final String operator;
+  final dynamic value;
+
+  factory FlagFilter.fromJson(Map<String, Object?> j) => FlagFilter(
+    property: _s(j['property']),
+    operator: _s(j['operator']).isEmpty ? 'exact' : _s(j['operator']),
+    value: j['value'],
+  );
+
+  Map<String, Object?> toJson() => {
+    'property': property,
+    'operator': operator,
+    'value': value,
+  };
+}
+
+class FlagVariant {
+  const FlagVariant({
+    required this.key,
+    required this.rollout,
+  });
+
+  final String key;
+  final int rollout;
+
+  factory FlagVariant.fromJson(Map<String, Object?> j) => FlagVariant(
+    key: _s(j['key']),
+    rollout: _i(j['rollout']) > 0 ? _i(j['rollout']) : 50,
+  );
+
+  Map<String, Object?> toJson() => {
+    'key': key,
+    'rollout': rollout,
+  };
+}
+
+class FeatureFlag {
+  const FeatureFlag({
+    required this.id,
+    required this.projectId,
+    required this.key,
+    required this.name,
+    this.description = '',
+    this.enabled = true,
+    this.rolloutPercentage = 100,
+    this.filters = const [],
+    this.variants = const [],
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String key;
+  final String name;
+  final String description;
+  final bool enabled;
+  final int rolloutPercentage;
+  final List<FlagFilter> filters;
+  final List<FlagVariant> variants;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory FeatureFlag.fromJson(Map<String, Object?> j) => FeatureFlag(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    key: _s(j['key']),
+    name: _s(j['name']),
+    description: _s(j['description']),
+    enabled: j['enabled'] != false,
+    rolloutPercentage: _i(j['rollout_percentage']),
+    filters: [
+      for (final f in (j['filters'] as List? ?? const []))
+        FlagFilter.fromJson(_m(f)),
+    ],
+    variants: [
+      for (final v in (j['variants'] as List? ?? const []))
+        FlagVariant.fromJson(_m(v)),
+    ],
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'key': key,
+    'name': name,
+    'description': description,
+    'enabled': enabled,
+    'rollout_percentage': rolloutPercentage,
+    'filters': [for (final f in filters) f.toJson()],
+    'variants': [for (final v in variants) v.toJson()],
+  };
+}
+
+

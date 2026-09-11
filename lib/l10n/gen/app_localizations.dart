@@ -2712,6 +2712,132 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Terk (Exit)'**
   String get pathsExit;
+
+  /// No description provided for @navFeatureFlags.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özellik Bayrakları (Flags)'**
+  String get navFeatureFlags;
+
+  /// No description provided for @flagsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Özellik Bayrakları & Uzaktan Yapılandırma'**
+  String get flagsTitle;
+
+  /// No description provided for @flagsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kod yayınlamadan özellikleri anında açıp kapatın, kademeli dağıtım (canary) ve kural hedeflemesi yapın.'**
+  String get flagsSubtitle;
+
+  /// No description provided for @flagsNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Bayrak'**
+  String get flagsNew;
+
+  /// No description provided for @flagsKey.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak Anahtarı (Key)'**
+  String get flagsKey;
+
+  /// No description provided for @flagsKeyHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: new_checkout_flow'**
+  String get flagsKeyHint;
+
+  /// No description provided for @flagsName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ad'**
+  String get flagsName;
+
+  /// No description provided for @flagsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get flagsDesc;
+
+  /// No description provided for @flagsRollout.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kademeli Dağıtım (%)'**
+  String get flagsRollout;
+
+  /// No description provided for @flagsActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif'**
+  String get flagsActive;
+
+  /// No description provided for @flagsDisabled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devre Dışı'**
+  String get flagsDisabled;
+
+  /// No description provided for @flagsVariants.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çoklu Varyantlar (Multivariant)'**
+  String get flagsVariants;
+
+  /// No description provided for @flagsFilters.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedefleme Kuralları'**
+  String get flagsFilters;
+
+  /// No description provided for @flagsAddFilter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural Ekle'**
+  String get flagsAddFilter;
+
+  /// No description provided for @flagsAddVariant.
+  ///
+  /// In tr, this message translates to:
+  /// **'Varyant Ekle'**
+  String get flagsAddVariant;
+
+  /// No description provided for @flagsTestTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Canlı Değerlendirme Testi'**
+  String get flagsTestTitle;
+
+  /// No description provided for @flagsTestDistinctId.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı ID (distinct_id)'**
+  String get flagsTestDistinctId;
+
+  /// No description provided for @flagsTestResult.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değerlendirme Sonucu'**
+  String get flagsTestResult;
+
+  /// No description provided for @flagsDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak silindi.'**
+  String get flagsDeleted;
+
+  /// No description provided for @flagsSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bayrak kaydedildi.'**
+  String get flagsSaved;
+
+  /// No description provided for @flagsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir özellik bayrağı oluşturulmadı.'**
+  String get flagsEmpty;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

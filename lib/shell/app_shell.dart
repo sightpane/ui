@@ -154,6 +154,7 @@ String _navFunnels(L l) => l.navFunnels;
 String _navRetention(L l) => l.navRetention;
 String _navCohorts(L l) => l.navCohorts;
 String _navPaths(L l) => l.navPaths;
+String _navFeatureFlags(L l) => l.navFeatureFlags;
 String _navPerformance(L l) => l.performanceTitle;
 String _navReleases(L l) => l.navReleases;
 String _navEvents(L l) => l.navEvents;
@@ -168,6 +169,7 @@ const projectNavEntries = [
   NavEntry(_navRetention, LucideIcons.calendarDays, '/retention'),
   NavEntry(_navCohorts, LucideIcons.layers, '/cohorts'),
   NavEntry(_navPaths, LucideIcons.gitBranch, '/paths'),
+  NavEntry(_navFeatureFlags, LucideIcons.flag, '/feature-flags'),
   NavEntry(_navPerformance, LucideIcons.gauge, '/performance'),
   NavEntry(_navReleases, LucideIcons.tag, '/releases'),
   NavEntry(_navEvents, LucideIcons.chartBar, '/events'),

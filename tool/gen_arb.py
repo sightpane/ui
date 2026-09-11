@@ -490,6 +490,30 @@ k('pathsSampleSessions', 'Örnek Oturumlar ({count})', 'Sample Sessions ({count}
 k('pathsReplaysModalTitle', 'Yolculuk Oturum Kayıtları', 'Journey Session Replays')
 k('pathsExit', 'Terk (Exit)', 'Exit')
 
+# ---------------- feature flags ----------------
+k('navFeatureFlags', 'Özellik Bayrakları (Flags)', 'Feature Flags')
+k('flagsTitle', 'Özellik Bayrakları & Uzaktan Yapılandırma', 'Feature Flags & Remote Config')
+k('flagsSubtitle', 'Kod yayınlamadan özellikleri anında açıp kapatın, kademeli dağıtım (canary) ve kural hedeflemesi yapın.', 'Toggle features instantly without deploying code, manage graduated rollouts and target user segments.')
+k('flagsNew', 'Yeni Bayrak', 'New Feature Flag')
+k('flagsKey', 'Bayrak Anahtarı (Key)', 'Flag Key')
+k('flagsKeyHint', 'Örn: new_checkout_flow', 'e.g. new_checkout_flow')
+k('flagsName', 'Ad', 'Name')
+k('flagsDesc', 'Açıklama', 'Description')
+k('flagsRollout', 'Kademeli Dağıtım (%)', 'Rollout Percentage (%)')
+k('flagsActive', 'Aktif', 'Active')
+k('flagsDisabled', 'Devre Dışı', 'Disabled')
+k('flagsVariants', 'Çoklu Varyantlar (Multivariant)', 'Variants')
+k('flagsFilters', 'Hedefleme Kuralları', 'Targeting Rules')
+k('flagsAddFilter', 'Kural Ekle', 'Add Rule')
+k('flagsAddVariant', 'Varyant Ekle', 'Add Variant')
+k('flagsTestTitle', 'Canlı Değerlendirme Testi', 'Live Evaluation Preview')
+k('flagsTestDistinctId', 'Kullanıcı ID (distinct_id)', 'Distinct User ID')
+k('flagsTestResult', 'Değerlendirme Sonucu', 'Evaluation Result')
+k('flagsDeleted', 'Bayrak silindi.', 'Feature flag deleted.')
+k('flagsSaved', 'Bayrak kaydedildi.', 'Feature flag saved.')
+k('flagsEmpty', 'Henüz bir özellik bayrağı oluşturulmadı.', 'No feature flags created yet.')
+
+
 
 
 def arb(lang, idx):

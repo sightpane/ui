@@ -196,3 +196,9 @@ final pathsProvider =
   ),
 );
 
+final featureFlagsProvider =
+    FutureProvider.autoDispose.family<List<FeatureFlag>, int>(
+  (ref, projectId) => ref.watch(apiProvider).featureFlags(projectId),
+);
+
+

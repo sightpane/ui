@@ -1532,4 +1532,68 @@ class LEn extends L {
 
   @override
   String get pathsExit => 'Exit';
+
+  @override
+  String get navFeatureFlags => 'Feature Flags';
+
+  @override
+  String get flagsTitle => 'Feature Flags & Remote Config';
+
+  @override
+  String get flagsSubtitle =>
+      'Toggle features instantly without deploying code, manage graduated rollouts and target user segments.';
+
+  @override
+  String get flagsNew => 'New Feature Flag';
+
+  @override
+  String get flagsKey => 'Flag Key';
+
+  @override
+  String get flagsKeyHint => 'e.g. new_checkout_flow';
+
+  @override
+  String get flagsName => 'Name';
+
+  @override
+  String get flagsDesc => 'Description';
+
+  @override
+  String get flagsRollout => 'Rollout Percentage (%)';
+
+  @override
+  String get flagsActive => 'Active';
+
+  @override
+  String get flagsDisabled => 'Disabled';
+
+  @override
+  String get flagsVariants => 'Variants';
+
+  @override
+  String get flagsFilters => 'Targeting Rules';
+
+  @override
+  String get flagsAddFilter => 'Add Rule';
+
+  @override
+  String get flagsAddVariant => 'Add Variant';
+
+  @override
+  String get flagsTestTitle => 'Live Evaluation Preview';
+
+  @override
+  String get flagsTestDistinctId => 'Distinct User ID';
+
+  @override
+  String get flagsTestResult => 'Evaluation Result';
+
+  @override
+  String get flagsDeleted => 'Feature flag deleted.';
+
+  @override
+  String get flagsSaved => 'Feature flag saved.';
+
+  @override
+  String get flagsEmpty => 'No feature flags created yet.';
 }

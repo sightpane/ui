@@ -157,6 +157,34 @@ abstract class SightpaneApi {
     int days = 14,
     int limit = 50,
   });
+  Future<List<FeatureFlag>> featureFlags(int projectId);
+  Future<FeatureFlag> createFeatureFlag(
+    int projectId, {
+    required String key,
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  });
+  Future<FeatureFlag> updateFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  });
+  Future<void> deleteFeatureFlag(int projectId, int flagId);
+  Future<Map<String, dynamic>> testFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String distinctId,
+    Map<String, dynamic> properties = const {},
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -777,6 +805,92 @@ class HttpSightpaneApi implements SightpaneApi {
       for (final s in (res['session_ids'] as List? ?? const [])) '$s',
     ];
   }
+
+  @override
+  Future<List<FeatureFlag>> featureFlags(int projectId) async => [
+    for (final f in _list(await _send('GET', '/api/v1/projects/$projectId/feature-flags')))
+      FeatureFlag.fromJson(f),
+  ];
+
+  @override
+  Future<FeatureFlag> createFeatureFlag(
+    int projectId, {
+    required String key,
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  }) async =>
+      FeatureFlag.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/feature-flags',
+            body: {
+              'key': key,
+              'name': name,
+              'description': description,
+              'enabled': enabled,
+              'rollout_percentage': rolloutPercentage,
+              'filters': filters.map((f) => f.toJson()).toList(),
+              'variants': variants.map((v) => v.toJson()).toList(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<FeatureFlag> updateFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String name,
+    String description = '',
+    bool enabled = true,
+    int rolloutPercentage = 100,
+    List<FlagFilter> filters = const [],
+    List<FlagVariant> variants = const [],
+  }) async =>
+      FeatureFlag.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/feature-flags/$flagId',
+            body: {
+              'name': name,
+              'description': description,
+              'enabled': enabled,
+              'rollout_percentage': rolloutPercentage,
+              'filters': filters.map((f) => f.toJson()).toList(),
+              'variants': variants.map((v) => v.toJson()).toList(),
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteFeatureFlag(int projectId, int flagId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/feature-flags/$flagId');
+  }
+
+  @override
+  Future<Map<String, dynamic>> testFeatureFlag(
+    int projectId,
+    int flagId, {
+    required String distinctId,
+    Map<String, dynamic> properties = const {},
+  }) async =>
+      _map(
+        await _send(
+          'POST',
+          '/api/v1/projects/$projectId/feature-flags/$flagId/test',
+          body: {
+            'distinct_id': distinctId,
+            'properties': properties,
+          },
+        ),
+      );
 
   @override
   Future<SessionDetail> session(String id) async =>
