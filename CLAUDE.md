@@ -104,3 +104,4 @@ table of `key: (tr, en, placeholders)` that emits `lib/l10n/app_tr.arb` (templat
 - `lib/main.dart` carries the AGPL SPDX header. AGPL §13: the sign-in page and the top bar show the source address — keep them when touching either screen.
 - Tests assert against the **Turkish** locale (`find.text('Projeler')`); `testContainer(api, locale: …)` pins the language and `test/i18n_test.dart` is where English is exercised. Translating one side of such an assertion breaks the test.
 - The roadmap for all three repositories lives in [sightpane/sightpane](https://github.com/sightpane/sightpane) under `future-todo-files/`.
+- **Commit on issue/task completion**: Whenever an issue, bug fix, or UI task is finished and verified (`flutter analyze`, `flutter test`), create a descriptive conventional commit explaining what was changed and why. Do not run `git push` unless explicitly asked.

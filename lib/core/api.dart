@@ -322,11 +322,10 @@ class HttpSightpaneApi implements SightpaneApi {
         body: {
           'name': name,
           'platform': platform,
-          if (retentionDays != null) 'retention_days': retentionDays,
-          if (quotaItemsPerMinute != null)
-            'quota_items_per_minute': quotaItemsPerMinute,
-          if (storeIp != null) 'store_ip': storeIp,
-          if (scrubRulesJson != null) 'scrub_rules_json': scrubRulesJson,
+          'retention_days': ?retentionDays,
+          'quota_items_per_minute': ?quotaItemsPerMinute,
+          'store_ip': ?storeIp,
+          'scrub_rules_json': ?scrubRulesJson,
         },
       ),
     ),
