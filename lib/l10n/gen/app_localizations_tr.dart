@@ -1980,4 +1980,62 @@ class LTr extends L {
 
   @override
   String get alertsMetricCrashCount => 'Çökme Sayısı';
+
+  @override
+  String get navTraces => 'Dağıtık İzler (Traces)';
+
+  @override
+  String get tracesTitle => 'Dağıtık İzleme & Waterfall';
+
+  @override
+  String get tracesSubtitle =>
+      'Mikroservisler ve veritabanı sorguları arasındaki gecikme ve N+1 sorunlarını analiz edin.';
+
+  @override
+  String get tracesEmpty => 'Henüz bir iz (trace) kaydı bulunamadı.';
+
+  @override
+  String get tracesFilterService => 'Servis';
+
+  @override
+  String get tracesFilterMinDuration => 'Min Süre (ms)';
+
+  @override
+  String get tracesSearchPlaceholder => 'İz ID veya kök işlem ara...';
+
+  @override
+  String get traceDetailTitle => 'İz Detayı';
+
+  @override
+  String get traceDetailSpanCount => 'Span Sayısı';
+
+  @override
+  String get traceDetailServiceCount => 'Servis Sayısı';
+
+  @override
+  String get traceDetailDuration => 'Toplam Süre';
+
+  @override
+  String get traceSuspectNPlus1 => 'Olası N+1 Sorgu Sorunu Tespit Edildi!';
+
+  @override
+  String get traceSpanDetails => 'Span Detayı';
+
+  @override
+  String get traceSqlStatement => 'SQL Sorgusu';
+
+  @override
+  String get traceAttributes => 'Nitelikler & Etiketler';
+
+  @override
+  String get traceStatus => 'Durum';
+
+  @override
+  String get traceRootSpan => 'Kök İşlem';
+
+  @override
+  String get traceTimestamp => 'Başlangıç Zamanı';
+
+  @override
+  String get performanceViewTrace => 'İz / Trace';
 }

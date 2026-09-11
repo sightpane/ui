@@ -2065,4 +2065,62 @@ class LEn extends L {
 
   @override
   String get alertsMetricCrashCount => 'Crash Count';
+
+  @override
+  String get navTraces => 'Distributed Traces';
+
+  @override
+  String get tracesTitle => 'Distributed Traces & Spans';
+
+  @override
+  String get tracesSubtitle =>
+      'Trace end-to-end distributed requests across microservices, databases, and identify N+1 bottlenecks.';
+
+  @override
+  String get tracesEmpty => 'No traces found for the selected filters.';
+
+  @override
+  String get tracesFilterService => 'Service';
+
+  @override
+  String get tracesFilterMinDuration => 'Min Duration (ms)';
+
+  @override
+  String get tracesSearchPlaceholder => 'Search trace ID or root operation...';
+
+  @override
+  String get traceDetailTitle => 'Trace Detail';
+
+  @override
+  String get traceDetailSpanCount => 'Total Spans';
+
+  @override
+  String get traceDetailServiceCount => 'Total Services';
+
+  @override
+  String get traceDetailDuration => 'Total Duration';
+
+  @override
+  String get traceSuspectNPlus1 => 'Suspected N+1 Query Bottleneck Detected!';
+
+  @override
+  String get traceSpanDetails => 'Span Details';
+
+  @override
+  String get traceSqlStatement => 'SQL Statement';
+
+  @override
+  String get traceAttributes => 'Attributes & Tags';
+
+  @override
+  String get traceStatus => 'Status';
+
+  @override
+  String get traceRootSpan => 'Root Operation';
+
+  @override
+  String get traceTimestamp => 'Start Time';
+
+  @override
+  String get performanceViewTrace => 'View Trace';
 }

@@ -32,6 +32,8 @@ import '../features/surveys/surveys_page.dart';
 import '../features/sessions/sessions_page.dart';
 import '../features/alerts/metric_alerts_page.dart';
 import '../features/alerts/metric_alert_rule_form_page.dart';
+import '../features/traces/traces_page.dart';
+import '../features/traces/trace_detail_page.dart';
 import '../features/users/user_detail_page.dart';
 import '../features/users/users_page.dart';
 import '../shell/app_shell.dart';
@@ -244,6 +246,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, s) => MetricAlertRuleFormPage(
                       projectId: _id(s),
                       ruleId: int.tryParse(s.pathParameters['ruleId'] ?? ''),
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'traces',
+                builder: (_, s) => TracesPage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':traceId',
+                    builder: (_, s) => TraceDetailPage(
+                      projectId: _id(s),
+                      traceId: s.pathParameters['traceId'] ?? '',
                     ),
                   ),
                 ],

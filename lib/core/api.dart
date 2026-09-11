@@ -330,6 +330,16 @@ abstract class SightpaneApi {
     int days = 7,
   });
   Future<Map<String, Object?>> testMetricAlertRule(int projectId, int ruleId);
+  Future<List<TraceSummary>> traces(
+    int projectId, {
+    int days = 14,
+    String? service,
+    String? status,
+    double? minDurationMs,
+    String? query,
+    int limit = 50,
+  });
+  Future<TraceDetail> trace(int projectId, String traceId);
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -1573,6 +1583,34 @@ class HttpSightpaneApi implements SightpaneApi {
   @override
   Future<Map<String, Object?>> testMetricAlertRule(int projectId, int ruleId) async =>
       _map(await _send('POST', '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId/test'));
+
+  @override
+  Future<List<TraceSummary>> traces(
+    int projectId, {
+    int days = 14,
+    String? service,
+    String? status,
+    double? minDurationMs,
+    String? query,
+    int limit = 50,
+  }) async {
+    final q = <String, String>{
+      'days': '$days',
+      'limit': '$limit',
+      if (service != null && service.isNotEmpty) 'service': service,
+      if (status != null && status.isNotEmpty) 'status': status,
+      if (minDurationMs != null && minDurationMs > 0) 'min_duration_ms': '$minDurationMs',
+      if (query != null && query.isNotEmpty) 'query': query,
+    };
+    final res = await _send('GET', '/api/v1/projects/$projectId/traces', query: q);
+    return [for (final t in _list(res)) TraceSummary.fromJson(t)];
+  }
+
+  @override
+  Future<TraceDetail> trace(int projectId, String traceId) async {
+    final res = await _send('GET', '/api/v1/projects/$projectId/traces/$traceId');
+    return TraceDetail.fromJson(_map(res));
+  }
 
   @override
   Future<SessionDetail> session(String id) async =>

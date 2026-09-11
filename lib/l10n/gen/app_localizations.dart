@@ -3732,6 +3732,120 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Çökme Sayısı'**
   String get alertsMetricCrashCount;
+
+  /// No description provided for @navTraces.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dağıtık İzler (Traces)'**
+  String get navTraces;
+
+  /// No description provided for @tracesTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dağıtık İzleme & Waterfall'**
+  String get tracesTitle;
+
+  /// No description provided for @tracesSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mikroservisler ve veritabanı sorguları arasındaki gecikme ve N+1 sorunlarını analiz edin.'**
+  String get tracesSubtitle;
+
+  /// No description provided for @tracesEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir iz (trace) kaydı bulunamadı.'**
+  String get tracesEmpty;
+
+  /// No description provided for @tracesFilterService.
+  ///
+  /// In tr, this message translates to:
+  /// **'Servis'**
+  String get tracesFilterService;
+
+  /// No description provided for @tracesFilterMinDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Min Süre (ms)'**
+  String get tracesFilterMinDuration;
+
+  /// No description provided for @tracesSearchPlaceholder.
+  ///
+  /// In tr, this message translates to:
+  /// **'İz ID veya kök işlem ara...'**
+  String get tracesSearchPlaceholder;
+
+  /// No description provided for @traceDetailTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'İz Detayı'**
+  String get traceDetailTitle;
+
+  /// No description provided for @traceDetailSpanCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Span Sayısı'**
+  String get traceDetailSpanCount;
+
+  /// No description provided for @traceDetailServiceCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Servis Sayısı'**
+  String get traceDetailServiceCount;
+
+  /// No description provided for @traceDetailDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Süre'**
+  String get traceDetailDuration;
+
+  /// No description provided for @traceSuspectNPlus1.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olası N+1 Sorgu Sorunu Tespit Edildi!'**
+  String get traceSuspectNPlus1;
+
+  /// No description provided for @traceSpanDetails.
+  ///
+  /// In tr, this message translates to:
+  /// **'Span Detayı'**
+  String get traceSpanDetails;
+
+  /// No description provided for @traceSqlStatement.
+  ///
+  /// In tr, this message translates to:
+  /// **'SQL Sorgusu'**
+  String get traceSqlStatement;
+
+  /// No description provided for @traceAttributes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Nitelikler & Etiketler'**
+  String get traceAttributes;
+
+  /// No description provided for @traceStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get traceStatus;
+
+  /// No description provided for @traceRootSpan.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kök İşlem'**
+  String get traceRootSpan;
+
+  /// No description provided for @traceTimestamp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlangıç Zamanı'**
+  String get traceTimestamp;
+
+  /// No description provided for @performanceViewTrace.
+  ///
+  /// In tr, this message translates to:
+  /// **'İz / Trace'**
+  String get performanceViewTrace;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

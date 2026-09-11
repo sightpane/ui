@@ -319,6 +319,37 @@ final metricAlertPreviewProvider =
   ),
 );
 
+typedef TracesKey = ({
+  int projectId,
+  int days,
+  String? service,
+  String? status,
+  double? minDurationMs,
+  String? query,
+  int limit,
+});
+
+final tracesProvider =
+    FutureProvider.autoDispose.family<List<TraceSummary>, TracesKey>(
+  (ref, k) => ref.watch(apiProvider).traces(
+    k.projectId,
+    days: k.days,
+    service: k.service,
+    status: k.status,
+    minDurationMs: k.minDurationMs,
+    query: k.query,
+    limit: k.limit,
+  ),
+);
+
+typedef TraceKey = ({int projectId, String traceId});
+
+final traceProvider =
+    FutureProvider.autoDispose.family<TraceDetail, TraceKey>(
+  (ref, k) => ref.watch(apiProvider).trace(k.projectId, k.traceId),
+);
+
+
 
 
 

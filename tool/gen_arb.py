@@ -672,6 +672,28 @@ k('alertsMetricErrorRate', 'Hata Oranı (%)', 'Error Rate (%)')
 k('alertsMetricP95Duration', 'p95 Yanıt Süresi (ms)', 'p95 Latency (ms)')
 k('alertsMetricCrashCount', 'Çökme Sayısı', 'Crash Count')
 
+# ---------------- distributed tracing & spans ----------------
+k('navTraces', 'Dağıtık İzler (Traces)', 'Distributed Traces')
+k('tracesTitle', 'Dağıtık İzleme & Waterfall', 'Distributed Traces & Spans')
+k('tracesSubtitle', 'Mikroservisler ve veritabanı sorguları arasındaki gecikme ve N+1 sorunlarını analiz edin.', 'Trace end-to-end distributed requests across microservices, databases, and identify N+1 bottlenecks.')
+k('tracesEmpty', 'Henüz bir iz (trace) kaydı bulunamadı.', 'No traces found for the selected filters.')
+k('tracesFilterService', 'Servis', 'Service')
+k('tracesFilterMinDuration', 'Min Süre (ms)', 'Min Duration (ms)')
+k('tracesSearchPlaceholder', 'İz ID veya kök işlem ara...', 'Search trace ID or root operation...')
+k('traceDetailTitle', 'İz Detayı', 'Trace Detail')
+k('traceDetailSpanCount', 'Span Sayısı', 'Total Spans')
+k('traceDetailServiceCount', 'Servis Sayısı', 'Total Services')
+k('traceDetailDuration', 'Toplam Süre', 'Total Duration')
+k('traceSuspectNPlus1', 'Olası N+1 Sorgu Sorunu Tespit Edildi!', 'Suspected N+1 Query Bottleneck Detected!')
+k('traceSpanDetails', 'Span Detayı', 'Span Details')
+k('traceSqlStatement', 'SQL Sorgusu', 'SQL Statement')
+k('traceAttributes', 'Nitelikler & Etiketler', 'Attributes & Tags')
+k('traceStatus', 'Durum', 'Status')
+k('traceRootSpan', 'Kök İşlem', 'Root Operation')
+k('traceTimestamp', 'Başlangıç Zamanı', 'Start Time')
+k('performanceViewTrace', 'İz / Trace', 'View Trace')
+
+
 def arb(lang, idx):
     out = collections.OrderedDict()
     out['@@locale'] = lang

@@ -1066,6 +1066,7 @@ class SpanSample {
   const SpanSample({
     required this.id,
     required this.sessionId,
+    this.traceId = '',
     required this.ts,
     required this.durationMs,
     required this.status,
@@ -1074,6 +1075,7 @@ class SpanSample {
 
   final int id;
   final String sessionId;
+  final String traceId;
   final DateTime ts;
   final double durationMs;
   final String status;
@@ -1082,6 +1084,7 @@ class SpanSample {
   factory SpanSample.fromJson(Map<String, Object?> j) => SpanSample(
         id: _i(j['id']),
         sessionId: _s(j['session_id']),
+        traceId: _s(j['trace_id']),
         ts: _t(j['ts']) ?? DateTime.now(),
         durationMs: _d(j['duration_ms']),
         status: _s(j['status']),
@@ -2487,6 +2490,162 @@ class MetricHistoryPoint {
     timestamp: _t(j['timestamp']) ?? DateTime.now(),
     value: _d(j['value']),
   );
+}
+
+class TraceSummary {
+  const TraceSummary({
+    required this.traceId,
+    required this.rootOp,
+    required this.rootName,
+    required this.serviceName,
+    required this.startTime,
+    required this.durationMs,
+    required this.status,
+    required this.spanCount,
+    required this.serviceCount,
+    required this.services,
+    required this.hasErrors,
+  });
+
+  final String traceId;
+  final String rootOp;
+  final String rootName;
+  final String serviceName;
+  final DateTime startTime;
+  final double durationMs;
+  final String status;
+  final int spanCount;
+  final int serviceCount;
+  final List<String> services;
+  final bool hasErrors;
+
+  factory TraceSummary.fromJson(Map<String, Object?> j) => TraceSummary(
+        traceId: _s(j['trace_id']),
+        rootOp: _s(j['root_op']),
+        rootName: _s(j['root_name']),
+        serviceName: _s(j['service_name']),
+        startTime: _t(j['start_time']) ?? DateTime.now(),
+        durationMs: _d(j['duration_ms']),
+        status: _s(j['status']),
+        spanCount: _i(j['span_count']),
+        serviceCount: _i(j['service_count']),
+        services: [for (final s in (j['services'] as List? ?? const [])) _s(s)],
+        hasErrors: j['has_errors'] == true,
+      );
+}
+
+class SuspectIssue {
+  const SuspectIssue({
+    required this.type,
+    required this.message,
+    required this.spanIds,
+  });
+
+  final String type;
+  final String message;
+  final List<String> spanIds;
+
+  factory SuspectIssue.fromJson(Map<String, Object?> j) => SuspectIssue(
+        type: _s(j['type']),
+        message: _s(j['message']),
+        spanIds: [for (final id in (j['span_ids'] as List? ?? const [])) _s(id)],
+      );
+}
+
+class TraceSpan {
+  const TraceSpan({
+    required this.spanId,
+    this.parentSpanId = '',
+    required this.op,
+    required this.name,
+    required this.serviceName,
+    required this.startTime,
+    required this.startOffsetMs,
+    required this.durationMs,
+    required this.status,
+    this.data = const {},
+    this.depth = 0,
+    this.isSuspectNPlusOne = false,
+  });
+
+  final String spanId;
+  final String parentSpanId;
+  final String op;
+  final String name;
+  final String serviceName;
+  final DateTime startTime;
+  final double startOffsetMs;
+  final double durationMs;
+  final String status;
+  final Map<String, Object?> data;
+  final int depth;
+  final bool isSuspectNPlusOne;
+
+  factory TraceSpan.fromJson(Map<String, Object?> j) => TraceSpan(
+        spanId: _s(j['span_id']),
+        parentSpanId: _s(j['parent_span_id']),
+        op: _s(j['op']),
+        name: _s(j['name']),
+        serviceName: _s(j['service_name']),
+        startTime: _t(j['start_time']) ?? DateTime.now(),
+        startOffsetMs: _d(j['start_offset_ms']),
+        durationMs: _d(j['duration_ms']),
+        status: _s(j['status']),
+        data: _m(j['data']),
+        depth: _i(j['depth']),
+        isSuspectNPlusOne: j['is_suspect_n_plus_one'] == true,
+      );
+}
+
+class TraceDetail {
+  const TraceDetail({
+    required this.traceId,
+    required this.rootSpanId,
+    required this.rootName,
+    required this.rootOp,
+    required this.startTime,
+    required this.totalDurationMs,
+    required this.status,
+    required this.serviceCount,
+    required this.spanCount,
+    required this.services,
+    required this.spans,
+    this.suspectIssues = const [],
+  });
+
+  final String traceId;
+  final String rootSpanId;
+  final String rootName;
+  final String rootOp;
+  final DateTime startTime;
+  final double totalDurationMs;
+  final String status;
+  final int serviceCount;
+  final int spanCount;
+  final List<String> services;
+  final List<TraceSpan> spans;
+  final List<SuspectIssue> suspectIssues;
+
+  factory TraceDetail.fromJson(Map<String, Object?> j) => TraceDetail(
+        traceId: _s(j['trace_id']),
+        rootSpanId: _s(j['root_span_id']),
+        rootName: _s(j['root_name']),
+        rootOp: _s(j['root_op']),
+        startTime: _t(j['start_time']) ?? DateTime.now(),
+        totalDurationMs: _d(j['total_duration_ms']),
+        status: _s(j['status']),
+        serviceCount: _i(j['service_count']),
+        spanCount: _i(j['span_count']),
+        services: [for (final s in (j['services'] as List? ?? const [])) _s(s)],
+        spans: [
+          for (final sp in (j['spans'] as List? ?? const []))
+            TraceSpan.fromJson(_m(sp)),
+        ],
+        suspectIssues: [
+          for (final iss in (j['suspect_issues'] as List? ?? const []))
+            SuspectIssue.fromJson(_m(iss)),
+        ],
+      );
 }
 
 

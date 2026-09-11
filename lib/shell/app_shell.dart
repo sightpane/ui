@@ -160,6 +160,7 @@ String _navSurveys(L l) => l.navSurveys;
 String _navCrons(L l) => l.navCrons;
 String _navUptime(L l) => l.navUptime;
 String _navAlerts(L l) => l.navAlerts;
+String _navTraces(L l) => l.navTraces;
 String _navPerformance(L l) => l.performanceTitle;
 String _navReleases(L l) => l.navReleases;
 String _navEvents(L l) => l.navEvents;
@@ -180,6 +181,7 @@ const projectNavEntries = [
   NavEntry(_navCrons, LucideIcons.timer, '/crons'),
   NavEntry(_navUptime, LucideIcons.activity, '/uptime'),
   NavEntry(_navAlerts, LucideIcons.bellRing, '/alerts'),
+  NavEntry(_navTraces, LucideIcons.gitFork, '/traces'),
   NavEntry(_navPerformance, LucideIcons.gauge, '/performance'),
   NavEntry(_navReleases, LucideIcons.tag, '/releases'),
   NavEntry(_navEvents, LucideIcons.chartBar, '/events'),

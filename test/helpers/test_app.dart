@@ -2496,6 +2496,175 @@ class FakeApi implements SightpaneApi {
       'summary': 'Metric threshold exceeded (current: 7.50)',
     };
   }
+
+  var tracesValue = <TraceSummary>[
+    TraceSummary(
+      traceId: 'trace-1234567890abcdef',
+      rootOp: 'http.server',
+      rootName: '/api/v1/checkout',
+      serviceName: 'backend-api',
+      startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+      durationMs: 245.5,
+      status: 'ok',
+      spanCount: 4,
+      serviceCount: 2,
+      services: ['backend-api', 'auth-service'],
+      hasErrors: false,
+    ),
+    TraceSummary(
+      traceId: 'trace-error-987654321',
+      rootOp: 'http.server',
+      rootName: '/api/v1/pay',
+      serviceName: 'payment-service',
+      startTime: DateTime.now().subtract(const Duration(minutes: 15)),
+      durationMs: 850.0,
+      status: 'error',
+      spanCount: 6,
+      serviceCount: 2,
+      services: ['payment-service', 'postgres'],
+      hasErrors: true,
+    ),
+  ];
+
+  var traceDetailsValue = <String, TraceDetail>{
+    'trace-1234567890abcdef': TraceDetail(
+      traceId: 'trace-1234567890abcdef',
+      rootSpanId: 'span-root-1',
+      rootName: '/api/v1/checkout',
+      rootOp: 'http.server',
+      startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+      totalDurationMs: 245.5,
+      status: 'ok',
+      serviceCount: 2,
+      spanCount: 4,
+      services: ['backend-api', 'auth-service'],
+      spans: [
+        TraceSpan(
+          spanId: 'span-root-1',
+          parentSpanId: '',
+          op: 'http.server',
+          name: '/api/v1/checkout',
+          serviceName: 'backend-api',
+          startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+          startOffsetMs: 0.0,
+          durationMs: 245.5,
+          status: 'ok',
+          depth: 0,
+          data: {'http.method': 'POST', 'http.status_code': 200},
+        ),
+        TraceSpan(
+          spanId: 'span-auth-2',
+          parentSpanId: 'span-root-1',
+          op: 'http.client',
+          name: 'POST /verify-token',
+          serviceName: 'auth-service',
+          startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+          startOffsetMs: 15.0,
+          durationMs: 50.0,
+          status: 'ok',
+          depth: 1,
+          data: {'http.method': 'POST', 'url': 'http://auth/verify-token'},
+        ),
+        TraceSpan(
+          spanId: 'span-db-3',
+          parentSpanId: 'span-root-1',
+          op: 'db.query',
+          name: 'SELECT users',
+          serviceName: 'backend-api',
+          startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+          startOffsetMs: 70.0,
+          durationMs: 35.0,
+          status: 'ok',
+          depth: 1,
+          isSuspectNPlusOne: true,
+          data: {'db.statement': 'SELECT * FROM users WHERE id = \$1', 'db.system': 'postgresql'},
+        ),
+        TraceSpan(
+          spanId: 'span-db-4',
+          parentSpanId: 'span-root-1',
+          op: 'db.query',
+          name: 'SELECT users',
+          serviceName: 'backend-api',
+          startTime: DateTime.now().subtract(const Duration(minutes: 5)),
+          startOffsetMs: 110.0,
+          durationMs: 30.0,
+          status: 'ok',
+          depth: 1,
+          isSuspectNPlusOne: true,
+          data: {'db.statement': 'SELECT * FROM users WHERE id = \$1', 'db.system': 'postgresql'},
+        ),
+      ],
+      suspectIssues: [
+        SuspectIssue(
+          type: 'n_plus_one_query',
+          message: 'Suspected N+1 query loop: 2 consecutive db.query calls with identical query',
+          spanIds: ['span-db-3', 'span-db-4'],
+        ),
+      ],
+    ),
+  };
+
+  @override
+  Future<List<TraceSummary>> traces(
+    int projectId, {
+    int days = 14,
+    String? service,
+    String? status,
+    double? minDurationMs,
+    String? query,
+    int limit = 50,
+  }) async {
+    calls.add('traces $projectId');
+    return tracesValue.where((t) {
+      if (service != null && service.isNotEmpty && t.serviceName != service) return false;
+      if (status != null && status.isNotEmpty) {
+        if (status == 'error' && !t.hasErrors) return false;
+        if (status == 'ok' && t.hasErrors) return false;
+      }
+      if (minDurationMs != null && t.durationMs < minDurationMs) return false;
+      if (query != null && query.isNotEmpty) {
+        final q = query.toLowerCase();
+        if (!t.traceId.toLowerCase().contains(q) &&
+            !t.rootName.toLowerCase().contains(q) &&
+            !t.rootOp.toLowerCase().contains(q)) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
+  }
+
+  @override
+  Future<TraceDetail> trace(int projectId, String traceId) async {
+    calls.add('trace $projectId id=$traceId');
+    if (traceDetailsValue.containsKey(traceId)) {
+      return traceDetailsValue[traceId]!;
+    }
+    return TraceDetail(
+      traceId: traceId,
+      rootSpanId: 'root',
+      rootName: 'fallback-trace',
+      rootOp: 'http.server',
+      startTime: DateTime.now(),
+      totalDurationMs: 100.0,
+      status: 'ok',
+      serviceCount: 1,
+      spanCount: 1,
+      services: ['fallback-service'],
+      spans: [
+        TraceSpan(
+          spanId: 'root',
+          op: 'http.server',
+          name: 'fallback-trace',
+          serviceName: 'fallback-service',
+          startTime: DateTime.now(),
+          startOffsetMs: 0.0,
+          durationMs: 100.0,
+          status: 'ok',
+        ),
+      ],
+    );
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

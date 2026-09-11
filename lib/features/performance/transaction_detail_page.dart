@@ -221,7 +221,7 @@ class _TransactionDetailPageState extends ConsumerState<TransactionDetailPage> {
                               (context.l10n.colDuration, 2, true),
                               (context.l10n.colStatus, 2, false),
                               (context.l10n.colTime, 3, false),
-                              (context.l10n.colAction, 2, true),
+                              (context.l10n.colAction, 3, true),
                             ],
                             rows: detail.samples,
                             onTap: (smp) => context.go(
@@ -253,14 +253,31 @@ class _TransactionDetailPageState extends ConsumerState<TransactionDetailPage> {
                                   color: Tokens.textMuted,
                                 ),
                               ),
-                              PrimaryButton(
-                                size: ButtonSize.small,
-                                density: ButtonDensity.compact,
-                                leading: const Icon(LucideIcons.play, size: 12),
-                                onPressed: () => context.go(
-                                  '/projects/${widget.projectId}/sessions/${smp.sessionId}',
-                                ),
-                                child: Text(context.l10n.performanceViewReplay),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  PrimaryButton(
+                                    size: ButtonSize.small,
+                                    density: ButtonDensity.compact,
+                                    leading: const Icon(LucideIcons.play, size: 12),
+                                    onPressed: () => context.go(
+                                      '/projects/${widget.projectId}/sessions/${smp.sessionId}',
+                                    ),
+                                    child: Text(context.l10n.performanceViewReplay),
+                                  ),
+                                  if (smp.traceId.isNotEmpty) ...[
+                                    const Gap(8),
+                                    SecondaryButton(
+                                      size: ButtonSize.small,
+                                      density: ButtonDensity.compact,
+                                      leading: const Icon(LucideIcons.gitFork, size: 12),
+                                      onPressed: () => context.go(
+                                        '/projects/${widget.projectId}/traces/${smp.traceId}',
+                                      ),
+                                      child: Text(context.l10n.performanceViewTrace),
+                                    ),
+                                  ],
+                                ],
                               ),
                             ],
                           ),
