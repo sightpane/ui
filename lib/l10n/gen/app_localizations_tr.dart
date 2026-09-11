@@ -1194,4 +1194,94 @@ class LTr extends L {
 
   @override
   String get userCustomProps => 'Özel Nitelikler';
+
+  @override
+  String get navFunnels => 'Huniler';
+
+  @override
+  String get funnelsTitle => 'Dönüşüm Hunileri';
+
+  @override
+  String funnelsSubtitle(int count) {
+    return '$count huni tanımlı';
+  }
+
+  @override
+  String get funnelCreate => 'Huni Oluştur';
+
+  @override
+  String get funnelName => 'Huni Adı';
+
+  @override
+  String get funnelDescription => 'Açıklama';
+
+  @override
+  String get funnelSteps => 'Huni Adımları';
+
+  @override
+  String get funnelStepAdd => 'Adım Ekle';
+
+  @override
+  String get funnelStepEvent => 'Olay Adı';
+
+  @override
+  String get funnelWindow => 'Dönüşüm Penceresi';
+
+  @override
+  String get funnelWindow1d => '1 Gün';
+
+  @override
+  String get funnelWindow7d => '7 Gün';
+
+  @override
+  String get funnelWindow14d => '14 Gün';
+
+  @override
+  String get funnelWindow30d => '30 Gün';
+
+  @override
+  String get funnelsEmpty => 'Henüz tanımlanmış bir huni yok.';
+
+  @override
+  String get funnelsEmptyHint =>
+      'Kullanıcı yolculuklarındaki dönüşüm ve terk oranlarını izlemek için ilk huninizi oluşturun.';
+
+  @override
+  String get funnelOverallConversion => 'Genel Dönüşüm Oranı';
+
+  @override
+  String get funnelCompletedSessions => 'Tamamlayan Oturum';
+
+  @override
+  String get funnelTotalSessions => 'Başlayan Oturum';
+
+  @override
+  String get funnelMedianTime => 'Medyan Dönüşüm Süresi';
+
+  @override
+  String get funnelStepConversion => 'Adım Dönüşümü';
+
+  @override
+  String get funnelDropOff => 'Terk Eden';
+
+  @override
+  String funnelWatchReplays(int count) {
+    return 'Terk Eden Kayıtları İzle ($count)';
+  }
+
+  @override
+  String get funnelDeleteConfirm =>
+      'Bu huniyi silmek istediğinizden emin misiniz?';
+
+  @override
+  String get funnelDeleted => 'Huni silindi.';
+
+  @override
+  String get funnelCreated => 'Huni oluşturuldu.';
+
+  @override
+  String get funnelUpdated => 'Huni güncellendi.';
+
+  @override
+  String get funnelStepMin => 'En az 2 adım gereklidir.';
 }

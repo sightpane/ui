@@ -1266,4 +1266,100 @@ class LEn extends L {
 
   @override
   String get userCustomProps => 'Custom Attributes';
+
+  @override
+  String get navFunnels => 'Funnels';
+
+  @override
+  String get funnelsTitle => 'Conversion Funnels';
+
+  @override
+  String funnelsSubtitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count funnels defined',
+      one: '1 funnel defined',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get funnelCreate => 'Create Funnel';
+
+  @override
+  String get funnelName => 'Funnel Name';
+
+  @override
+  String get funnelDescription => 'Description';
+
+  @override
+  String get funnelSteps => 'Funnel Steps';
+
+  @override
+  String get funnelStepAdd => 'Add Step';
+
+  @override
+  String get funnelStepEvent => 'Event Name';
+
+  @override
+  String get funnelWindow => 'Conversion Window';
+
+  @override
+  String get funnelWindow1d => '1 Day';
+
+  @override
+  String get funnelWindow7d => '7 Days';
+
+  @override
+  String get funnelWindow14d => '14 Days';
+
+  @override
+  String get funnelWindow30d => '30 Days';
+
+  @override
+  String get funnelsEmpty => 'No conversion funnels defined yet.';
+
+  @override
+  String get funnelsEmptyHint =>
+      'Create your first funnel to track conversion and drop-off rates along user journeys.';
+
+  @override
+  String get funnelOverallConversion => 'Overall Conversion Rate';
+
+  @override
+  String get funnelCompletedSessions => 'Completed Sessions';
+
+  @override
+  String get funnelTotalSessions => 'Started Sessions';
+
+  @override
+  String get funnelMedianTime => 'Median Conversion Time';
+
+  @override
+  String get funnelStepConversion => 'Step Conversion';
+
+  @override
+  String get funnelDropOff => 'Drop-off';
+
+  @override
+  String funnelWatchReplays(int count) {
+    return 'Watch Drop-off Replays ($count)';
+  }
+
+  @override
+  String get funnelDeleteConfirm =>
+      'Are you sure you want to delete this funnel?';
+
+  @override
+  String get funnelDeleted => 'Funnel deleted.';
+
+  @override
+  String get funnelCreated => 'Funnel created.';
+
+  @override
+  String get funnelUpdated => 'Funnel updated.';
+
+  @override
+  String get funnelStepMin => 'At least 2 steps are required.';
 }

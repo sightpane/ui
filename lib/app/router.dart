@@ -6,6 +6,8 @@ import '../core/auth.dart';
 import '../core/models.dart';
 import '../features/auth/auth_pages.dart';
 import '../features/events/events_page.dart';
+import '../features/funnels/funnel_detail_page.dart';
+import '../features/funnels/funnels_page.dart';
 import '../features/issues/issue_detail_page.dart';
 import '../features/issues/issues_page.dart';
 import '../features/projects/overview_page.dart';
@@ -134,7 +136,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                 path: 'events',
                 builder: (_, s) => EventsPage(projectId: _id(s)),
               ),
-
+              GoRoute(
+                path: 'funnels',
+                builder: (_, s) => FunnelsPage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':fid',
+                    builder: (_, s) => FunnelDetailPage(
+                      projectId: _id(s),
+                      funnelId: int.parse(s.pathParameters['fid']!),
+                    ),
+                  ),
+                ],
+              ),
               GoRoute(
                 path: 'settings',
                 builder: (_, s) => SettingsPage(projectId: _id(s)),

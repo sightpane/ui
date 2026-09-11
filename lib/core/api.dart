@@ -78,6 +78,36 @@ abstract class SightpaneApi {
     int days = 14,
     String query = '',
   });
+  Future<List<Funnel>> funnels(int projectId);
+  Future<Funnel> createFunnel(
+    int projectId, {
+    required String name,
+    String description = '',
+    required List<FunnelStep> steps,
+    int conversionWindowSeconds = 86400,
+  });
+  Future<Funnel> funnel(int projectId, int funnelId);
+  Future<Funnel> updateFunnel(
+    int projectId,
+    int funnelId, {
+    String? name,
+    String? description,
+    List<FunnelStep>? steps,
+    int? conversionWindowSeconds,
+  });
+  Future<void> deleteFunnel(int projectId, int funnelId);
+  Future<FunnelResult> funnelResults(
+    int projectId,
+    int funnelId, {
+    int days = 7,
+  });
+  Future<List<String>> funnelDropoffs(
+    int projectId,
+    int funnelId, {
+    required int step,
+    int days = 7,
+    int limit = 50,
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -435,6 +465,108 @@ class HttpSightpaneApi implements SightpaneApi {
           ),
         ),
       );
+
+  @override
+  Future<List<Funnel>> funnels(int projectId) async => [
+    for (final f in _list(await _send('GET', '/api/v1/projects/$projectId/funnels')))
+      Funnel.fromJson(_map(f)),
+  ];
+
+  @override
+  Future<Funnel> createFunnel(
+    int projectId, {
+    required String name,
+    String description = '',
+    required List<FunnelStep> steps,
+    int conversionWindowSeconds = 86400,
+  }) async =>
+      Funnel.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/funnels',
+            body: {
+              'name': name,
+              'description': description,
+              'steps': [for (final s in steps) s.toJson()],
+              'conversion_window_seconds': conversionWindowSeconds,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Funnel> funnel(int projectId, int funnelId) async =>
+      Funnel.fromJson(
+        _map(
+          await _send('GET', '/api/v1/projects/$projectId/funnels/$funnelId'),
+        ),
+      );
+
+  @override
+  Future<Funnel> updateFunnel(
+    int projectId,
+    int funnelId, {
+    String? name,
+    String? description,
+    List<FunnelStep>? steps,
+    int? conversionWindowSeconds,
+  }) async =>
+      Funnel.fromJson(
+        _map(
+          await _send(
+            'PATCH',
+            '/api/v1/projects/$projectId/funnels/$funnelId',
+            body: {
+              'name': ?name,
+              'description': ?description,
+              if (steps != null) 'steps': [for (final s in steps) s.toJson()],
+              'conversion_window_seconds': ?conversionWindowSeconds,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteFunnel(int projectId, int funnelId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/funnels/$funnelId');
+  }
+
+  @override
+  Future<FunnelResult> funnelResults(
+    int projectId,
+    int funnelId, {
+    int days = 7,
+  }) async =>
+      FunnelResult.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/funnels/$funnelId/results',
+            query: {'days': '$days'},
+          ),
+        ),
+      );
+
+  @override
+  Future<List<String>> funnelDropoffs(
+    int projectId,
+    int funnelId, {
+    required int step,
+    int days = 7,
+    int limit = 50,
+  }) async {
+    final res = _map(
+      await _send(
+        'GET',
+        '/api/v1/projects/$projectId/funnels/$funnelId/dropoffs',
+        query: {'step': '$step', 'days': '$days', 'limit': '$limit'},
+      ),
+    );
+    return [
+      for (final s in (res['session_ids'] as List? ?? const [])) '$s',
+    ];
+  }
 
   @override
   Future<SessionDetail> session(String id) async =>

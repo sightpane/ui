@@ -1197,6 +1197,145 @@ class FakeApi implements SightpaneApi {
     calls.add('deleteApiToken $orgId tokenId=$tokenId');
     apiTokenList.removeWhere((t) => t.id == tokenId);
   }
+
+  var funnelList = <Funnel>[
+    Funnel(
+      id: 1,
+      projectId: 1,
+      name: 'Onboarding Funnel',
+      description: 'Sign-up flow to first payment',
+      steps: const [
+        FunnelStep(name: 'page_view'),
+        FunnelStep(name: 'signup_submit'),
+        FunnelStep(name: 'checkout_success'),
+      ],
+      conversionWindowSeconds: 86400,
+      createdAt: DateTime(2026, 9, 1),
+    ),
+  ];
+
+  var funnelResultValue = const FunnelResult(
+    funnelId: 1,
+    periodDays: 7,
+    totalSessions: 100,
+    completedSessions: 42,
+    overallConversionRate: 0.42,
+    medianConversionSeconds: 185.0,
+    steps: [
+      FunnelStepResult(
+        stepIndex: 0,
+        name: 'page_view',
+        count: 100,
+        conversionRate: 1.0,
+        dropOffCount: 30,
+        dropOffRate: 0.30,
+      ),
+      FunnelStepResult(
+        stepIndex: 1,
+        name: 'signup_submit',
+        count: 70,
+        conversionRate: 0.70,
+        dropOffCount: 28,
+        dropOffRate: 0.40,
+      ),
+      FunnelStepResult(
+        stepIndex: 2,
+        name: 'checkout_success',
+        count: 42,
+        conversionRate: 0.42,
+        dropOffCount: 0,
+        dropOffRate: 0.0,
+      ),
+    ],
+  );
+
+  @override
+  Future<List<Funnel>> funnels(int projectId) async {
+    calls.add('funnels $projectId');
+    return funnelList.where((f) => f.projectId == projectId).toList();
+  }
+
+  @override
+  Future<Funnel> createFunnel(
+    int projectId, {
+    required String name,
+    String description = '',
+    required List<FunnelStep> steps,
+    int conversionWindowSeconds = 86400,
+  }) async {
+    calls.add('createFunnel $projectId name=$name');
+    final f = Funnel(
+      id: funnelList.length + 1,
+      projectId: projectId,
+      name: name,
+      description: description,
+      steps: steps,
+      conversionWindowSeconds: conversionWindowSeconds,
+      createdAt: DateTime.now(),
+    );
+    funnelList.add(f);
+    return f;
+  }
+
+  @override
+  Future<Funnel> funnel(int projectId, int funnelId) async {
+    calls.add('funnel $projectId $funnelId');
+    return funnelList.firstWhere((f) => f.id == funnelId);
+  }
+
+  @override
+  Future<Funnel> updateFunnel(
+    int projectId,
+    int funnelId, {
+    String? name,
+    String? description,
+    List<FunnelStep>? steps,
+    int? conversionWindowSeconds,
+  }) async {
+    calls.add('updateFunnel $projectId $funnelId');
+    final idx = funnelList.indexWhere((f) => f.id == funnelId);
+    final cur = funnelList[idx];
+    final updated = Funnel(
+      id: cur.id,
+      projectId: cur.projectId,
+      name: name ?? cur.name,
+      description: description ?? cur.description,
+      steps: steps ?? cur.steps,
+      conversionWindowSeconds: conversionWindowSeconds ?? cur.conversionWindowSeconds,
+      createdAt: cur.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    funnelList[idx] = updated;
+    return updated;
+  }
+
+  @override
+  Future<void> deleteFunnel(int projectId, int funnelId) async {
+    calls.add('deleteFunnel $projectId $funnelId');
+    funnelList.removeWhere((f) => f.id == funnelId);
+  }
+
+  @override
+  Future<FunnelResult> funnelResults(
+    int projectId,
+    int funnelId, {
+    int days = 7,
+  }) async {
+    calls.add('funnelResults $projectId $funnelId days=$days');
+    return funnelResultValue;
+  }
+
+  @override
+  Future<List<String>> funnelDropoffs(
+    int projectId,
+    int funnelId, {
+    required int step,
+    int days = 7,
+    int limit = 50,
+  }) async {
+    calls.add('funnelDropoffs $projectId $funnelId step=$step');
+    return ['abcdef12-3456'];
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

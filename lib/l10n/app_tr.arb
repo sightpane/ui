@@ -749,5 +749,47 @@
   "actionDeleteData": "Kullanıcı Verisini Sil",
   "userDeleteConfirm": "Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?",
   "userDeleteSuccess": "Kullanıcı verisi başarıyla silindi.",
-  "userCustomProps": "Özel Nitelikler"
+  "userCustomProps": "Özel Nitelikler",
+  "navFunnels": "Huniler",
+  "funnelsTitle": "Dönüşüm Hunileri",
+  "funnelsSubtitle": "{count} huni tanımlı",
+  "@funnelsSubtitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "funnelCreate": "Huni Oluştur",
+  "funnelName": "Huni Adı",
+  "funnelDescription": "Açıklama",
+  "funnelSteps": "Huni Adımları",
+  "funnelStepAdd": "Adım Ekle",
+  "funnelStepEvent": "Olay Adı",
+  "funnelWindow": "Dönüşüm Penceresi",
+  "funnelWindow1d": "1 Gün",
+  "funnelWindow7d": "7 Gün",
+  "funnelWindow14d": "14 Gün",
+  "funnelWindow30d": "30 Gün",
+  "funnelsEmpty": "Henüz tanımlanmış bir huni yok.",
+  "funnelsEmptyHint": "Kullanıcı yolculuklarındaki dönüşüm ve terk oranlarını izlemek için ilk huninizi oluşturun.",
+  "funnelOverallConversion": "Genel Dönüşüm Oranı",
+  "funnelCompletedSessions": "Tamamlayan Oturum",
+  "funnelTotalSessions": "Başlayan Oturum",
+  "funnelMedianTime": "Medyan Dönüşüm Süresi",
+  "funnelStepConversion": "Adım Dönüşümü",
+  "funnelDropOff": "Terk Eden",
+  "funnelWatchReplays": "Terk Eden Kayıtları İzle ({count})",
+  "@funnelWatchReplays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "funnelDeleteConfirm": "Bu huniyi silmek istediğinizden emin misiniz?",
+  "funnelDeleted": "Huni silindi.",
+  "funnelCreated": "Huni oluşturuldu.",
+  "funnelUpdated": "Huni güncellendi.",
+  "funnelStepMin": "En az 2 adım gereklidir."
 }

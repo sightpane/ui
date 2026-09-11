@@ -2226,6 +2226,174 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Özel Nitelikler'**
   String get userCustomProps;
+
+  /// No description provided for @navFunnels.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huniler'**
+  String get navFunnels;
+
+  /// No description provided for @funnelsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüşüm Hunileri'**
+  String get funnelsTitle;
+
+  /// No description provided for @funnelsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} huni tanımlı'**
+  String funnelsSubtitle(int count);
+
+  /// No description provided for @funnelCreate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni Oluştur'**
+  String get funnelCreate;
+
+  /// No description provided for @funnelName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni Adı'**
+  String get funnelName;
+
+  /// No description provided for @funnelDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get funnelDescription;
+
+  /// No description provided for @funnelSteps.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni Adımları'**
+  String get funnelSteps;
+
+  /// No description provided for @funnelStepAdd.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım Ekle'**
+  String get funnelStepAdd;
+
+  /// No description provided for @funnelStepEvent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay Adı'**
+  String get funnelStepEvent;
+
+  /// No description provided for @funnelWindow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüşüm Penceresi'**
+  String get funnelWindow;
+
+  /// No description provided for @funnelWindow1d.
+  ///
+  /// In tr, this message translates to:
+  /// **'1 Gün'**
+  String get funnelWindow1d;
+
+  /// No description provided for @funnelWindow7d.
+  ///
+  /// In tr, this message translates to:
+  /// **'7 Gün'**
+  String get funnelWindow7d;
+
+  /// No description provided for @funnelWindow14d.
+  ///
+  /// In tr, this message translates to:
+  /// **'14 Gün'**
+  String get funnelWindow14d;
+
+  /// No description provided for @funnelWindow30d.
+  ///
+  /// In tr, this message translates to:
+  /// **'30 Gün'**
+  String get funnelWindow30d;
+
+  /// No description provided for @funnelsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz tanımlanmış bir huni yok.'**
+  String get funnelsEmpty;
+
+  /// No description provided for @funnelsEmptyHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı yolculuklarındaki dönüşüm ve terk oranlarını izlemek için ilk huninizi oluşturun.'**
+  String get funnelsEmptyHint;
+
+  /// No description provided for @funnelOverallConversion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Genel Dönüşüm Oranı'**
+  String get funnelOverallConversion;
+
+  /// No description provided for @funnelCompletedSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlayan Oturum'**
+  String get funnelCompletedSessions;
+
+  /// No description provided for @funnelTotalSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlayan Oturum'**
+  String get funnelTotalSessions;
+
+  /// No description provided for @funnelMedianTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Medyan Dönüşüm Süresi'**
+  String get funnelMedianTime;
+
+  /// No description provided for @funnelStepConversion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım Dönüşümü'**
+  String get funnelStepConversion;
+
+  /// No description provided for @funnelDropOff.
+  ///
+  /// In tr, this message translates to:
+  /// **'Terk Eden'**
+  String get funnelDropOff;
+
+  /// No description provided for @funnelWatchReplays.
+  ///
+  /// In tr, this message translates to:
+  /// **'Terk Eden Kayıtları İzle ({count})'**
+  String funnelWatchReplays(int count);
+
+  /// No description provided for @funnelDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu huniyi silmek istediğinizden emin misiniz?'**
+  String get funnelDeleteConfirm;
+
+  /// No description provided for @funnelDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni silindi.'**
+  String get funnelDeleted;
+
+  /// No description provided for @funnelCreated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni oluşturuldu.'**
+  String get funnelCreated;
+
+  /// No description provided for @funnelUpdated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Huni güncellendi.'**
+  String get funnelUpdated;
+
+  /// No description provided for @funnelStepMin.
+  ///
+  /// In tr, this message translates to:
+  /// **'En az 2 adım gereklidir.'**
+  String get funnelStepMin;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

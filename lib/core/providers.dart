@@ -126,3 +126,18 @@ final apiTokensProvider =
     FutureProvider.autoDispose.family<List<ApiToken>, int>(
   (ref, orgId) => ref.watch(apiProvider).apiTokens(orgId),
 );
+
+final funnelsProvider = FutureProvider.autoDispose.family<List<Funnel>, int>(
+  (ref, id) => ref.watch(apiProvider).funnels(id),
+);
+
+final funnelProvider =
+    FutureProvider.autoDispose.family<Funnel, ({int project, int funnelId})>(
+  (ref, k) => ref.watch(apiProvider).funnel(k.project, k.funnelId),
+);
+
+typedef FunnelResultKey = ({int project, int funnelId, int days});
+final funnelResultsProvider =
+    FutureProvider.autoDispose.family<FunnelResult, FunnelResultKey>(
+  (ref, k) => ref.watch(apiProvider).funnelResults(k.project, k.funnelId, days: k.days),
+);

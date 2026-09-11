@@ -1294,5 +1294,117 @@ class ProjectUsersData {
   );
 }
 
+class FunnelStep {
+  const FunnelStep({required this.name});
+  final String name;
 
+  factory FunnelStep.fromJson(Map<String, Object?> j) => FunnelStep(
+    name: _s(j['name']),
+  );
 
+  Map<String, Object?> toJson() => {'name': name};
+}
+
+class Funnel {
+  const Funnel({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    this.description = '',
+    this.steps = const [],
+    this.conversionWindowSeconds = 86400,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id, projectId;
+  final String name, description;
+  final List<FunnelStep> steps;
+  final int conversionWindowSeconds;
+  final DateTime? createdAt, updatedAt;
+
+  factory Funnel.fromJson(Map<String, Object?> j) => Funnel(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    description: _s(j['description']),
+    steps: [
+      for (final s in (j['steps'] as List? ?? const []))
+        FunnelStep.fromJson(_m(s)),
+    ],
+    conversionWindowSeconds: _i(j['conversion_window_seconds']) > 0
+        ? _i(j['conversion_window_seconds'])
+        : 86400,
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'description': description,
+    'steps': [for (final s in steps) s.toJson()],
+    'conversion_window_seconds': conversionWindowSeconds,
+  };
+}
+
+class FunnelStepResult {
+  const FunnelStepResult({
+    required this.stepIndex,
+    required this.name,
+    required this.count,
+    required this.conversionRate,
+    required this.dropOffCount,
+    required this.dropOffRate,
+  });
+
+  final int stepIndex;
+  final String name;
+  final int count;
+  final double conversionRate;
+  final int dropOffCount;
+  final double dropOffRate;
+
+  factory FunnelStepResult.fromJson(Map<String, Object?> j) => FunnelStepResult(
+    stepIndex: _i(j['step_index']),
+    name: _s(j['name']),
+    count: _i(j['count']),
+    conversionRate: _d(j['conversion_rate']),
+    dropOffCount: _i(j['drop_off_count']),
+    dropOffRate: _d(j['drop_off_rate']),
+  );
+}
+
+class FunnelResult {
+  const FunnelResult({
+    required this.funnelId,
+    required this.periodDays,
+    required this.totalSessions,
+    required this.completedSessions,
+    required this.overallConversionRate,
+    required this.medianConversionSeconds,
+    this.steps = const [],
+  });
+
+  final int funnelId;
+  final int periodDays;
+  final int totalSessions;
+  final int completedSessions;
+  final double overallConversionRate;
+  final double medianConversionSeconds;
+  final List<FunnelStepResult> steps;
+
+  factory FunnelResult.fromJson(Map<String, Object?> j) => FunnelResult(
+    funnelId: _i(j['funnel_id']),
+    periodDays: _i(j['period_days']),
+    totalSessions: _i(j['total_sessions']),
+    completedSessions: _i(j['completed_sessions']),
+    overallConversionRate: _d(j['overall_conversion_rate']),
+    medianConversionSeconds: _d(j['median_conversion_seconds']),
+    steps: [
+      for (final s in (j['steps'] as List? ?? const []))
+        FunnelStepResult.fromJson(_m(s)),
+    ],
+  );
+}

@@ -403,6 +403,36 @@ k('userDeleteConfirm', 'Bu kullanıcının tüm oturum ve hata kayıtları silin
 k('userDeleteSuccess', 'Kullanıcı verisi başarıyla silindi.', 'User data deleted successfully.')
 k('userCustomProps', 'Özel Nitelikler', 'Custom Attributes')
 
+# ---------------- funnels ----------------
+k('navFunnels', 'Huniler', 'Funnels')
+k('funnelsTitle', 'Dönüşüm Hunileri', 'Conversion Funnels')
+k('funnelsSubtitle', '{count} huni tanımlı', '{count, plural, =1{1 funnel defined} other{{count} funnels defined}}', {'count': 'int'})
+k('funnelCreate', 'Huni Oluştur', 'Create Funnel')
+k('funnelName', 'Huni Adı', 'Funnel Name')
+k('funnelDescription', 'Açıklama', 'Description')
+k('funnelSteps', 'Huni Adımları', 'Funnel Steps')
+k('funnelStepAdd', 'Adım Ekle', 'Add Step')
+k('funnelStepEvent', 'Olay Adı', 'Event Name')
+k('funnelWindow', 'Dönüşüm Penceresi', 'Conversion Window')
+k('funnelWindow1d', '1 Gün', '1 Day')
+k('funnelWindow7d', '7 Gün', '7 Days')
+k('funnelWindow14d', '14 Gün', '14 Days')
+k('funnelWindow30d', '30 Gün', '30 Days')
+k('funnelsEmpty', 'Henüz tanımlanmış bir huni yok.', 'No conversion funnels defined yet.')
+k('funnelsEmptyHint', 'Kullanıcı yolculuklarındaki dönüşüm ve terk oranlarını izlemek için ilk huninizi oluşturun.', 'Create your first funnel to track conversion and drop-off rates along user journeys.')
+k('funnelOverallConversion', 'Genel Dönüşüm Oranı', 'Overall Conversion Rate')
+k('funnelCompletedSessions', 'Tamamlayan Oturum', 'Completed Sessions')
+k('funnelTotalSessions', 'Başlayan Oturum', 'Started Sessions')
+k('funnelMedianTime', 'Medyan Dönüşüm Süresi', 'Median Conversion Time')
+k('funnelStepConversion', 'Adım Dönüşümü', 'Step Conversion')
+k('funnelDropOff', 'Terk Eden', 'Drop-off')
+k('funnelWatchReplays', 'Terk Eden Kayıtları İzle ({count})', 'Watch Drop-off Replays ({count})', {'count': 'int'})
+k('funnelDeleteConfirm', 'Bu huniyi silmek istediğinizden emin misiniz?', 'Are you sure you want to delete this funnel?')
+k('funnelDeleted', 'Huni silindi.', 'Funnel deleted.')
+k('funnelCreated', 'Huni oluşturuldu.', 'Funnel created.')
+k('funnelUpdated', 'Huni güncellendi.', 'Funnel updated.')
+k('funnelStepMin', 'En az 2 adım gereklidir.', 'At least 2 steps are required.')
+
 
 
 def arb(lang, idx):
