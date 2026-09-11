@@ -3264,6 +3264,246 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Toplam İzleyici'**
   String get cronsTotal;
+
+  /// No description provided for @navUptime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uptime & Sentetik'**
+  String get navUptime;
+
+  /// No description provided for @uptimeTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uptime & Sentetik İzleme'**
+  String get uptimeTitle;
+
+  /// No description provided for @uptimeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uç nokta erişilebilirliğini, yanıt sürelerini ve SSL sertifika geçerliliğini aktif olarak izleyin.'**
+  String get uptimeDesc;
+
+  /// No description provided for @uptimeNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni İzleyici'**
+  String get uptimeNew;
+
+  /// No description provided for @uptimeEdit.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleyiciyi Düzenle'**
+  String get uptimeEdit;
+
+  /// No description provided for @uptimeEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir uptime izleyicisi eklenmedi.'**
+  String get uptimeEmpty;
+
+  /// No description provided for @uptimeEmptyDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'API ve web uygulamalarınız için sentetik sağlık kontrolleri oluşturarak kesintileri anında tespit edin.'**
+  String get uptimeEmptyDesc;
+
+  /// No description provided for @uptimeTotal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam İzleyici'**
+  String get uptimeTotal;
+
+  /// No description provided for @uptimeSLA.
+  ///
+  /// In tr, this message translates to:
+  /// **'SLA Oranı'**
+  String get uptimeSLA;
+
+  /// No description provided for @uptimeUp.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çalışıyor'**
+  String get uptimeUp;
+
+  /// No description provided for @uptimeDegraded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kısmi Kesinti'**
+  String get uptimeDegraded;
+
+  /// No description provided for @uptimeDown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kesintide'**
+  String get uptimeDown;
+
+  /// No description provided for @uptimeCheckNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi Kontrol Et'**
+  String get uptimeCheckNow;
+
+  /// No description provided for @uptimeChecking.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol ediliyor...'**
+  String get uptimeChecking;
+
+  /// No description provided for @uptimeCheckedSuccess.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol başarıyla tamamlandı.'**
+  String get uptimeCheckedSuccess;
+
+  /// No description provided for @uptimeCheckedFailed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol başarısız oldu.'**
+  String get uptimeCheckedFailed;
+
+  /// No description provided for @uptimeDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu uptime izleyicisini silmek istediğinizden emin misiniz?'**
+  String get uptimeDeleteConfirm;
+
+  /// No description provided for @uptimeDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleyici silindi.'**
+  String get uptimeDeleted;
+
+  /// No description provided for @uptimeSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleyici kaydedildi.'**
+  String get uptimeSaved;
+
+  /// No description provided for @uptimeName.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleyici Adı'**
+  String get uptimeName;
+
+  /// No description provided for @uptimeURL.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef URL'**
+  String get uptimeURL;
+
+  /// No description provided for @uptimeMethod.
+  ///
+  /// In tr, this message translates to:
+  /// **'HTTP Yöntemi'**
+  String get uptimeMethod;
+
+  /// No description provided for @uptimeInterval.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol Aralığı'**
+  String get uptimeInterval;
+
+  /// No description provided for @uptimeTimeout.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman Aşımı'**
+  String get uptimeTimeout;
+
+  /// No description provided for @uptimeExpectedStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Beklenen Durum Kodu'**
+  String get uptimeExpectedStatus;
+
+  /// No description provided for @uptimeSSLCheck.
+  ///
+  /// In tr, this message translates to:
+  /// **'SSL/TLS Sertifika Kontrolü'**
+  String get uptimeSSLCheck;
+
+  /// No description provided for @uptimeSSLIssuer.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sertifika Sağlayıcı'**
+  String get uptimeSSLIssuer;
+
+  /// No description provided for @uptimeSSLExpires.
+  ///
+  /// In tr, this message translates to:
+  /// **'SSL Süresi'**
+  String get uptimeSSLExpires;
+
+  /// No description provided for @uptimeSSLValid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçerli'**
+  String get uptimeSSLValid;
+
+  /// No description provided for @uptimeSSLExpired.
+  ///
+  /// In tr, this message translates to:
+  /// **'Süresi Doldu'**
+  String get uptimeSSLExpired;
+
+  /// No description provided for @uptimeSSLDaysLeft.
+  ///
+  /// In tr, this message translates to:
+  /// **'{days} gün kaldı'**
+  String uptimeSSLDaysLeft(int days);
+
+  /// No description provided for @uptimeTimeline90d.
+  ///
+  /// In tr, this message translates to:
+  /// **'90 Günlük Erişilebilirlik Geçmişi'**
+  String get uptimeTimeline90d;
+
+  /// No description provided for @uptimeResponseTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yanıt Süresi'**
+  String get uptimeResponseTime;
+
+  /// No description provided for @uptimeAvgResponseTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ort. Yanıt Süresi'**
+  String get uptimeAvgResponseTime;
+
+  /// No description provided for @uptimeRecentChecks.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Kontroller'**
+  String get uptimeRecentChecks;
+
+  /// No description provided for @uptimeStatusCode.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum Kodu'**
+  String get uptimeStatusCode;
+
+  /// No description provided for @uptimeCheckedAt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kontrol Zamanı'**
+  String get uptimeCheckedAt;
+
+  /// No description provided for @uptimeErrorMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata Detayı'**
+  String get uptimeErrorMessage;
+
+  /// No description provided for @uptimeStatus.
+  ///
+  /// In tr, this message translates to:
+  /// **'Durum'**
+  String get uptimeStatus;
+
+  /// No description provided for @uptimeLastChecked.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Kontrol'**
+  String get uptimeLastChecked;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

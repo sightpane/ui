@@ -264,6 +264,34 @@ abstract class SightpaneApi {
   });
   Future<void> deleteCronMonitor(int projectId, int monitorId);
   Future<List<CronCheckin>> cronCheckins(int projectId, int monitorId, {int limit = 50});
+  Future<List<UptimeMonitor>> uptimeMonitors(int projectId);
+  Future<UptimeStats> uptimeStats(int projectId);
+  Future<UptimeHistoryDetail> uptimeMonitor(int projectId, int monitorId, {int days = 90});
+  Future<UptimeMonitor> createUptimeMonitor(
+    int projectId, {
+    required String name,
+    required String url,
+    String method = 'GET',
+    Map<String, String>? headers,
+    int expectedStatusCode = 200,
+    int intervalSeconds = 60,
+    int timeoutSeconds = 10,
+    bool sslCheckEnabled = true,
+  });
+  Future<UptimeMonitor> updateUptimeMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? url,
+    String? method,
+    Map<String, String>? headers,
+    int? expectedStatusCode,
+    int? intervalSeconds,
+    int? timeoutSeconds,
+    bool? sslCheckEnabled,
+  });
+  Future<void> deleteUptimeMonitor(int projectId, int monitorId);
+  Future<Map<String, Object?>> triggerUptimeCheck(int projectId, int monitorId);
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -1278,6 +1306,110 @@ class HttpSightpaneApi implements SightpaneApi {
         CronCheckin.fromJson(_map(c)),
     ];
   }
+
+  @override
+  Future<List<UptimeMonitor>> uptimeMonitors(int projectId) async {
+    final res = _map(await _send('GET', '/api/v1/projects/$projectId/uptime'));
+    return [
+      for (final m in _list(res['monitors']))
+        UptimeMonitor.fromJson(_map(m)),
+    ];
+  }
+
+  @override
+  Future<UptimeStats> uptimeStats(int projectId) async {
+    final res = _map(await _send('GET', '/api/v1/projects/$projectId/uptime'));
+    return UptimeStats.fromJson(_map(res['stats']));
+  }
+
+  @override
+  Future<UptimeHistoryDetail> uptimeMonitor(int projectId, int monitorId, {int days = 90}) async =>
+      UptimeHistoryDetail.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/uptime/$monitorId',
+            query: {'days': '$days'},
+          ),
+        ),
+      );
+
+  @override
+  Future<UptimeMonitor> createUptimeMonitor(
+    int projectId, {
+    required String name,
+    required String url,
+    String method = 'GET',
+    Map<String, String>? headers,
+    int expectedStatusCode = 200,
+    int intervalSeconds = 60,
+    int timeoutSeconds = 10,
+    bool sslCheckEnabled = true,
+  }) async =>
+      UptimeMonitor.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/uptime',
+            body: {
+              'name': name,
+              'url': url,
+              'method': method,
+              'headers': ?headers,
+              'expected_status_code': expectedStatusCode,
+              'interval_seconds': intervalSeconds,
+              'timeout_seconds': timeoutSeconds,
+              'ssl_check_enabled': sslCheckEnabled,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<UptimeMonitor> updateUptimeMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? url,
+    String? method,
+    Map<String, String>? headers,
+    int? expectedStatusCode,
+    int? intervalSeconds,
+    int? timeoutSeconds,
+    bool? sslCheckEnabled,
+  }) async =>
+      UptimeMonitor.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/uptime/$monitorId',
+            body: {
+              'name': ?name,
+              'url': ?url,
+              'method': ?method,
+              'headers': ?headers,
+              'expected_status_code': ?expectedStatusCode,
+              'interval_seconds': ?intervalSeconds,
+              'timeout_seconds': ?timeoutSeconds,
+              'ssl_check_enabled': ?sslCheckEnabled,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteUptimeMonitor(int projectId, int monitorId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/uptime/$monitorId');
+  }
+
+  @override
+  Future<Map<String, Object?>> triggerUptimeCheck(int projectId, int monitorId) async =>
+      _map(
+        await _send(
+          'POST',
+          '/api/v1/projects/$projectId/uptime/$monitorId/check',
+        ),
+      );
 
   @override
   Future<SessionDetail> session(String id) async =>

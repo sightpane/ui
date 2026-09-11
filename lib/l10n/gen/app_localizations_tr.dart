@@ -1737,4 +1737,129 @@ class LTr extends L {
 
   @override
   String get cronsTotal => 'Toplam İzleyici';
+
+  @override
+  String get navUptime => 'Uptime & Sentetik';
+
+  @override
+  String get uptimeTitle => 'Uptime & Sentetik İzleme';
+
+  @override
+  String get uptimeDesc =>
+      'Uç nokta erişilebilirliğini, yanıt sürelerini ve SSL sertifika geçerliliğini aktif olarak izleyin.';
+
+  @override
+  String get uptimeNew => 'Yeni İzleyici';
+
+  @override
+  String get uptimeEdit => 'İzleyiciyi Düzenle';
+
+  @override
+  String get uptimeEmpty => 'Henüz bir uptime izleyicisi eklenmedi.';
+
+  @override
+  String get uptimeEmptyDesc =>
+      'API ve web uygulamalarınız için sentetik sağlık kontrolleri oluşturarak kesintileri anında tespit edin.';
+
+  @override
+  String get uptimeTotal => 'Toplam İzleyici';
+
+  @override
+  String get uptimeSLA => 'SLA Oranı';
+
+  @override
+  String get uptimeUp => 'Çalışıyor';
+
+  @override
+  String get uptimeDegraded => 'Kısmi Kesinti';
+
+  @override
+  String get uptimeDown => 'Kesintide';
+
+  @override
+  String get uptimeCheckNow => 'Şimdi Kontrol Et';
+
+  @override
+  String get uptimeChecking => 'Kontrol ediliyor...';
+
+  @override
+  String get uptimeCheckedSuccess => 'Kontrol başarıyla tamamlandı.';
+
+  @override
+  String get uptimeCheckedFailed => 'Kontrol başarısız oldu.';
+
+  @override
+  String get uptimeDeleteConfirm =>
+      'Bu uptime izleyicisini silmek istediğinizden emin misiniz?';
+
+  @override
+  String get uptimeDeleted => 'İzleyici silindi.';
+
+  @override
+  String get uptimeSaved => 'İzleyici kaydedildi.';
+
+  @override
+  String get uptimeName => 'İzleyici Adı';
+
+  @override
+  String get uptimeURL => 'Hedef URL';
+
+  @override
+  String get uptimeMethod => 'HTTP Yöntemi';
+
+  @override
+  String get uptimeInterval => 'Kontrol Aralığı';
+
+  @override
+  String get uptimeTimeout => 'Zaman Aşımı';
+
+  @override
+  String get uptimeExpectedStatus => 'Beklenen Durum Kodu';
+
+  @override
+  String get uptimeSSLCheck => 'SSL/TLS Sertifika Kontrolü';
+
+  @override
+  String get uptimeSSLIssuer => 'Sertifika Sağlayıcı';
+
+  @override
+  String get uptimeSSLExpires => 'SSL Süresi';
+
+  @override
+  String get uptimeSSLValid => 'Geçerli';
+
+  @override
+  String get uptimeSSLExpired => 'Süresi Doldu';
+
+  @override
+  String uptimeSSLDaysLeft(int days) {
+    return '$days gün kaldı';
+  }
+
+  @override
+  String get uptimeTimeline90d => '90 Günlük Erişilebilirlik Geçmişi';
+
+  @override
+  String get uptimeResponseTime => 'Yanıt Süresi';
+
+  @override
+  String get uptimeAvgResponseTime => 'Ort. Yanıt Süresi';
+
+  @override
+  String get uptimeRecentChecks => 'Son Kontroller';
+
+  @override
+  String get uptimeStatusCode => 'Durum Kodu';
+
+  @override
+  String get uptimeCheckedAt => 'Kontrol Zamanı';
+
+  @override
+  String get uptimeErrorMessage => 'Hata Detayı';
+
+  @override
+  String get uptimeStatus => 'Durum';
+
+  @override
+  String get uptimeLastChecked => 'Son Kontrol';
 }

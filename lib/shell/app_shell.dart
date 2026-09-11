@@ -158,6 +158,7 @@ String _navFeatureFlags(L l) => l.navFeatureFlags;
 String _navExperiments(L l) => l.navExperiments;
 String _navSurveys(L l) => l.navSurveys;
 String _navCrons(L l) => l.navCrons;
+String _navUptime(L l) => l.navUptime;
 String _navPerformance(L l) => l.performanceTitle;
 String _navReleases(L l) => l.navReleases;
 String _navEvents(L l) => l.navEvents;
@@ -176,6 +177,7 @@ const projectNavEntries = [
   NavEntry(_navExperiments, LucideIcons.flaskConical, '/experiments'),
   NavEntry(_navSurveys, LucideIcons.messageSquare, '/surveys'),
   NavEntry(_navCrons, LucideIcons.timer, '/crons'),
+  NavEntry(_navUptime, LucideIcons.activity, '/uptime'),
   NavEntry(_navPerformance, LucideIcons.gauge, '/performance'),
   NavEntry(_navReleases, LucideIcons.tag, '/releases'),
   NavEntry(_navEvents, LucideIcons.chartBar, '/events'),

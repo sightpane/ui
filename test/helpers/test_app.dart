@@ -2102,6 +2102,196 @@ class FakeApi implements SightpaneApi {
     calls.add('cronCheckins $projectId id=$monitorId');
     return cronCheckinsValue;
   }
+
+  var uptimeMonitorsValue = <UptimeMonitor>[
+    UptimeMonitor(
+      id: 1,
+      projectId: 1,
+      name: 'Production API',
+      url: 'https://api.sightpane.io/healthz',
+      method: 'GET',
+      headers: const {},
+      expectedStatusCode: 200,
+      intervalSeconds: 60,
+      timeoutSeconds: 10,
+      status: 'up',
+      sslCheckEnabled: true,
+      sslIssuer: "Let's Encrypt",
+      sslExpiresAt: DateTime.now().add(const Duration(days: 85)),
+      lastCheckedAt: DateTime.now().subtract(const Duration(seconds: 30)),
+      uptimePercentage: 99.98,
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+      updatedAt: DateTime.now(),
+    ),
+  ];
+
+  var uptimeStatsValue = const UptimeStats(
+    totalMonitors: 1,
+    upCount: 1,
+    degradedCount: 0,
+    downCount: 0,
+    avgUptimePct: 99.98,
+  );
+
+  var uptimeHistoryDetailValue = UptimeHistoryDetail(
+    monitor: UptimeMonitor(
+      id: 1,
+      projectId: 1,
+      name: 'Production API',
+      url: 'https://api.sightpane.io/healthz',
+      method: 'GET',
+      headers: const {},
+      expectedStatusCode: 200,
+      intervalSeconds: 60,
+      timeoutSeconds: 10,
+      status: 'up',
+      sslCheckEnabled: true,
+      sslIssuer: "Let's Encrypt",
+      sslExpiresAt: DateTime.now().add(const Duration(days: 85)),
+      lastCheckedAt: DateTime.now().subtract(const Duration(seconds: 30)),
+      uptimePercentage: 99.98,
+      createdAt: DateTime.now().subtract(const Duration(days: 30)),
+      updatedAt: DateTime.now(),
+    ),
+    status: 'up',
+    uptimePercentage: 99.98,
+    currentResponseTimeMs: 42,
+    ssl: UptimeSSLInfo(
+      valid: true,
+      expiresAt: DateTime.now().add(const Duration(days: 85)),
+      daysRemaining: 85,
+      issuer: "Let's Encrypt",
+    ),
+    history90d: [
+      for (int i = 89; i >= 0; i--)
+        UptimeDaySummary(
+          date: '2026-09-${(i % 28 + 1).toString().padLeft(2, '0')}',
+          status: 'up',
+          avgMs: 40 + (i % 10),
+          uptimePct: 100.0,
+        ),
+    ],
+    recentChecks: [
+      UptimeCheck(
+        id: 101,
+        monitorId: 1,
+        projectId: 1,
+        checkedAt: DateTime.now().subtract(const Duration(minutes: 1)),
+        statusCode: 200,
+        responseTimeMs: 42,
+        isUp: true,
+        errorMessage: '',
+      ),
+    ],
+  );
+
+  @override
+  Future<List<UptimeMonitor>> uptimeMonitors(int projectId) async {
+    calls.add('uptimeMonitors $projectId');
+    return uptimeMonitorsValue;
+  }
+
+  @override
+  Future<UptimeStats> uptimeStats(int projectId) async {
+    calls.add('uptimeStats $projectId');
+    return uptimeStatsValue;
+  }
+
+  @override
+  Future<UptimeHistoryDetail> uptimeMonitor(int projectId, int monitorId, {int days = 90}) async {
+    calls.add('uptimeMonitor $projectId id=$monitorId days=$days');
+    return uptimeHistoryDetailValue;
+  }
+
+  @override
+  Future<UptimeMonitor> createUptimeMonitor(
+    int projectId, {
+    required String name,
+    required String url,
+    String method = 'GET',
+    Map<String, String>? headers,
+    int expectedStatusCode = 200,
+    int intervalSeconds = 60,
+    int timeoutSeconds = 10,
+    bool sslCheckEnabled = true,
+  }) async {
+    calls.add('createUptimeMonitor $projectId name=$name');
+    final m = UptimeMonitor(
+      id: uptimeMonitorsValue.length + 1,
+      projectId: projectId,
+      name: name,
+      url: url,
+      method: method,
+      headers: headers ?? const {},
+      expectedStatusCode: expectedStatusCode,
+      intervalSeconds: intervalSeconds,
+      timeoutSeconds: timeoutSeconds,
+      status: 'up',
+      sslCheckEnabled: sslCheckEnabled,
+      sslIssuer: sslCheckEnabled ? "Let's Encrypt" : null,
+      sslExpiresAt: sslCheckEnabled ? DateTime.now().add(const Duration(days: 90)) : null,
+      lastCheckedAt: DateTime.now(),
+      uptimePercentage: 100.0,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    uptimeMonitorsValue.add(m);
+    return m;
+  }
+
+  @override
+  Future<UptimeMonitor> updateUptimeMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? url,
+    String? method,
+    Map<String, String>? headers,
+    int? expectedStatusCode,
+    int? intervalSeconds,
+    int? timeoutSeconds,
+    bool? sslCheckEnabled,
+  }) async {
+    calls.add('updateUptimeMonitor $projectId id=$monitorId');
+    final idx = uptimeMonitorsValue.indexWhere((m) => m.id == monitorId);
+    if (idx != -1) {
+      final old = uptimeMonitorsValue[idx];
+      final updated = UptimeMonitor(
+        id: old.id,
+        projectId: old.projectId,
+        name: name ?? old.name,
+        url: url ?? old.url,
+        method: method ?? old.method,
+        headers: headers ?? old.headers,
+        expectedStatusCode: expectedStatusCode ?? old.expectedStatusCode,
+        intervalSeconds: intervalSeconds ?? old.intervalSeconds,
+        timeoutSeconds: timeoutSeconds ?? old.timeoutSeconds,
+        status: old.status,
+        sslCheckEnabled: sslCheckEnabled ?? old.sslCheckEnabled,
+        sslIssuer: old.sslIssuer,
+        sslExpiresAt: old.sslExpiresAt,
+        lastCheckedAt: old.lastCheckedAt,
+        uptimePercentage: old.uptimePercentage,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      uptimeMonitorsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Uptime monitor not found');
+  }
+
+  @override
+  Future<void> deleteUptimeMonitor(int projectId, int monitorId) async {
+    calls.add('deleteUptimeMonitor $projectId id=$monitorId');
+    uptimeMonitorsValue.removeWhere((m) => m.id == monitorId);
+  }
+
+  @override
+  Future<Map<String, Object?>> triggerUptimeCheck(int projectId, int monitorId) async {
+    calls.add('triggerUptimeCheck $projectId id=$monitorId');
+    return {'is_up': true, 'response_time_ms': 42, 'status_code': 200};
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

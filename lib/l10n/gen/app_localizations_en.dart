@@ -1816,4 +1816,135 @@ class LEn extends L {
 
   @override
   String get cronsTotal => 'Total Monitors';
+
+  @override
+  String get navUptime => 'Uptime & Synthetics';
+
+  @override
+  String get uptimeTitle => 'Uptime & Synthetic Monitoring';
+
+  @override
+  String get uptimeDesc =>
+      'Actively monitor endpoint availability, response latency, and SSL certificate expiration.';
+
+  @override
+  String get uptimeNew => 'New Monitor';
+
+  @override
+  String get uptimeEdit => 'Edit Monitor';
+
+  @override
+  String get uptimeEmpty => 'No uptime monitors created yet.';
+
+  @override
+  String get uptimeEmptyDesc =>
+      'Create synthetic health checks for your APIs and web apps to catch downtime instantly.';
+
+  @override
+  String get uptimeTotal => 'Total Monitors';
+
+  @override
+  String get uptimeSLA => 'SLA Uptime';
+
+  @override
+  String get uptimeUp => 'Operational';
+
+  @override
+  String get uptimeDegraded => 'Degraded';
+
+  @override
+  String get uptimeDown => 'Down';
+
+  @override
+  String get uptimeCheckNow => 'Check Now';
+
+  @override
+  String get uptimeChecking => 'Checking...';
+
+  @override
+  String get uptimeCheckedSuccess => 'Check completed successfully.';
+
+  @override
+  String get uptimeCheckedFailed => 'Check failed.';
+
+  @override
+  String get uptimeDeleteConfirm =>
+      'Are you sure you want to delete this uptime monitor?';
+
+  @override
+  String get uptimeDeleted => 'Monitor deleted.';
+
+  @override
+  String get uptimeSaved => 'Monitor saved.';
+
+  @override
+  String get uptimeName => 'Monitor Name';
+
+  @override
+  String get uptimeURL => 'Target URL';
+
+  @override
+  String get uptimeMethod => 'HTTP Method';
+
+  @override
+  String get uptimeInterval => 'Check Interval';
+
+  @override
+  String get uptimeTimeout => 'Timeout';
+
+  @override
+  String get uptimeExpectedStatus => 'Expected Status Code';
+
+  @override
+  String get uptimeSSLCheck => 'SSL/TLS Certificate Check';
+
+  @override
+  String get uptimeSSLIssuer => 'Certificate Issuer';
+
+  @override
+  String get uptimeSSLExpires => 'SSL Expiration';
+
+  @override
+  String get uptimeSSLValid => 'Valid';
+
+  @override
+  String get uptimeSSLExpired => 'Expired';
+
+  @override
+  String uptimeSSLDaysLeft(int days) {
+    String _temp0 = intl.Intl.pluralLogic(
+      days,
+      locale: localeName,
+      other: '$days days remaining',
+      one: '1 day remaining',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get uptimeTimeline90d => '90-Day Availability History';
+
+  @override
+  String get uptimeResponseTime => 'Response Time';
+
+  @override
+  String get uptimeAvgResponseTime => 'Avg Response Time';
+
+  @override
+  String get uptimeRecentChecks => 'Recent Checks';
+
+  @override
+  String get uptimeStatusCode => 'Status Code';
+
+  @override
+  String get uptimeCheckedAt => 'Checked At';
+
+  @override
+  String get uptimeErrorMessage => 'Error Detail';
+
+  @override
+  String get uptimeStatus => 'Status';
+
+  @override
+  String get uptimeLastChecked => 'Last Checked';
 }

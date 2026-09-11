@@ -25,6 +25,8 @@ import '../features/releases/releases_page.dart';
 import '../features/sessions/session_detail_page.dart';
 import '../features/crons/cron_detail_page.dart';
 import '../features/crons/crons_page.dart';
+import '../features/uptime/uptime_detail_page.dart';
+import '../features/uptime/uptime_page.dart';
 import '../features/surveys/survey_detail_page.dart';
 import '../features/surveys/surveys_page.dart';
 import '../features/sessions/sessions_page.dart';
@@ -208,6 +210,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: ':monitorId',
                     builder: (_, s) => CronDetailPage(
+                      projectId: _id(s),
+                      monitorId: int.parse(s.pathParameters['monitorId']!),
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'uptime',
+                builder: (_, s) => UptimePage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':monitorId',
+                    builder: (_, s) => UptimeDetailPage(
                       projectId: _id(s),
                       monitorId: int.parse(s.pathParameters['monitorId']!),
                     ),

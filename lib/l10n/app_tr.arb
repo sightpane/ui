@@ -953,5 +953,52 @@
   "cronsName": "İzleyici Adı",
   "cronsDuration": "Süre",
   "cronsMessage": "Mesaj",
-  "cronsTotal": "Toplam İzleyici"
+  "cronsTotal": "Toplam İzleyici",
+  "navUptime": "Uptime & Sentetik",
+  "uptimeTitle": "Uptime & Sentetik İzleme",
+  "uptimeDesc": "Uç nokta erişilebilirliğini, yanıt sürelerini ve SSL sertifika geçerliliğini aktif olarak izleyin.",
+  "uptimeNew": "Yeni İzleyici",
+  "uptimeEdit": "İzleyiciyi Düzenle",
+  "uptimeEmpty": "Henüz bir uptime izleyicisi eklenmedi.",
+  "uptimeEmptyDesc": "API ve web uygulamalarınız için sentetik sağlık kontrolleri oluşturarak kesintileri anında tespit edin.",
+  "uptimeTotal": "Toplam İzleyici",
+  "uptimeSLA": "SLA Oranı",
+  "uptimeUp": "Çalışıyor",
+  "uptimeDegraded": "Kısmi Kesinti",
+  "uptimeDown": "Kesintide",
+  "uptimeCheckNow": "Şimdi Kontrol Et",
+  "uptimeChecking": "Kontrol ediliyor...",
+  "uptimeCheckedSuccess": "Kontrol başarıyla tamamlandı.",
+  "uptimeCheckedFailed": "Kontrol başarısız oldu.",
+  "uptimeDeleteConfirm": "Bu uptime izleyicisini silmek istediğinizden emin misiniz?",
+  "uptimeDeleted": "İzleyici silindi.",
+  "uptimeSaved": "İzleyici kaydedildi.",
+  "uptimeName": "İzleyici Adı",
+  "uptimeURL": "Hedef URL",
+  "uptimeMethod": "HTTP Yöntemi",
+  "uptimeInterval": "Kontrol Aralığı",
+  "uptimeTimeout": "Zaman Aşımı",
+  "uptimeExpectedStatus": "Beklenen Durum Kodu",
+  "uptimeSSLCheck": "SSL/TLS Sertifika Kontrolü",
+  "uptimeSSLIssuer": "Sertifika Sağlayıcı",
+  "uptimeSSLExpires": "SSL Süresi",
+  "uptimeSSLValid": "Geçerli",
+  "uptimeSSLExpired": "Süresi Doldu",
+  "uptimeSSLDaysLeft": "{days} gün kaldı",
+  "@uptimeSSLDaysLeft": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "uptimeTimeline90d": "90 Günlük Erişilebilirlik Geçmişi",
+  "uptimeResponseTime": "Yanıt Süresi",
+  "uptimeAvgResponseTime": "Ort. Yanıt Süresi",
+  "uptimeRecentChecks": "Son Kontroller",
+  "uptimeStatusCode": "Durum Kodu",
+  "uptimeCheckedAt": "Kontrol Zamanı",
+  "uptimeErrorMessage": "Hata Detayı",
+  "uptimeStatus": "Durum",
+  "uptimeLastChecked": "Son Kontrol"
 }

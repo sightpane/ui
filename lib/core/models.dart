@@ -2168,5 +2168,222 @@ class CronStats {
   );
 }
 
+class UptimeMonitor {
+  const UptimeMonitor({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.url,
+    required this.method,
+    required this.headers,
+    required this.expectedStatusCode,
+    required this.intervalSeconds,
+    required this.timeoutSeconds,
+    required this.status,
+    required this.sslCheckEnabled,
+    this.sslIssuer,
+    this.sslExpiresAt,
+    this.lastCheckedAt,
+    required this.uptimePercentage,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String url;
+  final String method;
+  final Map<String, String> headers;
+  final int expectedStatusCode;
+  final int intervalSeconds;
+  final int timeoutSeconds;
+  final String status;
+  final bool sslCheckEnabled;
+  final String? sslIssuer;
+  final DateTime? sslExpiresAt;
+  final DateTime? lastCheckedAt;
+  final double uptimePercentage;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  factory UptimeMonitor.fromJson(Map<String, Object?> j) {
+    final rawHeaders = j['headers'];
+    final headersMap = <String, String>{};
+    if (rawHeaders is Map) {
+      for (final e in rawHeaders.entries) {
+        headersMap[e.key.toString()] = e.value?.toString() ?? '';
+      }
+    }
+    return UptimeMonitor(
+      id: _i(j['id']),
+      projectId: _i(j['project_id']),
+      name: _s(j['name']),
+      url: _s(j['url']),
+      method: _s(j['method']).isEmpty ? 'GET' : _s(j['method']),
+      headers: headersMap,
+      expectedStatusCode: _i(j['expected_status_code']) == 0 ? 200 : _i(j['expected_status_code']),
+      intervalSeconds: _i(j['interval_seconds']) == 0 ? 60 : _i(j['interval_seconds']),
+      timeoutSeconds: _i(j['timeout_seconds']) == 0 ? 10 : _i(j['timeout_seconds']),
+      status: _s(j['status']).isEmpty ? 'up' : _s(j['status']),
+      sslCheckEnabled: j['ssl_check_enabled'] == true,
+      sslIssuer: j['ssl_issuer'] != null ? _s(j['ssl_issuer']) : null,
+      sslExpiresAt: _t(j['ssl_expires_at']),
+      lastCheckedAt: _t(j['last_checked_at']),
+      uptimePercentage: _d(j['uptime_percentage']),
+      createdAt: _t(j['created_at']) ?? DateTime.now(),
+      updatedAt: _t(j['updated_at']) ?? DateTime.now(),
+    );
+  }
+}
+
+class UptimeCheck {
+  const UptimeCheck({
+    required this.id,
+    required this.monitorId,
+    required this.projectId,
+    required this.checkedAt,
+    required this.statusCode,
+    required this.responseTimeMs,
+    required this.isUp,
+    required this.errorMessage,
+  });
+
+  final int id;
+  final int monitorId;
+  final int projectId;
+  final DateTime checkedAt;
+  final int statusCode;
+  final int responseTimeMs;
+  final bool isUp;
+  final String errorMessage;
+
+  factory UptimeCheck.fromJson(Map<String, Object?> j) => UptimeCheck(
+    id: _i(j['id']),
+    monitorId: _i(j['monitor_id']),
+    projectId: _i(j['project_id']),
+    checkedAt: _t(j['checked_at']) ?? DateTime.now(),
+    statusCode: _i(j['status_code']),
+    responseTimeMs: _i(j['response_time_ms']),
+    isUp: j['is_up'] == true,
+    errorMessage: _s(j['error_message']),
+  );
+}
+
+class UptimeSSLInfo {
+  const UptimeSSLInfo({
+    required this.valid,
+    this.expiresAt,
+    required this.daysRemaining,
+    required this.issuer,
+  });
+
+  final bool valid;
+  final DateTime? expiresAt;
+  final int daysRemaining;
+  final String issuer;
+
+  factory UptimeSSLInfo.fromJson(Map<String, Object?> j) => UptimeSSLInfo(
+    valid: j['valid'] == true,
+    expiresAt: _t(j['expires_at']),
+    daysRemaining: _i(j['days_remaining']),
+    issuer: _s(j['issuer']),
+  );
+}
+
+class UptimeDaySummary {
+  const UptimeDaySummary({
+    required this.date,
+    required this.status,
+    required this.avgMs,
+    required this.uptimePct,
+  });
+
+  final String date;
+  final String status;
+  final int avgMs;
+  final double uptimePct;
+
+  factory UptimeDaySummary.fromJson(Map<String, Object?> j) => UptimeDaySummary(
+    date: _s(j['date']),
+    status: _s(j['status']),
+    avgMs: _i(j['avg_ms']),
+    uptimePct: _d(j['uptime_pct']),
+  );
+}
+
+class UptimeHistoryDetail {
+  const UptimeHistoryDetail({
+    this.monitor,
+    required this.status,
+    required this.uptimePercentage,
+    required this.currentResponseTimeMs,
+    this.ssl,
+    this.history90d = const [],
+    this.recentChecks = const [],
+  });
+
+  final UptimeMonitor? monitor;
+  final String status;
+  final double uptimePercentage;
+  final int currentResponseTimeMs;
+  final UptimeSSLInfo? ssl;
+  final List<UptimeDaySummary> history90d;
+  final List<UptimeCheck> recentChecks;
+
+  factory UptimeHistoryDetail.fromJson(Map<String, Object?> j) {
+    final rawHist = j['history_90d'];
+    final rawChecks = j['recent_checks'];
+    return UptimeHistoryDetail(
+      monitor: j['monitor'] is Map<String, Object?>
+          ? UptimeMonitor.fromJson(j['monitor'] as Map<String, Object?>)
+          : null,
+      status: _s(j['status']).isEmpty ? 'up' : _s(j['status']),
+      uptimePercentage: _d(j['uptime_percentage']),
+      currentResponseTimeMs: _i(j['current_response_time_ms']),
+      ssl: j['ssl'] is Map<String, Object?>
+          ? UptimeSSLInfo.fromJson(j['ssl'] as Map<String, Object?>)
+          : null,
+      history90d: rawHist is List
+          ? rawHist
+              .whereType<Map<String, Object?>>()
+              .map(UptimeDaySummary.fromJson)
+              .toList()
+          : const [],
+      recentChecks: rawChecks is List
+          ? rawChecks
+              .whereType<Map<String, Object?>>()
+              .map(UptimeCheck.fromJson)
+              .toList()
+          : const [],
+    );
+  }
+}
+
+class UptimeStats {
+  const UptimeStats({
+    this.totalMonitors = 0,
+    this.upCount = 0,
+    this.degradedCount = 0,
+    this.downCount = 0,
+    this.avgUptimePct = 100.0,
+  });
+
+  final int totalMonitors;
+  final int upCount;
+  final int degradedCount;
+  final int downCount;
+  final double avgUptimePct;
+
+  factory UptimeStats.fromJson(Map<String, Object?> j) => UptimeStats(
+    totalMonitors: _i(j['total_monitors']),
+    upCount: _i(j['up_count']),
+    degradedCount: _i(j['degraded_count']),
+    downCount: _i(j['down_count']),
+    avgUptimePct: j.containsKey('avg_uptime_pct') ? _d(j['avg_uptime_pct']) : 100.0,
+  );
+}
+
+
 
 

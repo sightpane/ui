@@ -264,6 +264,24 @@ final cronCheckinsProvider =
   (ref, k) => ref.watch(apiProvider).cronCheckins(k.projectId, k.monitorId),
 );
 
+final uptimeMonitorsProvider =
+    FutureProvider.autoDispose.family<List<UptimeMonitor>, int>(
+  (ref, projectId) => ref.watch(apiProvider).uptimeMonitors(projectId),
+);
+
+final uptimeStatsProvider =
+    FutureProvider.autoDispose.family<UptimeStats, int>(
+  (ref, projectId) => ref.watch(apiProvider).uptimeStats(projectId),
+);
+
+typedef UptimeMonitorKey = ({int projectId, int monitorId});
+
+final uptimeMonitorProvider =
+    FutureProvider.autoDispose.family<UptimeHistoryDetail, UptimeMonitorKey>(
+  (ref, k) => ref.watch(apiProvider).uptimeMonitor(k.projectId, k.monitorId),
+);
+
+
 
 
 
