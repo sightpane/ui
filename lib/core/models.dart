@@ -1902,5 +1902,169 @@ class ExperimentResults {
   );
 }
 
+class SurveyTargeting {
+  const SurveyTargeting({
+    this.urlPattern = '',
+    this.eventTrigger = '',
+    this.sampleRate = 1.0,
+  });
+
+  final String urlPattern;
+  final String eventTrigger;
+  final double sampleRate;
+
+  factory SurveyTargeting.fromJson(Map<String, Object?> j) => SurveyTargeting(
+    urlPattern: _s(j['url_pattern']),
+    eventTrigger: _s(j['event_trigger']),
+    sampleRate: j.containsKey('sample_rate') ? _d(j['sample_rate']) : 1.0,
+  );
+
+  Map<String, Object?> toJson() => {
+    if (urlPattern.isNotEmpty) 'url_pattern': urlPattern,
+    if (eventTrigger.isNotEmpty) 'event_trigger': eventTrigger,
+    'sample_rate': sampleRate,
+  };
+}
+
+class Survey {
+  const Survey({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.type,
+    required this.question,
+    this.description = '',
+    this.choices = const [],
+    this.targeting = const SurveyTargeting(),
+    required this.active,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String type; // 'nps', 'csat', 'rating', 'open_text', 'single_choice'
+  final String question;
+  final String description;
+  final List<String> choices;
+  final SurveyTargeting targeting;
+  final bool active;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  factory Survey.fromJson(Map<String, Object?> j) => Survey(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    type: _s(j['type']),
+    question: _s(j['question']),
+    description: _s(j['description']),
+    choices: [
+      for (final c in (j['choices'] as List? ?? const [])) _s(c),
+    ],
+    targeting: SurveyTargeting.fromJson(_m(j['targeting'])),
+    active: j['active'] == true,
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
+    updatedAt: _t(j['updated_at']) ?? DateTime.now(),
+  );
+}
+
+class SurveyResponse {
+  const SurveyResponse({
+    required this.id,
+    required this.surveyId,
+    required this.projectId,
+    this.sessionId,
+    required this.userId,
+    this.score,
+    required this.responseText,
+    required this.createdAt,
+  });
+
+  final int id;
+  final int surveyId;
+  final int projectId;
+  final String? sessionId;
+  final String userId;
+  final int? score;
+  final String responseText;
+  final DateTime createdAt;
+
+  factory SurveyResponse.fromJson(Map<String, Object?> j) => SurveyResponse(
+    id: _i(j['id']),
+    surveyId: _i(j['survey_id']),
+    projectId: _i(j['project_id']),
+    sessionId: j['session_id'] != null && _s(j['session_id']).isNotEmpty ? _s(j['session_id']) : null,
+    userId: _s(j['user_id']),
+    score: j['score'] != null ? _i(j['score']) : null,
+    responseText: _s(j['response_text']),
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
+  );
+}
+
+class ScoreBucket {
+  const ScoreBucket({
+    required this.score,
+    required this.count,
+  });
+
+  final int score;
+  final int count;
+
+  factory ScoreBucket.fromJson(Map<String, Object?> j) => ScoreBucket(
+    score: _i(j['score']),
+    count: _i(j['count']),
+  );
+}
+
+class SurveyResults {
+  const SurveyResults({
+    required this.surveyId,
+    required this.type,
+    required this.totalResponses,
+    this.npsScore,
+    this.promotersCount = 0,
+    this.passivesCount = 0,
+    this.detractorsCount = 0,
+    this.averageScore,
+    this.satisfactionRate,
+    this.distribution = const [],
+    this.choiceCounts = const {},
+  });
+
+  final int surveyId;
+  final String type;
+  final int totalResponses;
+  final double? npsScore;
+  final int promotersCount;
+  final int passivesCount;
+  final int detractorsCount;
+  final double? averageScore;
+  final double? satisfactionRate;
+  final List<ScoreBucket> distribution;
+  final Map<String, int> choiceCounts;
+
+  factory SurveyResults.fromJson(Map<String, Object?> j) => SurveyResults(
+    surveyId: _i(j['survey_id']),
+    type: _s(j['type']),
+    totalResponses: _i(j['total_responses']),
+    npsScore: j['nps_score'] != null ? _d(j['nps_score']) : null,
+    promotersCount: _i(j['promoters_count']),
+    passivesCount: _i(j['passives_count']),
+    detractorsCount: _i(j['detractors_count']),
+    averageScore: j['average_score'] != null ? _d(j['average_score']) : null,
+    satisfactionRate: j['satisfaction_rate'] != null ? _d(j['satisfaction_rate']) : null,
+    distribution: [
+      for (final b in (j['distribution'] as List? ?? const []))
+        ScoreBucket.fromJson(_m(b)),
+    ],
+    choiceCounts: {
+      for (final entry in _m(j['choice_counts']).entries)
+        entry.key: _i(entry.value),
+    },
+  );
+}
+
 
 

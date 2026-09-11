@@ -1589,4 +1589,72 @@ class LTr extends L {
   @override
   String get experimentsDeleteConfirm =>
       'Bu deneyi silmek istediğinizden emin misiniz?';
+
+  @override
+  String get navSurveys => 'Anketler & Geri Bildirim';
+
+  @override
+  String get surveysTitle => 'Kullanıcı Anketleri & Geri Bildirim';
+
+  @override
+  String get surveysDesc =>
+      'NPS, CSAT ve serbest metin anketleriyle doğrudan oturum kayıtlarına bağlı kullanıcı geri bildirimleri toplayın.';
+
+  @override
+  String get surveysNew => 'Yeni Anket';
+
+  @override
+  String get surveysType => 'Anket Türü';
+
+  @override
+  String get surveysQuestion => 'Soru';
+
+  @override
+  String get surveysResponses => 'Yanıtlar';
+
+  @override
+  String get surveysNpsScore => 'Net Promoter Score (NPS)';
+
+  @override
+  String get surveysCsatScore => 'Müşteri Memnuniyeti (CSAT)';
+
+  @override
+  String get surveysPromoters => 'Destekçiler (9-10)';
+
+  @override
+  String get surveysPassives => 'Pasifler (7-8)';
+
+  @override
+  String get surveysDetractors => 'Kötüleyenler (0-6)';
+
+  @override
+  String get surveysWatchReplay => 'Oturumu İzle';
+
+  @override
+  String get surveysNoReplay => 'Kayıt Yok';
+
+  @override
+  String get surveysEmpty => 'Henüz bir anket oluşturulmadı.';
+
+  @override
+  String get surveysDeleteConfirm =>
+      'Bu anketi silmek istediğinizden emin misiniz?';
+
+  @override
+  String get surveysDeleted => 'Anket silindi.';
+
+  @override
+  String get surveysSaved => 'Anket kaydedildi.';
+
+  @override
+  String get surveysScoreDistribution => 'Puan Dağılımı';
+
+  @override
+  String get surveysIndividualResponses => 'Bireysel Yanıtlar';
+
+  @override
+  String get surveysActive => 'Aktif';
+
+  @override
+  String get surveysInactive => 'Pasif';
 }

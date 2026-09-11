@@ -1822,6 +1822,148 @@ class FakeApi implements SightpaneApi {
     }
     throw Exception('Experiment not found');
   }
+
+  var surveysValue = <Survey>[
+    Survey(
+      id: 1,
+      projectId: 1,
+      name: 'Quarterly NPS',
+      type: 'nps',
+      question: 'How likely are you to recommend Sightpane?',
+      description: 'NPS survey 0 to 10',
+      targeting: const SurveyTargeting(urlPattern: '/dashboard/*'),
+      active: true,
+      createdAt: DateTime.now().subtract(const Duration(days: 5)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 5)),
+    ),
+  ];
+
+  var surveyResponsesValue = <SurveyResponse>[
+    SurveyResponse(
+      id: 1,
+      surveyId: 1,
+      projectId: 1,
+      sessionId: 'sess_abc123',
+      userId: 'usr_alice',
+      score: 10,
+      responseText: 'Best tool ever!',
+      createdAt: DateTime.now().subtract(const Duration(days: 2)),
+    ),
+  ];
+
+  @override
+  Future<List<Survey>> surveys(int projectId) async {
+    calls.add('surveys $projectId');
+    return surveysValue;
+  }
+
+  @override
+  Future<Survey> survey(int projectId, int surveyId) async {
+    calls.add('survey $projectId id=$surveyId');
+    final s = surveysValue.firstWhere(
+      (e) => e.id == surveyId,
+      orElse: () => surveysValue.first,
+    );
+    return s;
+  }
+
+  @override
+  Future<Survey> createSurvey(
+    int projectId, {
+    required String name,
+    required String type,
+    required String question,
+    String description = '',
+    List<String> choices = const [],
+    SurveyTargeting targeting = const SurveyTargeting(),
+    bool active = true,
+  }) async {
+    calls.add('createSurvey $projectId name=$name');
+    final s = Survey(
+      id: surveysValue.length + 1,
+      projectId: projectId,
+      name: name,
+      type: type,
+      question: question,
+      description: description,
+      choices: choices,
+      targeting: targeting,
+      active: active,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    surveysValue.add(s);
+    return s;
+  }
+
+  @override
+  Future<Survey> updateSurvey(
+    int projectId,
+    int surveyId, {
+    String? name,
+    String? type,
+    String? question,
+    String? description,
+    List<String>? choices,
+    SurveyTargeting? targeting,
+    bool? active,
+  }) async {
+    calls.add('updateSurvey $projectId id=$surveyId');
+    final idx = surveysValue.indexWhere((e) => e.id == surveyId);
+    if (idx != -1) {
+      final old = surveysValue[idx];
+      final updated = Survey(
+        id: old.id,
+        projectId: old.projectId,
+        name: name ?? old.name,
+        type: type ?? old.type,
+        question: question ?? old.question,
+        description: description ?? old.description,
+        choices: choices ?? old.choices,
+        targeting: targeting ?? old.targeting,
+        active: active ?? old.active,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      surveysValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Survey not found');
+  }
+
+  @override
+  Future<void> deleteSurvey(int projectId, int surveyId) async {
+    calls.add('deleteSurvey $projectId id=$surveyId');
+    surveysValue.removeWhere((e) => e.id == surveyId);
+  }
+
+  @override
+  Future<SurveyResults> surveyResults(int projectId, int surveyId) async {
+    calls.add('surveyResults $projectId id=$surveyId');
+    return SurveyResults(
+      surveyId: surveyId,
+      type: 'nps',
+      totalResponses: 1,
+      npsScore: 100.0,
+      promotersCount: 1,
+      passivesCount: 0,
+      detractorsCount: 0,
+      distribution: [
+        for (int i = 0; i <= 10; i++)
+          ScoreBucket(score: i, count: i == 10 ? 1 : 0),
+      ],
+    );
+  }
+
+  @override
+  Future<List<SurveyResponse>> surveyResponses(
+    int projectId,
+    int surveyId, {
+    int limit = 100,
+  }) async {
+    calls.add('surveyResponses $projectId id=$surveyId');
+    return surveyResponsesValue;
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

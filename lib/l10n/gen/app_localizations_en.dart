@@ -1668,4 +1668,72 @@ class LEn extends L {
   @override
   String get experimentsDeleteConfirm =>
       'Are you sure you want to delete this experiment?';
+
+  @override
+  String get navSurveys => 'Surveys & Feedback';
+
+  @override
+  String get surveysTitle => 'In-App Surveys & User Feedback';
+
+  @override
+  String get surveysDesc =>
+      'Collect NPS, CSAT, and open text feedback directly linked to user session replays.';
+
+  @override
+  String get surveysNew => 'New Survey';
+
+  @override
+  String get surveysType => 'Survey Type';
+
+  @override
+  String get surveysQuestion => 'Question';
+
+  @override
+  String get surveysResponses => 'Responses';
+
+  @override
+  String get surveysNpsScore => 'Net Promoter Score (NPS)';
+
+  @override
+  String get surveysCsatScore => 'Customer Satisfaction (CSAT)';
+
+  @override
+  String get surveysPromoters => 'Promoters (9-10)';
+
+  @override
+  String get surveysPassives => 'Passives (7-8)';
+
+  @override
+  String get surveysDetractors => 'Detractors (0-6)';
+
+  @override
+  String get surveysWatchReplay => 'Watch Replay';
+
+  @override
+  String get surveysNoReplay => 'No Replay';
+
+  @override
+  String get surveysEmpty => 'No surveys created yet.';
+
+  @override
+  String get surveysDeleteConfirm =>
+      'Are you sure you want to delete this survey?';
+
+  @override
+  String get surveysDeleted => 'Survey deleted.';
+
+  @override
+  String get surveysSaved => 'Survey saved.';
+
+  @override
+  String get surveysScoreDistribution => 'Score Distribution';
+
+  @override
+  String get surveysIndividualResponses => 'Individual Responses';
+
+  @override
+  String get surveysActive => 'Active';
+
+  @override
+  String get surveysInactive => 'Inactive';
 }

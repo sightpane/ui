@@ -2976,6 +2976,138 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Bu deneyi silmek istediğinizden emin misiniz?'**
   String get experimentsDeleteConfirm;
+
+  /// No description provided for @navSurveys.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anketler & Geri Bildirim'**
+  String get navSurveys;
+
+  /// No description provided for @surveysTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Anketleri & Geri Bildirim'**
+  String get surveysTitle;
+
+  /// No description provided for @surveysDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'NPS, CSAT ve serbest metin anketleriyle doğrudan oturum kayıtlarına bağlı kullanıcı geri bildirimleri toplayın.'**
+  String get surveysDesc;
+
+  /// No description provided for @surveysNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Anket'**
+  String get surveysNew;
+
+  /// No description provided for @surveysType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anket Türü'**
+  String get surveysType;
+
+  /// No description provided for @surveysQuestion.
+  ///
+  /// In tr, this message translates to:
+  /// **'Soru'**
+  String get surveysQuestion;
+
+  /// No description provided for @surveysResponses.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yanıtlar'**
+  String get surveysResponses;
+
+  /// No description provided for @surveysNpsScore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Net Promoter Score (NPS)'**
+  String get surveysNpsScore;
+
+  /// No description provided for @surveysCsatScore.
+  ///
+  /// In tr, this message translates to:
+  /// **'Müşteri Memnuniyeti (CSAT)'**
+  String get surveysCsatScore;
+
+  /// No description provided for @surveysPromoters.
+  ///
+  /// In tr, this message translates to:
+  /// **'Destekçiler (9-10)'**
+  String get surveysPromoters;
+
+  /// No description provided for @surveysPassives.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pasifler (7-8)'**
+  String get surveysPassives;
+
+  /// No description provided for @surveysDetractors.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kötüleyenler (0-6)'**
+  String get surveysDetractors;
+
+  /// No description provided for @surveysWatchReplay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Oturumu İzle'**
+  String get surveysWatchReplay;
+
+  /// No description provided for @surveysNoReplay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıt Yok'**
+  String get surveysNoReplay;
+
+  /// No description provided for @surveysEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir anket oluşturulmadı.'**
+  String get surveysEmpty;
+
+  /// No description provided for @surveysDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu anketi silmek istediğinizden emin misiniz?'**
+  String get surveysDeleteConfirm;
+
+  /// No description provided for @surveysDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anket silindi.'**
+  String get surveysDeleted;
+
+  /// No description provided for @surveysSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anket kaydedildi.'**
+  String get surveysSaved;
+
+  /// No description provided for @surveysScoreDistribution.
+  ///
+  /// In tr, this message translates to:
+  /// **'Puan Dağılımı'**
+  String get surveysScoreDistribution;
+
+  /// No description provided for @surveysIndividualResponses.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bireysel Yanıtlar'**
+  String get surveysIndividualResponses;
+
+  /// No description provided for @surveysActive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aktif'**
+  String get surveysActive;
+
+  /// No description provided for @surveysInactive.
+  ///
+  /// In tr, this message translates to:
+  /// **'Pasif'**
+  String get surveysInactive;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

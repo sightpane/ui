@@ -538,6 +538,30 @@ k('experimentsConfidenceInterval', '%95 Güven Aralığı', '95% Confidence Inte
 k('experimentsEmpty', 'Henüz bir A/B deneyi oluşturulmadı.', 'No A/B experiments created yet.')
 k('experimentsDeleteConfirm', 'Bu deneyi silmek istediğinizden emin misiniz?', 'Are you sure you want to delete this experiment?')
 
+# ---------------- surveys ----------------
+k('navSurveys', 'Anketler & Geri Bildirim', 'Surveys & Feedback')
+k('surveysTitle', 'Kullanıcı Anketleri & Geri Bildirim', 'In-App Surveys & User Feedback')
+k('surveysDesc', 'NPS, CSAT ve serbest metin anketleriyle doğrudan oturum kayıtlarına bağlı kullanıcı geri bildirimleri toplayın.', 'Collect NPS, CSAT, and open text feedback directly linked to user session replays.')
+k('surveysNew', 'Yeni Anket', 'New Survey')
+k('surveysType', 'Anket Türü', 'Survey Type')
+k('surveysQuestion', 'Soru', 'Question')
+k('surveysResponses', 'Yanıtlar', 'Responses')
+k('surveysNpsScore', 'Net Promoter Score (NPS)', 'Net Promoter Score (NPS)')
+k('surveysCsatScore', 'Müşteri Memnuniyeti (CSAT)', 'Customer Satisfaction (CSAT)')
+k('surveysPromoters', 'Destekçiler (9-10)', 'Promoters (9-10)')
+k('surveysPassives', 'Pasifler (7-8)', 'Passives (7-8)')
+k('surveysDetractors', 'Kötüleyenler (0-6)', 'Detractors (0-6)')
+k('surveysWatchReplay', 'Oturumu İzle', 'Watch Replay')
+k('surveysNoReplay', 'Kayıt Yok', 'No Replay')
+k('surveysEmpty', 'Henüz bir anket oluşturulmadı.', 'No surveys created yet.')
+k('surveysDeleteConfirm', 'Bu anketi silmek istediğinizden emin misiniz?', 'Are you sure you want to delete this survey?')
+k('surveysDeleted', 'Anket silindi.', 'Survey deleted.')
+k('surveysSaved', 'Anket kaydedildi.', 'Survey saved.')
+k('surveysScoreDistribution', 'Puan Dağılımı', 'Score Distribution')
+k('surveysIndividualResponses', 'Bireysel Yanıtlar', 'Individual Responses')
+k('surveysActive', 'Aktif', 'Active')
+k('surveysInactive', 'Pasif', 'Inactive')
+
 def arb(lang, idx):
     out = collections.OrderedDict()
     out['@@locale'] = lang

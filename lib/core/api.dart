@@ -215,6 +215,32 @@ abstract class SightpaneApi {
     int expId, {
     required String winnerVariant,
   });
+  Future<List<Survey>> surveys(int projectId);
+  Future<Survey> survey(int projectId, int surveyId);
+  Future<Survey> createSurvey(
+    int projectId, {
+    required String name,
+    required String type,
+    required String question,
+    String description = '',
+    List<String> choices = const [],
+    SurveyTargeting targeting = const SurveyTargeting(),
+    bool active = true,
+  });
+  Future<Survey> updateSurvey(
+    int projectId,
+    int surveyId, {
+    String? name,
+    String? type,
+    String? question,
+    String? description,
+    List<String>? choices,
+    SurveyTargeting? targeting,
+    bool? active,
+  });
+  Future<void> deleteSurvey(int projectId, int surveyId);
+  Future<SurveyResults> surveyResults(int projectId, int surveyId);
+  Future<List<SurveyResponse>> surveyResponses(int projectId, int surveyId, {int limit = 100});
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -1021,6 +1047,111 @@ class HttpSightpaneApi implements SightpaneApi {
           ),
         ),
       );
+
+  @override
+  Future<List<Survey>> surveys(int projectId) async => [
+    for (final s in _list(await _send('GET', '/api/v1/projects/$projectId/surveys')))
+      Survey.fromJson(_map(s)),
+  ];
+
+  @override
+  Future<Survey> survey(int projectId, int surveyId) async =>
+      Survey.fromJson(
+        _map(await _send('GET', '/api/v1/projects/$projectId/surveys/$surveyId')),
+      );
+
+  @override
+  Future<Survey> createSurvey(
+    int projectId, {
+    required String name,
+    required String type,
+    required String question,
+    String description = '',
+    List<String> choices = const [],
+    SurveyTargeting targeting = const SurveyTargeting(),
+    bool active = true,
+  }) async =>
+      Survey.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/surveys',
+            body: {
+              'name': name,
+              'type': type,
+              'question': question,
+              'description': description,
+              'choices': choices,
+              'targeting': targeting.toJson(),
+              'active': active,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Survey> updateSurvey(
+    int projectId,
+    int surveyId, {
+    String? name,
+    String? type,
+    String? question,
+    String? description,
+    List<String>? choices,
+    SurveyTargeting? targeting,
+    bool? active,
+  }) async {
+    final body = <String, Object?>{};
+    if (name != null) body['name'] = name;
+    if (type != null) body['type'] = type;
+    if (question != null) body['question'] = question;
+    if (description != null) body['description'] = description;
+    if (choices != null) body['choices'] = choices;
+    if (targeting != null) body['targeting'] = targeting.toJson();
+    if (active != null) body['active'] = active;
+
+    return Survey.fromJson(
+      _map(
+        await _send(
+          'PUT',
+          '/api/v1/projects/$projectId/surveys/$surveyId',
+          body: body,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Future<void> deleteSurvey(int projectId, int surveyId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/surveys/$surveyId');
+  }
+
+  @override
+  Future<SurveyResults> surveyResults(int projectId, int surveyId) async =>
+      SurveyResults.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/surveys/$surveyId/results',
+          ),
+        ),
+      );
+
+  @override
+  Future<List<SurveyResponse>> surveyResponses(
+    int projectId,
+    int surveyId, {
+    int limit = 100,
+  }) async => [
+    for (final r in _list(
+      await _send(
+        'GET',
+        '/api/v1/projects/$projectId/surveys/$surveyId/responses',
+        query: {'limit': '$limit'},
+      ),
+    ))
+      SurveyResponse.fromJson(_map(r)),
+  ];
 
   @override
   Future<SessionDetail> session(String id) async =>

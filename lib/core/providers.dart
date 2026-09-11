@@ -220,5 +220,27 @@ final experimentResultsProvider =
   (ref, k) => ref.watch(apiProvider).experimentResults(k.projectId, k.expId, days: k.days),
 );
 
+final surveysProvider =
+    FutureProvider.autoDispose.family<List<Survey>, int>(
+  (ref, projectId) => ref.watch(apiProvider).surveys(projectId),
+);
+
+typedef SurveyKey = ({int projectId, int surveyId});
+
+final surveyProvider =
+    FutureProvider.autoDispose.family<Survey, SurveyKey>(
+  (ref, k) => ref.watch(apiProvider).survey(k.projectId, k.surveyId),
+);
+
+final surveyResultsProvider =
+    FutureProvider.autoDispose.family<SurveyResults, SurveyKey>(
+  (ref, k) => ref.watch(apiProvider).surveyResults(k.projectId, k.surveyId),
+);
+
+final surveyResponsesProvider =
+    FutureProvider.autoDispose.family<List<SurveyResponse>, SurveyKey>(
+  (ref, k) => ref.watch(apiProvider).surveyResponses(k.projectId, k.surveyId),
+);
+
 
 

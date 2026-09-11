@@ -23,6 +23,8 @@ import '../features/performance/performance_page.dart';
 import '../features/performance/transaction_detail_page.dart';
 import '../features/releases/releases_page.dart';
 import '../features/sessions/session_detail_page.dart';
+import '../features/surveys/survey_detail_page.dart';
+import '../features/surveys/surveys_page.dart';
 import '../features/sessions/sessions_page.dart';
 import '../features/users/user_detail_page.dart';
 import '../features/users/users_page.dart';
@@ -180,6 +182,19 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (_, s) => ExperimentDetailPage(
                       projectId: _id(s),
                       expId: int.parse(s.pathParameters['expId']!),
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: 'surveys',
+                builder: (_, s) => SurveysPage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':surveyId',
+                    builder: (_, s) => SurveyDetailPage(
+                      projectId: _id(s),
+                      surveyId: int.parse(s.pathParameters['surveyId']!),
                     ),
                   ),
                 ],
