@@ -838,5 +838,28 @@
   "cohortEventName": "Olay Adı",
   "cohortOperator": "İşleç",
   "cohortValue": "Değer",
-  "cohortWindowDays": "Zaman Penceresi (Gün)"
+  "cohortWindowDays": "Zaman Penceresi (Gün)",
+  "navPaths": "Kullanıcı Yolları (Paths)",
+  "pathsTitle": "Kullanıcı Yolculuk Akışları",
+  "pathsSubtitle": "Kullanıcıların ekranlar ve olaylar arasındaki geçişlerini Sankey akış şemasıyla inceleyin.",
+  "pathsForward": "İleri (Başlangıçtan)",
+  "pathsReverse": "Geriye Doğru (Hedefe)",
+  "pathsRootEvent": "Kök Olay / Ekran",
+  "pathsRootPlaceholder": "Örn: route:/login veya error",
+  "pathsStepLimit": "Adım Derinliği",
+  "pathsExclude": "Hariç Tutulanlar",
+  "pathsExcludePlaceholder": "Örn: heartbeat, pointer",
+  "pathsThreshold": "Eşik (%)",
+  "pathsDiagramTitle": "Geçiş Akış Şeması (Sankey)",
+  "pathsEmpty": "Seçilen kriterlere uygun kullanıcı yolu bulunamadı.",
+  "pathsSampleSessions": "Örnek Oturumlar ({count})",
+  "@pathsSampleSessions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "pathsReplaysModalTitle": "Yolculuk Oturum Kayıtları",
+  "pathsExit": "Terk (Exit)"
 }

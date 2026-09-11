@@ -1401,4 +1401,56 @@ class LTr extends L {
 
   @override
   String get cohortWindowDays => 'Zaman Penceresi (Gün)';
+
+  @override
+  String get navPaths => 'Kullanıcı Yolları (Paths)';
+
+  @override
+  String get pathsTitle => 'Kullanıcı Yolculuk Akışları';
+
+  @override
+  String get pathsSubtitle =>
+      'Kullanıcıların ekranlar ve olaylar arasındaki geçişlerini Sankey akış şemasıyla inceleyin.';
+
+  @override
+  String get pathsForward => 'İleri (Başlangıçtan)';
+
+  @override
+  String get pathsReverse => 'Geriye Doğru (Hedefe)';
+
+  @override
+  String get pathsRootEvent => 'Kök Olay / Ekran';
+
+  @override
+  String get pathsRootPlaceholder => 'Örn: route:/login veya error';
+
+  @override
+  String get pathsStepLimit => 'Adım Derinliği';
+
+  @override
+  String get pathsExclude => 'Hariç Tutulanlar';
+
+  @override
+  String get pathsExcludePlaceholder => 'Örn: heartbeat, pointer';
+
+  @override
+  String get pathsThreshold => 'Eşik (%)';
+
+  @override
+  String get pathsDiagramTitle => 'Geçiş Akış Şeması (Sankey)';
+
+  @override
+  String get pathsEmpty =>
+      'Seçilen kriterlere uygun kullanıcı yolu bulunamadı.';
+
+  @override
+  String pathsSampleSessions(int count) {
+    return 'Örnek Oturumlar ($count)';
+  }
+
+  @override
+  String get pathsReplaysModalTitle => 'Yolculuk Oturum Kayıtları';
+
+  @override
+  String get pathsExit => 'Terk (Exit)';
 }

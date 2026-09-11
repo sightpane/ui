@@ -472,6 +472,24 @@ k('cohortOperator', 'İşleç', 'Operator')
 k('cohortValue', 'Değer', 'Value')
 k('cohortWindowDays', 'Zaman Penceresi (Gün)', 'Window (Days)')
 
+# ---------------- user paths / flows ----------------
+k('navPaths', 'Kullanıcı Yolları (Paths)', 'User Paths')
+k('pathsTitle', 'Kullanıcı Yolculuk Akışları', 'User Journey Flows')
+k('pathsSubtitle', 'Kullanıcıların ekranlar ve olaylar arasındaki geçişlerini Sankey akış şemasıyla inceleyin.', 'Explore user transitions across screens and events using Sankey journey diagrams.')
+k('pathsForward', 'İleri (Başlangıçtan)', 'Forward (From Start)')
+k('pathsReverse', 'Geriye Doğru (Hedefe)', 'Reverse (Leading to Target)')
+k('pathsRootEvent', 'Kök Olay / Ekran', 'Root Event / Screen')
+k('pathsRootPlaceholder', 'Örn: route:/login veya error', 'e.g. route:/login or error')
+k('pathsStepLimit', 'Adım Derinliği', 'Step Depth')
+k('pathsExclude', 'Hariç Tutulanlar', 'Exclude Events')
+k('pathsExcludePlaceholder', 'Örn: heartbeat, pointer', 'e.g. heartbeat, pointer')
+k('pathsThreshold', 'Eşik (%)', 'Threshold (%)')
+k('pathsDiagramTitle', 'Geçiş Akış Şeması (Sankey)', 'Transition Flow Diagram (Sankey)')
+k('pathsEmpty', 'Seçilen kriterlere uygun kullanıcı yolu bulunamadı.', 'No user paths found matching the selected criteria.')
+k('pathsSampleSessions', 'Örnek Oturumlar ({count})', 'Sample Sessions ({count})', {'count': 'int'})
+k('pathsReplaysModalTitle', 'Yolculuk Oturum Kayıtları', 'Journey Session Replays')
+k('pathsExit', 'Terk (Exit)', 'Exit')
+
 
 
 def arb(lang, idx):

@@ -2616,6 +2616,102 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Zaman Penceresi (Gün)'**
   String get cohortWindowDays;
+
+  /// No description provided for @navPaths.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Yolları (Paths)'**
+  String get navPaths;
+
+  /// No description provided for @pathsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Yolculuk Akışları'**
+  String get pathsTitle;
+
+  /// No description provided for @pathsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcıların ekranlar ve olaylar arasındaki geçişlerini Sankey akış şemasıyla inceleyin.'**
+  String get pathsSubtitle;
+
+  /// No description provided for @pathsForward.
+  ///
+  /// In tr, this message translates to:
+  /// **'İleri (Başlangıçtan)'**
+  String get pathsForward;
+
+  /// No description provided for @pathsReverse.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geriye Doğru (Hedefe)'**
+  String get pathsReverse;
+
+  /// No description provided for @pathsRootEvent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kök Olay / Ekran'**
+  String get pathsRootEvent;
+
+  /// No description provided for @pathsRootPlaceholder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: route:/login veya error'**
+  String get pathsRootPlaceholder;
+
+  /// No description provided for @pathsStepLimit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Adım Derinliği'**
+  String get pathsStepLimit;
+
+  /// No description provided for @pathsExclude.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hariç Tutulanlar'**
+  String get pathsExclude;
+
+  /// No description provided for @pathsExcludePlaceholder.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örn: heartbeat, pointer'**
+  String get pathsExcludePlaceholder;
+
+  /// No description provided for @pathsThreshold.
+  ///
+  /// In tr, this message translates to:
+  /// **'Eşik (%)'**
+  String get pathsThreshold;
+
+  /// No description provided for @pathsDiagramTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçiş Akış Şeması (Sankey)'**
+  String get pathsDiagramTitle;
+
+  /// No description provided for @pathsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen kriterlere uygun kullanıcı yolu bulunamadı.'**
+  String get pathsEmpty;
+
+  /// No description provided for @pathsSampleSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek Oturumlar ({count})'**
+  String pathsSampleSessions(int count);
+
+  /// No description provided for @pathsReplaysModalTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yolculuk Oturum Kayıtları'**
+  String get pathsReplaysModalTitle;
+
+  /// No description provided for @pathsExit.
+  ///
+  /// In tr, this message translates to:
+  /// **'Terk (Exit)'**
+  String get pathsExit;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

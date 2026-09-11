@@ -15,6 +15,7 @@ import '../features/projects/overview_page.dart';
 import '../features/projects/projects_page.dart';
 import '../features/projects/settings_page.dart';
 import '../features/retention/retention_page.dart';
+import '../features/paths/paths_page.dart';
 import '../features/performance/performance_page.dart';
 import '../features/performance/transaction_detail_page.dart';
 import '../features/releases/releases_page.dart';
@@ -158,6 +159,10 @@ final routerProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: 'cohorts',
                 builder: (_, s) => CohortsPage(projectId: _id(s)),
+              ),
+              GoRoute(
+                path: 'paths',
+                builder: (_, s) => PathsPage(projectId: _id(s)),
               ),
               GoRoute(
                 path: 'settings',

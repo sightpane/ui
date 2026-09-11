@@ -1475,6 +1475,52 @@ class FakeApi implements SightpaneApi {
     calls.add('retention $projectId days=$days period=$period');
     return retentionResultValue;
   }
+
+  var pathResultValue = const PathResult(
+    rootEvent: 'route:/home',
+    direction: 'forward',
+    stepLimit: 3,
+    nodes: [
+      PathNode(id: '0:route:/home', name: 'route:/home', step: 0, count: 100),
+      PathNode(id: '1:route:/products', name: 'route:/products', step: 1, count: 70),
+      PathNode(id: '1:route:/login', name: 'route:/login', step: 1, count: 30),
+      PathNode(id: '2:add_to_cart', name: 'add_to_cart', step: 2, count: 50),
+      PathNode(id: '2:Exit', name: 'Exit', step: 2, count: 20),
+    ],
+    links: [
+      PathLink(source: '0:route:/home', target: '1:route:/products', count: 70),
+      PathLink(source: '0:route:/home', target: '1:route:/login', count: 30),
+      PathLink(source: '1:route:/products', target: '2:add_to_cart', count: 50),
+      PathLink(source: '1:route:/products', target: '2:Exit', count: 20),
+    ],
+  );
+
+  @override
+  Future<PathResult> paths(
+    int projectId, {
+    String rootEvent = '',
+    String direction = 'forward',
+    int stepLimit = 4,
+    int days = 14,
+    List<String> exclude = const [],
+    double threshold = 1.0,
+  }) async {
+    calls.add('paths $projectId root=$rootEvent dir=$direction');
+    return pathResultValue;
+  }
+
+  @override
+  Future<List<String>> pathSessions(
+    int projectId, {
+    required String source,
+    required String target,
+    int days = 14,
+    int limit = 50,
+  }) async {
+    calls.add('pathSessions $projectId src=$source tgt=$target');
+    return ['sess-p1', 'sess-p2'];
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];
+

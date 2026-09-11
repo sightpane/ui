@@ -419,5 +419,21 @@
   "cohortEventName": "Event Name",
   "cohortOperator": "Operator",
   "cohortValue": "Value",
-  "cohortWindowDays": "Window (Days)"
+  "cohortWindowDays": "Window (Days)",
+  "navPaths": "User Paths",
+  "pathsTitle": "User Journey Flows",
+  "pathsSubtitle": "Explore user transitions across screens and events using Sankey journey diagrams.",
+  "pathsForward": "Forward (From Start)",
+  "pathsReverse": "Reverse (Leading to Target)",
+  "pathsRootEvent": "Root Event / Screen",
+  "pathsRootPlaceholder": "e.g. route:/login or error",
+  "pathsStepLimit": "Step Depth",
+  "pathsExclude": "Exclude Events",
+  "pathsExcludePlaceholder": "e.g. heartbeat, pointer",
+  "pathsThreshold": "Threshold (%)",
+  "pathsDiagramTitle": "Transition Flow Diagram (Sankey)",
+  "pathsEmpty": "No user paths found matching the selected criteria.",
+  "pathsSampleSessions": "Sample Sessions ({count})",
+  "pathsReplaysModalTitle": "Journey Session Replays",
+  "pathsExit": "Exit"
 }

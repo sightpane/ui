@@ -172,3 +172,27 @@ final retentionProvider =
     cohortId: k.cohortId,
   ),
 );
+
+typedef PathsKey = ({
+  int project,
+  String rootEvent,
+  String direction,
+  int stepLimit,
+  int days,
+  List<String> exclude,
+  double threshold,
+});
+
+final pathsProvider =
+    FutureProvider.autoDispose.family<PathResult, PathsKey>(
+  (ref, k) => ref.watch(apiProvider).paths(
+    k.project,
+    rootEvent: k.rootEvent,
+    direction: k.direction,
+    stepLimit: k.stepLimit,
+    days: k.days,
+    exclude: k.exclude,
+    threshold: k.threshold,
+  ),
+);
+

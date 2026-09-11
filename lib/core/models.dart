@@ -1560,3 +1560,73 @@ class RetentionResult {
     ],
   );
 }
+
+class PathNode {
+  const PathNode({
+    required this.id,
+    required this.name,
+    required this.step,
+    required this.count,
+  });
+
+  final String id;
+  final String name;
+  final int step;
+  final int count;
+
+  factory PathNode.fromJson(Map<String, Object?> j) => PathNode(
+    id: _s(j['id']),
+    name: _s(j['name']),
+    step: _i(j['step']),
+    count: _i(j['count']),
+  );
+}
+
+class PathLink {
+  const PathLink({
+    required this.source,
+    required this.target,
+    required this.count,
+  });
+
+  final String source;
+  final String target;
+  final int count;
+
+  factory PathLink.fromJson(Map<String, Object?> j) => PathLink(
+    source: _s(j['source']),
+    target: _s(j['target']),
+    count: _i(j['count']),
+  );
+}
+
+class PathResult {
+  const PathResult({
+    required this.rootEvent,
+    required this.direction,
+    required this.stepLimit,
+    this.nodes = const [],
+    this.links = const [],
+  });
+
+  final String rootEvent;
+  final String direction;
+  final int stepLimit;
+  final List<PathNode> nodes;
+  final List<PathLink> links;
+
+  factory PathResult.fromJson(Map<String, Object?> j) => PathResult(
+    rootEvent: _s(j['root_event']),
+    direction: _s(j['direction']).isEmpty ? 'forward' : _s(j['direction']),
+    stepLimit: _i(j['step_limit']) > 0 ? _i(j['step_limit']) : 4,
+    nodes: [
+      for (final n in (j['nodes'] as List? ?? const []))
+        PathNode.fromJson(_m(n)),
+    ],
+    links: [
+      for (final l in (j['links'] as List? ?? const []))
+        PathLink.fromJson(_m(l)),
+    ],
+  );
+}
+

@@ -141,6 +141,22 @@ abstract class SightpaneApi {
     String returnEvent = '',
     int? cohortId,
   });
+  Future<PathResult> paths(
+    int projectId, {
+    String rootEvent = '',
+    String direction = 'forward',
+    int stepLimit = 4,
+    int days = 14,
+    List<String> exclude = const [],
+    double threshold = 1.0,
+  });
+  Future<List<String>> pathSessions(
+    int projectId, {
+    required String source,
+    required String target,
+    int days = 14,
+    int limit = 50,
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -709,6 +725,58 @@ class HttpSightpaneApi implements SightpaneApi {
           ),
         ),
       );
+
+  @override
+  Future<PathResult> paths(
+    int projectId, {
+    String rootEvent = '',
+    String direction = 'forward',
+    int stepLimit = 4,
+    int days = 14,
+    List<String> exclude = const [],
+    double threshold = 1.0,
+  }) async =>
+      PathResult.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/paths',
+            query: {
+              if (rootEvent.isNotEmpty) 'root_event': rootEvent,
+              'direction': direction,
+              'step_limit': '$stepLimit',
+              'days': '$days',
+              if (exclude.isNotEmpty) 'exclude': exclude.join(','),
+              'threshold': '$threshold',
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<List<String>> pathSessions(
+    int projectId, {
+    required String source,
+    required String target,
+    int days = 14,
+    int limit = 50,
+  }) async {
+    final res = _map(
+      await _send(
+        'GET',
+        '/api/v1/projects/$projectId/paths/sessions',
+        query: {
+          'source': source,
+          'target': target,
+          'days': '$days',
+          'limit': '$limit',
+        },
+      ),
+    );
+    return [
+      for (final s in (res['session_ids'] as List? ?? const [])) '$s',
+    ];
+  }
 
   @override
   Future<SessionDetail> session(String id) async =>

@@ -1480,4 +1480,56 @@ class LEn extends L {
 
   @override
   String get cohortWindowDays => 'Window (Days)';
+
+  @override
+  String get navPaths => 'User Paths';
+
+  @override
+  String get pathsTitle => 'User Journey Flows';
+
+  @override
+  String get pathsSubtitle =>
+      'Explore user transitions across screens and events using Sankey journey diagrams.';
+
+  @override
+  String get pathsForward => 'Forward (From Start)';
+
+  @override
+  String get pathsReverse => 'Reverse (Leading to Target)';
+
+  @override
+  String get pathsRootEvent => 'Root Event / Screen';
+
+  @override
+  String get pathsRootPlaceholder => 'e.g. route:/login or error';
+
+  @override
+  String get pathsStepLimit => 'Step Depth';
+
+  @override
+  String get pathsExclude => 'Exclude Events';
+
+  @override
+  String get pathsExcludePlaceholder => 'e.g. heartbeat, pointer';
+
+  @override
+  String get pathsThreshold => 'Threshold (%)';
+
+  @override
+  String get pathsDiagramTitle => 'Transition Flow Diagram (Sankey)';
+
+  @override
+  String get pathsEmpty =>
+      'No user paths found matching the selected criteria.';
+
+  @override
+  String pathsSampleSessions(int count) {
+    return 'Sample Sessions ($count)';
+  }
+
+  @override
+  String get pathsReplaysModalTitle => 'Journey Session Replays';
+
+  @override
+  String get pathsExit => 'Exit';
 }
