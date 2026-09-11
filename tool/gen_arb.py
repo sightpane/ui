@@ -513,8 +513,30 @@ k('flagsDeleted', 'Bayrak silindi.', 'Feature flag deleted.')
 k('flagsSaved', 'Bayrak kaydedildi.', 'Feature flag saved.')
 k('flagsEmpty', 'Henüz bir özellik bayrağı oluşturulmadı.', 'No feature flags created yet.')
 
-
-
+# ---------------- experiments ----------------
+k('navExperiments', 'Deneyler (A/B Testi)', 'Experiments')
+k('experimentsTitle', 'Deneyler (A/B Testi)', 'Experiments (A/B Testing)')
+k('experimentsDesc', 'Dönüşüm oranlarını artırmak ve hipotezleri istatistiksel güvenle doğrulamak için kontrollü A/B testleri çalıştırın.', 'Run controlled A/B tests to improve conversion and validate hypotheses with statistical significance.')
+k('experimentsNew', 'Yeni Deney', 'New Experiment')
+k('experimentsRunning', 'Devam Eden', 'Running')
+k('experimentsDraft', 'Taslak', 'Draft')
+k('experimentsConcluded', 'Tamamlandı', 'Concluded')
+k('experimentsTargetMetric', 'Birincil Hedef Olayı', 'Primary Metric Event')
+k('experimentsFlagKey', 'Bağlı Özellik Bayrağı', 'Linked Feature Flag')
+k('experimentsSampleSize', 'Hedef Örneklem Boyutu', 'Target Sample Size')
+k('experimentsSignificant', 'İstatistiksel Olarak Anlamlı', 'Statistically Significant')
+k('experimentsNeedsData', 'Daha Fazla Veri Gerekiyor', 'Needs More Data')
+k('experimentsDeclareWinner', 'Kazananı İlan Et', 'Declare Winner')
+k('experimentsRolloutWinner', 'Kazananı %100 Dağıt', 'Roll Out Winner to 100%')
+k('experimentsWinnerDeclared', 'Kazanan ilan edildi ve özellik bayrağı %100 güncellendi.', 'Winner declared and feature flag rolled out to 100%.')
+k('experimentsConversionRate', 'Dönüşüm Oranı', 'Conversion Rate')
+k('experimentsParticipants', 'Katılımcılar', 'Participants')
+k('experimentsConversions', 'Dönüşümler', 'Conversions')
+k('experimentsRelativeLift', 'Göreceli Artış', 'Relative Lift')
+k('experimentsChanceToWin', 'Kazanma Şansı', 'Chance to Win')
+k('experimentsConfidenceInterval', '%95 Güven Aralığı', '95% Confidence Interval')
+k('experimentsEmpty', 'Henüz bir A/B deneyi oluşturulmadı.', 'No A/B experiments created yet.')
+k('experimentsDeleteConfirm', 'Bu deneyi silmek istediğinizden emin misiniz?', 'Are you sure you want to delete this experiment?')
 
 def arb(lang, idx):
     out = collections.OrderedDict()

@@ -1517,4 +1517,76 @@ class LTr extends L {
 
   @override
   String get flagsEmpty => 'Henüz bir özellik bayrağı oluşturulmadı.';
+
+  @override
+  String get navExperiments => 'Deneyler (A/B Testi)';
+
+  @override
+  String get experimentsTitle => 'Deneyler (A/B Testi)';
+
+  @override
+  String get experimentsDesc =>
+      'Dönüşüm oranlarını artırmak ve hipotezleri istatistiksel güvenle doğrulamak için kontrollü A/B testleri çalıştırın.';
+
+  @override
+  String get experimentsNew => 'Yeni Deney';
+
+  @override
+  String get experimentsRunning => 'Devam Eden';
+
+  @override
+  String get experimentsDraft => 'Taslak';
+
+  @override
+  String get experimentsConcluded => 'Tamamlandı';
+
+  @override
+  String get experimentsTargetMetric => 'Birincil Hedef Olayı';
+
+  @override
+  String get experimentsFlagKey => 'Bağlı Özellik Bayrağı';
+
+  @override
+  String get experimentsSampleSize => 'Hedef Örneklem Boyutu';
+
+  @override
+  String get experimentsSignificant => 'İstatistiksel Olarak Anlamlı';
+
+  @override
+  String get experimentsNeedsData => 'Daha Fazla Veri Gerekiyor';
+
+  @override
+  String get experimentsDeclareWinner => 'Kazananı İlan Et';
+
+  @override
+  String get experimentsRolloutWinner => 'Kazananı %100 Dağıt';
+
+  @override
+  String get experimentsWinnerDeclared =>
+      'Kazanan ilan edildi ve özellik bayrağı %100 güncellendi.';
+
+  @override
+  String get experimentsConversionRate => 'Dönüşüm Oranı';
+
+  @override
+  String get experimentsParticipants => 'Katılımcılar';
+
+  @override
+  String get experimentsConversions => 'Dönüşümler';
+
+  @override
+  String get experimentsRelativeLift => 'Göreceli Artış';
+
+  @override
+  String get experimentsChanceToWin => 'Kazanma Şansı';
+
+  @override
+  String get experimentsConfidenceInterval => '%95 Güven Aralığı';
+
+  @override
+  String get experimentsEmpty => 'Henüz bir A/B deneyi oluşturulmadı.';
+
+  @override
+  String get experimentsDeleteConfirm =>
+      'Bu deneyi silmek istediğinizden emin misiniz?';
 }

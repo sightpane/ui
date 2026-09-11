@@ -1651,6 +1651,177 @@ class FakeApi implements SightpaneApi {
       'enabled': true,
     };
   }
+
+  var experimentsValue = <Experiment>[
+    const Experiment(
+      id: 1,
+      projectId: 1,
+      name: 'CTA Button Color Test',
+      description: 'Test blue vs green CTA button on landing page',
+      featureFlagKey: 'cta_button_color',
+      status: 'running',
+      primaryMetricEvent: 'signup_completed',
+      variants: [
+        ExperimentVariant(key: 'control', name: 'Control (Blue)'),
+        ExperimentVariant(key: 'treatment', name: 'Treatment (Green)'),
+      ],
+      minimumSampleSize: 500,
+    ),
+  ];
+
+  @override
+  Future<List<Experiment>> experiments(int projectId) async {
+    calls.add('experiments $projectId');
+    return experimentsValue;
+  }
+
+  @override
+  Future<Experiment> experiment(int projectId, int expId) async {
+    calls.add('experiment $projectId id=$expId');
+    final exp = experimentsValue.firstWhere(
+      (e) => e.id == expId,
+      orElse: () => experimentsValue.first,
+    );
+    return exp;
+  }
+
+  @override
+  Future<Experiment> createExperiment(
+    int projectId, {
+    required String name,
+    String description = '',
+    required String featureFlagKey,
+    required String primaryMetricEvent,
+    List<ExperimentVariant> variants = const [],
+    int minimumSampleSize = 100,
+  }) async {
+    calls.add('createExperiment $projectId name=$name');
+    final exp = Experiment(
+      id: experimentsValue.length + 1,
+      projectId: projectId,
+      name: name,
+      description: description,
+      featureFlagKey: featureFlagKey,
+      status: 'draft',
+      primaryMetricEvent: primaryMetricEvent,
+      variants: variants,
+      minimumSampleSize: minimumSampleSize,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    experimentsValue.add(exp);
+    return exp;
+  }
+
+  @override
+  Future<Experiment> updateExperiment(
+    int projectId,
+    int expId, {
+    required String name,
+    String description = '',
+    String status = 'draft',
+    int minimumSampleSize = 100,
+  }) async {
+    calls.add('updateExperiment $projectId id=$expId status=$status');
+    final idx = experimentsValue.indexWhere((e) => e.id == expId);
+    if (idx != -1) {
+      final old = experimentsValue[idx];
+      final updated = Experiment(
+        id: old.id,
+        projectId: old.projectId,
+        name: name,
+        description: description,
+        featureFlagKey: old.featureFlagKey,
+        status: status,
+        primaryMetricEvent: old.primaryMetricEvent,
+        variants: old.variants,
+        minimumSampleSize: minimumSampleSize,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      experimentsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Experiment not found');
+  }
+
+  @override
+  Future<void> deleteExperiment(int projectId, int expId) async {
+    calls.add('deleteExperiment $projectId id=$expId');
+    experimentsValue.removeWhere((e) => e.id == expId);
+  }
+
+  @override
+  Future<ExperimentResults> experimentResults(
+    int projectId,
+    int expId, {
+    int days = 14,
+  }) async {
+    calls.add('experimentResults $projectId id=$expId days=$days');
+    return const ExperimentResults(
+      experimentId: 1,
+      status: 'running',
+      totalParticipants: 1200,
+      statisticalSignificance: 0.982,
+      isSignificant: true,
+      recommendedAction: 'treatment_winning',
+      variants: [
+        VariantResult(
+          key: 'control',
+          name: 'Control (Blue)',
+          participants: 600,
+          conversions: 60,
+          conversionRate: 0.10,
+          confidenceInterval: [0.08, 0.12],
+          relativeLift: 0.0,
+          chanceToWin: 0.018,
+          pValue: 0.018,
+        ),
+        VariantResult(
+          key: 'treatment',
+          name: 'Treatment (Green)',
+          participants: 600,
+          conversions: 90,
+          conversionRate: 0.15,
+          confidenceInterval: [0.125, 0.175],
+          relativeLift: 0.50,
+          chanceToWin: 0.982,
+          pValue: 0.018,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Future<Experiment> declareExperimentWinner(
+    int projectId,
+    int expId, {
+    required String winnerVariant,
+  }) async {
+    calls.add('declareExperimentWinner $projectId id=$expId winner=$winnerVariant');
+    final idx = experimentsValue.indexWhere((e) => e.id == expId);
+    if (idx != -1) {
+      final old = experimentsValue[idx];
+      final concluded = Experiment(
+        id: old.id,
+        projectId: old.projectId,
+        name: old.name,
+        description: old.description,
+        featureFlagKey: old.featureFlagKey,
+        status: 'concluded',
+        primaryMetricEvent: old.primaryMetricEvent,
+        variants: old.variants,
+        minimumSampleSize: old.minimumSampleSize,
+        winnerVariant: winnerVariant,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+        concludedAt: DateTime.now(),
+      );
+      experimentsValue[idx] = concluded;
+      return concluded;
+    }
+    throw Exception('Experiment not found');
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

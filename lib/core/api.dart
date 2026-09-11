@@ -185,6 +185,36 @@ abstract class SightpaneApi {
     required String distinctId,
     Map<String, dynamic> properties = const {},
   });
+  Future<List<Experiment>> experiments(int projectId);
+  Future<Experiment> experiment(int projectId, int expId);
+  Future<Experiment> createExperiment(
+    int projectId, {
+    required String name,
+    String description = '',
+    required String featureFlagKey,
+    required String primaryMetricEvent,
+    List<ExperimentVariant> variants = const [],
+    int minimumSampleSize = 100,
+  });
+  Future<Experiment> updateExperiment(
+    int projectId,
+    int expId, {
+    required String name,
+    String description = '',
+    String status = 'draft',
+    int minimumSampleSize = 100,
+  });
+  Future<void> deleteExperiment(int projectId, int expId);
+  Future<ExperimentResults> experimentResults(
+    int projectId,
+    int expId, {
+    int days = 14,
+  });
+  Future<Experiment> declareExperimentWinner(
+    int projectId,
+    int expId, {
+    required String winnerVariant,
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -889,6 +919,106 @@ class HttpSightpaneApi implements SightpaneApi {
             'distinct_id': distinctId,
             'properties': properties,
           },
+        ),
+      );
+
+  @override
+  Future<List<Experiment>> experiments(int projectId) async => [
+    for (final e in _list(await _send('GET', '/api/v1/projects/$projectId/experiments')))
+      Experiment.fromJson(e),
+  ];
+
+  @override
+  Future<Experiment> experiment(int projectId, int expId) async =>
+      Experiment.fromJson(
+        _map(await _send('GET', '/api/v1/projects/$projectId/experiments/$expId')),
+      );
+
+  @override
+  Future<Experiment> createExperiment(
+    int projectId, {
+    required String name,
+    String description = '',
+    required String featureFlagKey,
+    required String primaryMetricEvent,
+    List<ExperimentVariant> variants = const [],
+    int minimumSampleSize = 100,
+  }) async =>
+      Experiment.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/experiments',
+            body: {
+              'name': name,
+              'description': description,
+              'feature_flag_key': featureFlagKey,
+              'primary_metric_event': primaryMetricEvent,
+              'variants': variants.map((v) => v.toJson()).toList(),
+              'minimum_sample_size': minimumSampleSize,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Experiment> updateExperiment(
+    int projectId,
+    int expId, {
+    required String name,
+    String description = '',
+    String status = 'draft',
+    int minimumSampleSize = 100,
+  }) async =>
+      Experiment.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/experiments/$expId',
+            body: {
+              'name': name,
+              'description': description,
+              'status': status,
+              'minimum_sample_size': minimumSampleSize,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteExperiment(int projectId, int expId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/experiments/$expId');
+  }
+
+  @override
+  Future<ExperimentResults> experimentResults(
+    int projectId,
+    int expId, {
+    int days = 14,
+  }) async =>
+      ExperimentResults.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/experiments/$expId/results',
+            query: {'days': '$days'},
+          ),
+        ),
+      );
+
+  @override
+  Future<Experiment> declareExperimentWinner(
+    int projectId,
+    int expId, {
+    required String winnerVariant,
+  }) async =>
+      Experiment.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/experiments/$expId/winner',
+            body: {'winner_variant': winnerVariant},
+          ),
         ),
       );
 

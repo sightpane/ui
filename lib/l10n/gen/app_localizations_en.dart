@@ -1596,4 +1596,76 @@ class LEn extends L {
 
   @override
   String get flagsEmpty => 'No feature flags created yet.';
+
+  @override
+  String get navExperiments => 'Experiments';
+
+  @override
+  String get experimentsTitle => 'Experiments (A/B Testing)';
+
+  @override
+  String get experimentsDesc =>
+      'Run controlled A/B tests to improve conversion and validate hypotheses with statistical significance.';
+
+  @override
+  String get experimentsNew => 'New Experiment';
+
+  @override
+  String get experimentsRunning => 'Running';
+
+  @override
+  String get experimentsDraft => 'Draft';
+
+  @override
+  String get experimentsConcluded => 'Concluded';
+
+  @override
+  String get experimentsTargetMetric => 'Primary Metric Event';
+
+  @override
+  String get experimentsFlagKey => 'Linked Feature Flag';
+
+  @override
+  String get experimentsSampleSize => 'Target Sample Size';
+
+  @override
+  String get experimentsSignificant => 'Statistically Significant';
+
+  @override
+  String get experimentsNeedsData => 'Needs More Data';
+
+  @override
+  String get experimentsDeclareWinner => 'Declare Winner';
+
+  @override
+  String get experimentsRolloutWinner => 'Roll Out Winner to 100%';
+
+  @override
+  String get experimentsWinnerDeclared =>
+      'Winner declared and feature flag rolled out to 100%.';
+
+  @override
+  String get experimentsConversionRate => 'Conversion Rate';
+
+  @override
+  String get experimentsParticipants => 'Participants';
+
+  @override
+  String get experimentsConversions => 'Conversions';
+
+  @override
+  String get experimentsRelativeLift => 'Relative Lift';
+
+  @override
+  String get experimentsChanceToWin => 'Chance to Win';
+
+  @override
+  String get experimentsConfidenceInterval => '95% Confidence Interval';
+
+  @override
+  String get experimentsEmpty => 'No A/B experiments created yet.';
+
+  @override
+  String get experimentsDeleteConfirm =>
+      'Are you sure you want to delete this experiment?';
 }

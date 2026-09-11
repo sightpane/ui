@@ -1734,4 +1734,173 @@ class FeatureFlag {
   };
 }
 
+class ExperimentVariant {
+  const ExperimentVariant({
+    required this.key,
+    required this.name,
+  });
+
+  final String key;
+  final String name;
+
+  factory ExperimentVariant.fromJson(Map<String, Object?> j) => ExperimentVariant(
+    key: _s(j['key']),
+    name: _s(j['name']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'key': key,
+    'name': name,
+  };
+}
+
+class Experiment {
+  const Experiment({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    this.description = '',
+    required this.featureFlagKey,
+    this.status = 'draft',
+    required this.primaryMetricEvent,
+    this.secondaryMetricEvents = const [],
+    this.variants = const [],
+    this.minimumSampleSize = 100,
+    this.winnerVariant,
+    this.startedAt,
+    this.concludedAt,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String description;
+  final String featureFlagKey;
+  final String status;
+  final String primaryMetricEvent;
+  final List<String> secondaryMetricEvents;
+  final List<ExperimentVariant> variants;
+  final int minimumSampleSize;
+  final String? winnerVariant;
+  final DateTime? startedAt;
+  final DateTime? concludedAt;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory Experiment.fromJson(Map<String, Object?> j) => Experiment(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    description: _s(j['description']),
+    featureFlagKey: _s(j['feature_flag_key']),
+    status: _s(j['status']).isEmpty ? 'draft' : _s(j['status']),
+    primaryMetricEvent: _s(j['primary_metric_event']),
+    secondaryMetricEvents: [
+      for (final s in (j['secondary_metric_events'] as List? ?? const []))
+        _s(s),
+    ],
+    variants: [
+      for (final v in (j['variants'] as List? ?? const []))
+        ExperimentVariant.fromJson(_m(v)),
+    ],
+    minimumSampleSize: _i(j['minimum_sample_size']) == 0 ? 100 : _i(j['minimum_sample_size']),
+    winnerVariant: j['winner_variant'] == null ? null : _s(j['winner_variant']),
+    startedAt: _t(j['started_at']),
+    concludedAt: _t(j['concluded_at']),
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'description': description,
+    'feature_flag_key': featureFlagKey,
+    'status': status,
+    'primary_metric_event': primaryMetricEvent,
+    'secondary_metric_events': secondaryMetricEvents,
+    'variants': [for (final v in variants) v.toJson()],
+    'minimum_sample_size': minimumSampleSize,
+    'winner_variant': winnerVariant,
+  };
+}
+
+class VariantResult {
+  const VariantResult({
+    required this.key,
+    required this.name,
+    required this.participants,
+    required this.conversions,
+    required this.conversionRate,
+    this.confidenceInterval = const [0, 0],
+    this.relativeLift = 0,
+    this.chanceToWin = 0,
+    this.pValue = 0,
+  });
+
+  final String key;
+  final String name;
+  final int participants;
+  final int conversions;
+  final double conversionRate;
+  final List<double> confidenceInterval;
+  final double relativeLift;
+  final double chanceToWin;
+  final double pValue;
+
+  factory VariantResult.fromJson(Map<String, Object?> j) {
+    final ciRaw = j['confidence_interval'] as List? ?? const [];
+    return VariantResult(
+      key: _s(j['key']),
+      name: _s(j['name']),
+      participants: _i(j['participants']),
+      conversions: _i(j['conversions']),
+      conversionRate: _d(j['conversion_rate']),
+      confidenceInterval: [
+        for (final c in ciRaw) _d(c),
+      ],
+      relativeLift: _d(j['relative_lift']),
+      chanceToWin: _d(j['chance_to_win']),
+      pValue: _d(j['p_value']),
+    );
+  }
+}
+
+class ExperimentResults {
+  const ExperimentResults({
+    required this.experimentId,
+    required this.status,
+    required this.totalParticipants,
+    required this.statisticalSignificance,
+    required this.isSignificant,
+    this.recommendedAction = '',
+    this.variants = const [],
+  });
+
+  final int experimentId;
+  final String status;
+  final int totalParticipants;
+  final double statisticalSignificance;
+  final bool isSignificant;
+  final String recommendedAction;
+  final List<VariantResult> variants;
+
+  factory ExperimentResults.fromJson(Map<String, Object?> j) => ExperimentResults(
+    experimentId: _i(j['experiment_id']),
+    status: _s(j['status']),
+    totalParticipants: _i(j['total_participants']),
+    statisticalSignificance: _d(j['statistical_significance']),
+    isSignificant: j['is_significant'] == true,
+    recommendedAction: _s(j['recommended_action']),
+    variants: [
+      for (final v in (j['variants'] as List? ?? const []))
+        VariantResult.fromJson(_m(v)),
+    ],
+  );
+}
+
+
 

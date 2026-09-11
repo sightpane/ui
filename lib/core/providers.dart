@@ -201,4 +201,24 @@ final featureFlagsProvider =
   (ref, projectId) => ref.watch(apiProvider).featureFlags(projectId),
 );
 
+final experimentsProvider =
+    FutureProvider.autoDispose.family<List<Experiment>, int>(
+  (ref, projectId) => ref.watch(apiProvider).experiments(projectId),
+);
+
+typedef ExperimentKey = ({int projectId, int expId});
+
+final experimentProvider =
+    FutureProvider.autoDispose.family<Experiment, ExperimentKey>(
+  (ref, k) => ref.watch(apiProvider).experiment(k.projectId, k.expId),
+);
+
+typedef ExperimentResultsKey = ({int projectId, int expId, int days});
+
+final experimentResultsProvider =
+    FutureProvider.autoDispose.family<ExperimentResults, ExperimentResultsKey>(
+  (ref, k) => ref.watch(apiProvider).experimentResults(k.projectId, k.expId, days: k.days),
+);
+
+
 

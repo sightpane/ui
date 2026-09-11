@@ -2838,6 +2838,144 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Henüz bir özellik bayrağı oluşturulmadı.'**
   String get flagsEmpty;
+
+  /// No description provided for @navExperiments.
+  ///
+  /// In tr, this message translates to:
+  /// **'Deneyler (A/B Testi)'**
+  String get navExperiments;
+
+  /// No description provided for @experimentsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Deneyler (A/B Testi)'**
+  String get experimentsTitle;
+
+  /// No description provided for @experimentsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüşüm oranlarını artırmak ve hipotezleri istatistiksel güvenle doğrulamak için kontrollü A/B testleri çalıştırın.'**
+  String get experimentsDesc;
+
+  /// No description provided for @experimentsNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Deney'**
+  String get experimentsNew;
+
+  /// No description provided for @experimentsRunning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Devam Eden'**
+  String get experimentsRunning;
+
+  /// No description provided for @experimentsDraft.
+  ///
+  /// In tr, this message translates to:
+  /// **'Taslak'**
+  String get experimentsDraft;
+
+  /// No description provided for @experimentsConcluded.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tamamlandı'**
+  String get experimentsConcluded;
+
+  /// No description provided for @experimentsTargetMetric.
+  ///
+  /// In tr, this message translates to:
+  /// **'Birincil Hedef Olayı'**
+  String get experimentsTargetMetric;
+
+  /// No description provided for @experimentsFlagKey.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bağlı Özellik Bayrağı'**
+  String get experimentsFlagKey;
+
+  /// No description provided for @experimentsSampleSize.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef Örneklem Boyutu'**
+  String get experimentsSampleSize;
+
+  /// No description provided for @experimentsSignificant.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstatistiksel Olarak Anlamlı'**
+  String get experimentsSignificant;
+
+  /// No description provided for @experimentsNeedsData.
+  ///
+  /// In tr, this message translates to:
+  /// **'Daha Fazla Veri Gerekiyor'**
+  String get experimentsNeedsData;
+
+  /// No description provided for @experimentsDeclareWinner.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazananı İlan Et'**
+  String get experimentsDeclareWinner;
+
+  /// No description provided for @experimentsRolloutWinner.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazananı %100 Dağıt'**
+  String get experimentsRolloutWinner;
+
+  /// No description provided for @experimentsWinnerDeclared.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazanan ilan edildi ve özellik bayrağı %100 güncellendi.'**
+  String get experimentsWinnerDeclared;
+
+  /// No description provided for @experimentsConversionRate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüşüm Oranı'**
+  String get experimentsConversionRate;
+
+  /// No description provided for @experimentsParticipants.
+  ///
+  /// In tr, this message translates to:
+  /// **'Katılımcılar'**
+  String get experimentsParticipants;
+
+  /// No description provided for @experimentsConversions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüşümler'**
+  String get experimentsConversions;
+
+  /// No description provided for @experimentsRelativeLift.
+  ///
+  /// In tr, this message translates to:
+  /// **'Göreceli Artış'**
+  String get experimentsRelativeLift;
+
+  /// No description provided for @experimentsChanceToWin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kazanma Şansı'**
+  String get experimentsChanceToWin;
+
+  /// No description provided for @experimentsConfidenceInterval.
+  ///
+  /// In tr, this message translates to:
+  /// **'%95 Güven Aralığı'**
+  String get experimentsConfidenceInterval;
+
+  /// No description provided for @experimentsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir A/B deneyi oluşturulmadı.'**
+  String get experimentsEmpty;
+
+  /// No description provided for @experimentsDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu deneyi silmek istediğinizden emin misiniz?'**
+  String get experimentsDeleteConfirm;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
