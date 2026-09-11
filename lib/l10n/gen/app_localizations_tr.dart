@@ -1862,4 +1862,122 @@ class LTr extends L {
 
   @override
   String get uptimeLastChecked => 'Son Kontrol';
+
+  @override
+  String get navAlerts => 'Metrik Uyarıları';
+
+  @override
+  String get alertsTitle => 'Metrik Uyarıları & Anomali Tespiti';
+
+  @override
+  String get alertsSubtitle =>
+      'Metrik eşiklerini, anomali artışlarını ve olay durumlarını izleyin.';
+
+  @override
+  String get alertsTabRules => 'Kurallar';
+
+  @override
+  String get alertsTabIncidents => 'Olay Geçmişi';
+
+  @override
+  String get alertsNewRule => 'Yeni Kural';
+
+  @override
+  String get alertsEditRule => 'Kuralı Düzenle';
+
+  @override
+  String get alertsRuleName => 'Kural Adı';
+
+  @override
+  String get alertsMetricType => 'Metrik Türü';
+
+  @override
+  String get alertsComparison => 'Karşılaştırma Operatörü';
+
+  @override
+  String get alertsCriticalThreshold => 'Kritik Eşik';
+
+  @override
+  String get alertsWarningThreshold => 'Uyarı Eşiği (İsteğe bağlı)';
+
+  @override
+  String get alertsWindowMinutes => 'Değerlendirme Penceresi';
+
+  @override
+  String get alertsTargetFilter => 'Hedef Filtresi (örn: route:/checkout)';
+
+  @override
+  String get alertsChannels => 'Bildirim Kanalları';
+
+  @override
+  String get alertsSaveRule => 'Kuralı Kaydet';
+
+  @override
+  String get alertsRuleSaved => 'Kural başarıyla kaydedildi.';
+
+  @override
+  String get alertsDeleteConfirm =>
+      'Bu metrik uyarı kuralını silmek istediğinize emin misiniz?';
+
+  @override
+  String get alertsDeleted => 'Kural silindi.';
+
+  @override
+  String get alertsStatusFiring => 'Tetiklendi';
+
+  @override
+  String get alertsStatusWarning => 'Uyarı';
+
+  @override
+  String get alertsStatusOk => 'Normal';
+
+  @override
+  String get alertsStatusResolved => 'Çözüldü';
+
+  @override
+  String get alertsPreviewChart =>
+      'Geçmiş Metrik & Eşik Önizlemesi (Son 7 Gün)';
+
+  @override
+  String get alertsPreviewSub =>
+      'Geçmiş verilere göre kuralın ne zaman tetikleneceğini görselleştirin.';
+
+  @override
+  String get alertsEmptyRules => 'Henüz metrik kuralı tanımlanmadı.';
+
+  @override
+  String get alertsEmptyIncidents => 'Kayıtlı olay bulunmuyor.';
+
+  @override
+  String get alertsPeakValue => 'Zirve Değer';
+
+  @override
+  String get alertsDuration => 'Süre';
+
+  @override
+  String get alertsTriggerNow => 'Şimdi Test Et';
+
+  @override
+  String get alertsOperatorGt => 'Büyüktür (>)';
+
+  @override
+  String get alertsOperatorGte => 'Büyük veya eşittir (>=)';
+
+  @override
+  String get alertsOperatorLt => 'Küçüktür (<)';
+
+  @override
+  String get alertsOperatorSpike => 'Anomali Artışı (x Kat)';
+
+  @override
+  String get alertsMetricErrorCount => 'Hata Sayısı';
+
+  @override
+  String get alertsMetricErrorRate => 'Hata Oranı (%)';
+
+  @override
+  String get alertsMetricP95Duration => 'p95 Yanıt Süresi (ms)';
+
+  @override
+  String get alertsMetricCrashCount => 'Çökme Sayısı';
 }

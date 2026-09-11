@@ -292,6 +292,44 @@ abstract class SightpaneApi {
   });
   Future<void> deleteUptimeMonitor(int projectId, int monitorId);
   Future<Map<String, Object?>> triggerUptimeCheck(int projectId, int monitorId);
+  Future<List<MetricAlertRule>> metricAlertRules(int projectId);
+  Future<MetricAlertRule> metricAlertRule(int projectId, int ruleId);
+  Future<MetricAlertRule> createMetricAlertRule(
+    int projectId, {
+    required String name,
+    required String metricType,
+    String targetFilter = '',
+    required String comparisonOperator,
+    required double criticalThreshold,
+    double? warningThreshold,
+    int windowMinutes = 5,
+    List<int> channelIds = const [],
+    bool isActive = true,
+  });
+  Future<MetricAlertRule> updateMetricAlertRule(
+    int projectId,
+    int ruleId, {
+    String? name,
+    String? metricType,
+    String? targetFilter,
+    String? comparisonOperator,
+    double? criticalThreshold,
+    double? warningThreshold,
+    int? windowMinutes,
+    List<int>? channelIds,
+    bool? isActive,
+  });
+  Future<void> deleteMetricAlertRule(int projectId, int ruleId);
+  Future<List<MetricAlertIncident>> metricAlertIncidents(int projectId, {int? ruleId, int limit = 50});
+  Future<Map<String, Object?>> metricAlertRulePreview(int projectId, int ruleId, {int days = 7});
+  Future<List<MetricHistoryPoint>> metricAlertPreview(
+    int projectId, {
+    required String metricType,
+    String? targetFilter,
+    int windowMinutes = 5,
+    int days = 7,
+  });
+  Future<Map<String, Object?>> testMetricAlertRule(int projectId, int ruleId);
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -1410,6 +1448,131 @@ class HttpSightpaneApi implements SightpaneApi {
           '/api/v1/projects/$projectId/uptime/$monitorId/check',
         ),
       );
+
+  @override
+  Future<List<MetricAlertRule>> metricAlertRules(int projectId) async => [
+    for (final r in _list(await _send('GET', '/api/v1/projects/$projectId/metric-alerts/rules')))
+      MetricAlertRule.fromJson(r),
+  ];
+
+  @override
+  Future<MetricAlertRule> metricAlertRule(int projectId, int ruleId) async =>
+      MetricAlertRule.fromJson(_map(await _send('GET', '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId')));
+
+  @override
+  Future<MetricAlertRule> createMetricAlertRule(
+    int projectId, {
+    required String name,
+    required String metricType,
+    String targetFilter = '',
+    required String comparisonOperator,
+    required double criticalThreshold,
+    double? warningThreshold,
+    int windowMinutes = 5,
+    List<int> channelIds = const [],
+    bool isActive = true,
+  }) async =>
+      MetricAlertRule.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/metric-alerts/rules',
+            body: {
+              'name': name,
+              'metric_type': metricType,
+              'target_filter': targetFilter,
+              'comparison_operator': comparisonOperator,
+              'critical_threshold': criticalThreshold,
+              'warning_threshold': ?warningThreshold,
+              'window_minutes': windowMinutes,
+              'channel_ids': channelIds,
+              'is_active': isActive,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<MetricAlertRule> updateMetricAlertRule(
+    int projectId,
+    int ruleId, {
+    String? name,
+    String? metricType,
+    String? targetFilter,
+    String? comparisonOperator,
+    double? criticalThreshold,
+    double? warningThreshold,
+    int? windowMinutes,
+    List<int>? channelIds,
+    bool? isActive,
+  }) async =>
+      MetricAlertRule.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId',
+            body: {
+              'name': ?name,
+              'metric_type': ?metricType,
+              'target_filter': ?targetFilter,
+              'comparison_operator': ?comparisonOperator,
+              'critical_threshold': ?criticalThreshold,
+              'warning_threshold': ?warningThreshold,
+              'window_minutes': ?windowMinutes,
+              'channel_ids': ?channelIds,
+              'is_active': ?isActive,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteMetricAlertRule(int projectId, int ruleId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId');
+  }
+
+  @override
+  Future<List<MetricAlertIncident>> metricAlertIncidents(int projectId, {int? ruleId, int limit = 50}) async {
+    final query = <String, String>{'limit': '$limit'};
+    if (ruleId != null) query['rule_id'] = '$ruleId';
+    return [
+      for (final i in _list(await _send('GET', '/api/v1/projects/$projectId/metric-alerts/incidents', query: query)))
+        MetricAlertIncident.fromJson(i),
+    ];
+  }
+
+  @override
+  Future<Map<String, Object?>> metricAlertRulePreview(int projectId, int ruleId, {int days = 7}) async =>
+      _map(await _send('GET', '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId/preview', query: {'days': '$days'}));
+
+  @override
+  Future<List<MetricHistoryPoint>> metricAlertPreview(
+    int projectId, {
+    required String metricType,
+    String? targetFilter,
+    int windowMinutes = 5,
+    int days = 7,
+  }) async {
+    final query = <String, String>{
+      'metric_type': metricType,
+      'window_minutes': '$windowMinutes',
+      'days': '$days',
+    };
+    if (targetFilter != null && targetFilter.isNotEmpty) {
+      query['target_filter'] = targetFilter;
+    }
+    final res = _map(await _send('GET', '/api/v1/projects/$projectId/metric-alerts/preview', query: query));
+    final rawPoints = res['points'];
+    return [
+      if (rawPoints is List)
+        for (final p in rawPoints.whereType<Map<String, Object?>>())
+          MetricHistoryPoint.fromJson(p),
+    ];
+  }
+
+  @override
+  Future<Map<String, Object?>> testMetricAlertRule(int projectId, int ruleId) async =>
+      _map(await _send('POST', '/api/v1/projects/$projectId/metric-alerts/rules/$ruleId/test'));
 
   @override
   Future<SessionDetail> session(String id) async =>

@@ -2384,6 +2384,111 @@ class UptimeStats {
   );
 }
 
+class MetricAlertRule {
+  const MetricAlertRule({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    required this.metricType,
+    this.targetFilter = '',
+    required this.comparisonOperator,
+    required this.criticalThreshold,
+    this.warningThreshold,
+    this.windowMinutes = 5,
+    this.channelIds = const [],
+    this.isActive = true,
+    this.currentStatus = 'ok',
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String metricType;
+  final String targetFilter;
+  final String comparisonOperator;
+  final double criticalThreshold;
+  final double? warningThreshold;
+  final int windowMinutes;
+  final List<int> channelIds;
+  final bool isActive;
+  final String currentStatus;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory MetricAlertRule.fromJson(Map<String, Object?> j) {
+    final rawChannels = j['channel_ids'];
+    return MetricAlertRule(
+      id: _i(j['id']),
+      projectId: _i(j['project_id']),
+      name: _s(j['name']),
+      metricType: _s(j['metric_type']),
+      targetFilter: _s(j['target_filter']),
+      comparisonOperator: _s(j['comparison_operator']),
+      criticalThreshold: _d(j['critical_threshold']),
+      warningThreshold: j['warning_threshold'] == null ? null : _d(j['warning_threshold']),
+      windowMinutes: _i(j['window_minutes']) > 0 ? _i(j['window_minutes']) : 5,
+      channelIds: rawChannels is List ? rawChannels.map((c) => _i(c)).toList() : const [],
+      isActive: j['is_active'] as bool? ?? true,
+      currentStatus: _s(j['current_status']).isEmpty ? 'ok' : _s(j['current_status']),
+      createdAt: _t(j['created_at']),
+      updatedAt: _t(j['updated_at']),
+    );
+  }
+}
+
+class MetricAlertIncident {
+  const MetricAlertIncident({
+    required this.id,
+    required this.ruleId,
+    required this.projectId,
+    required this.status,
+    required this.triggeredAt,
+    this.resolvedAt,
+    required this.peakValue,
+    required this.summary,
+    this.ruleName,
+  });
+
+  final int id;
+  final int ruleId;
+  final int projectId;
+  final String status;
+  final DateTime triggeredAt;
+  final DateTime? resolvedAt;
+  final double peakValue;
+  final String summary;
+  final String? ruleName;
+
+  factory MetricAlertIncident.fromJson(Map<String, Object?> j) => MetricAlertIncident(
+    id: _i(j['id']),
+    ruleId: _i(j['rule_id']),
+    projectId: _i(j['project_id']),
+    status: _s(j['status']),
+    triggeredAt: _t(j['triggered_at']) ?? DateTime.now(),
+    resolvedAt: _t(j['resolved_at']),
+    peakValue: _d(j['peak_value']),
+    summary: _s(j['summary']),
+    ruleName: j['rule_name'] == null ? null : _s(j['rule_name']),
+  );
+}
+
+class MetricHistoryPoint {
+  const MetricHistoryPoint({
+    required this.timestamp,
+    required this.value,
+  });
+
+  final DateTime timestamp;
+  final double value;
+
+  factory MetricHistoryPoint.fromJson(Map<String, Object?> j) => MetricHistoryPoint(
+    timestamp: _t(j['timestamp']) ?? DateTime.now(),
+    value: _d(j['value']),
+  );
+}
+
 
 
 

@@ -1947,4 +1947,122 @@ class LEn extends L {
 
   @override
   String get uptimeLastChecked => 'Last Checked';
+
+  @override
+  String get navAlerts => 'Metric Alerts';
+
+  @override
+  String get alertsTitle => 'Metric Alerts & Anomaly Detection';
+
+  @override
+  String get alertsSubtitle =>
+      'Monitor metric thresholds, anomaly spikes, and incident states.';
+
+  @override
+  String get alertsTabRules => 'Rules';
+
+  @override
+  String get alertsTabIncidents => 'Incident History';
+
+  @override
+  String get alertsNewRule => 'New Rule';
+
+  @override
+  String get alertsEditRule => 'Edit Rule';
+
+  @override
+  String get alertsRuleName => 'Rule Name';
+
+  @override
+  String get alertsMetricType => 'Metric Type';
+
+  @override
+  String get alertsComparison => 'Comparison Operator';
+
+  @override
+  String get alertsCriticalThreshold => 'Critical Threshold';
+
+  @override
+  String get alertsWarningThreshold => 'Warning Threshold (Optional)';
+
+  @override
+  String get alertsWindowMinutes => 'Evaluation Window';
+
+  @override
+  String get alertsTargetFilter => 'Target Filter (e.g. route:/checkout)';
+
+  @override
+  String get alertsChannels => 'Notification Channels';
+
+  @override
+  String get alertsSaveRule => 'Save Rule';
+
+  @override
+  String get alertsRuleSaved => 'Rule saved successfully.';
+
+  @override
+  String get alertsDeleteConfirm =>
+      'Are you sure you want to delete this metric alert rule?';
+
+  @override
+  String get alertsDeleted => 'Rule deleted.';
+
+  @override
+  String get alertsStatusFiring => 'Firing';
+
+  @override
+  String get alertsStatusWarning => 'Warning';
+
+  @override
+  String get alertsStatusOk => 'OK';
+
+  @override
+  String get alertsStatusResolved => 'Resolved';
+
+  @override
+  String get alertsPreviewChart =>
+      'Historical Metric & Threshold Preview (Last 7 Days)';
+
+  @override
+  String get alertsPreviewSub =>
+      'Visualize when the rule would have triggered based on historical data.';
+
+  @override
+  String get alertsEmptyRules => 'No metric rules defined yet.';
+
+  @override
+  String get alertsEmptyIncidents => 'No recorded incidents.';
+
+  @override
+  String get alertsPeakValue => 'Peak Value';
+
+  @override
+  String get alertsDuration => 'Duration';
+
+  @override
+  String get alertsTriggerNow => 'Test Now';
+
+  @override
+  String get alertsOperatorGt => 'Greater than (>)';
+
+  @override
+  String get alertsOperatorGte => 'Greater than or equal (>=)';
+
+  @override
+  String get alertsOperatorLt => 'Less than (<)';
+
+  @override
+  String get alertsOperatorSpike => 'Anomaly Spike (x Multiplier)';
+
+  @override
+  String get alertsMetricErrorCount => 'Error Count';
+
+  @override
+  String get alertsMetricErrorRate => 'Error Rate (%)';
+
+  @override
+  String get alertsMetricP95Duration => 'p95 Latency (ms)';
+
+  @override
+  String get alertsMetricCrashCount => 'Crash Count';
 }

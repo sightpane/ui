@@ -281,6 +281,44 @@ final uptimeMonitorProvider =
   (ref, k) => ref.watch(apiProvider).uptimeMonitor(k.projectId, k.monitorId),
 );
 
+final metricAlertRulesProvider =
+    FutureProvider.autoDispose.family<List<MetricAlertRule>, int>(
+  (ref, projectId) => ref.watch(apiProvider).metricAlertRules(projectId),
+);
+
+typedef MetricAlertIncidentsKey = ({int projectId, int? ruleId});
+
+final metricAlertIncidentsProvider =
+    FutureProvider.autoDispose.family<List<MetricAlertIncident>, MetricAlertIncidentsKey>(
+  (ref, k) => ref.watch(apiProvider).metricAlertIncidents(k.projectId, ruleId: k.ruleId),
+);
+
+typedef MetricAlertRuleKey = ({int projectId, int ruleId});
+
+final metricAlertRuleProvider =
+    FutureProvider.autoDispose.family<MetricAlertRule, MetricAlertRuleKey>(
+  (ref, k) => ref.watch(apiProvider).metricAlertRule(k.projectId, k.ruleId),
+);
+
+typedef MetricAlertPreviewKey = ({
+  int projectId,
+  String metricType,
+  String? targetFilter,
+  int windowMinutes,
+  int days,
+});
+
+final metricAlertPreviewProvider =
+    FutureProvider.autoDispose.family<List<MetricHistoryPoint>, MetricAlertPreviewKey>(
+  (ref, k) => ref.watch(apiProvider).metricAlertPreview(
+    k.projectId,
+    metricType: k.metricType,
+    targetFilter: k.targetFilter,
+    windowMinutes: k.windowMinutes,
+    days: k.days,
+  ),
+);
+
 
 
 

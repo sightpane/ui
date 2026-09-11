@@ -3504,6 +3504,234 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Son Kontrol'**
   String get uptimeLastChecked;
+
+  /// No description provided for @navAlerts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metrik Uyarıları'**
+  String get navAlerts;
+
+  /// No description provided for @alertsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metrik Uyarıları & Anomali Tespiti'**
+  String get alertsTitle;
+
+  /// No description provided for @alertsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metrik eşiklerini, anomali artışlarını ve olay durumlarını izleyin.'**
+  String get alertsSubtitle;
+
+  /// No description provided for @alertsTabRules.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kurallar'**
+  String get alertsTabRules;
+
+  /// No description provided for @alertsTabIncidents.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay Geçmişi'**
+  String get alertsTabIncidents;
+
+  /// No description provided for @alertsNewRule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Kural'**
+  String get alertsNewRule;
+
+  /// No description provided for @alertsEditRule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuralı Düzenle'**
+  String get alertsEditRule;
+
+  /// No description provided for @alertsRuleName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural Adı'**
+  String get alertsRuleName;
+
+  /// No description provided for @alertsMetricType.
+  ///
+  /// In tr, this message translates to:
+  /// **'Metrik Türü'**
+  String get alertsMetricType;
+
+  /// No description provided for @alertsComparison.
+  ///
+  /// In tr, this message translates to:
+  /// **'Karşılaştırma Operatörü'**
+  String get alertsComparison;
+
+  /// No description provided for @alertsCriticalThreshold.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kritik Eşik'**
+  String get alertsCriticalThreshold;
+
+  /// No description provided for @alertsWarningThreshold.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uyarı Eşiği (İsteğe bağlı)'**
+  String get alertsWarningThreshold;
+
+  /// No description provided for @alertsWindowMinutes.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değerlendirme Penceresi'**
+  String get alertsWindowMinutes;
+
+  /// No description provided for @alertsTargetFilter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hedef Filtresi (örn: route:/checkout)'**
+  String get alertsTargetFilter;
+
+  /// No description provided for @alertsChannels.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bildirim Kanalları'**
+  String get alertsChannels;
+
+  /// No description provided for @alertsSaveRule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kuralı Kaydet'**
+  String get alertsSaveRule;
+
+  /// No description provided for @alertsRuleSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural başarıyla kaydedildi.'**
+  String get alertsRuleSaved;
+
+  /// No description provided for @alertsDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu metrik uyarı kuralını silmek istediğinize emin misiniz?'**
+  String get alertsDeleteConfirm;
+
+  /// No description provided for @alertsDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural silindi.'**
+  String get alertsDeleted;
+
+  /// No description provided for @alertsStatusFiring.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tetiklendi'**
+  String get alertsStatusFiring;
+
+  /// No description provided for @alertsStatusWarning.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uyarı'**
+  String get alertsStatusWarning;
+
+  /// No description provided for @alertsStatusOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Normal'**
+  String get alertsStatusOk;
+
+  /// No description provided for @alertsStatusResolved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çözüldü'**
+  String get alertsStatusResolved;
+
+  /// No description provided for @alertsPreviewChart.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş Metrik & Eşik Önizlemesi (Son 7 Gün)'**
+  String get alertsPreviewChart;
+
+  /// No description provided for @alertsPreviewSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'Geçmiş verilere göre kuralın ne zaman tetikleneceğini görselleştirin.'**
+  String get alertsPreviewSub;
+
+  /// No description provided for @alertsEmptyRules.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz metrik kuralı tanımlanmadı.'**
+  String get alertsEmptyRules;
+
+  /// No description provided for @alertsEmptyIncidents.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kayıtlı olay bulunmuyor.'**
+  String get alertsEmptyIncidents;
+
+  /// No description provided for @alertsPeakValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zirve Değer'**
+  String get alertsPeakValue;
+
+  /// No description provided for @alertsDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Süre'**
+  String get alertsDuration;
+
+  /// No description provided for @alertsTriggerNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şimdi Test Et'**
+  String get alertsTriggerNow;
+
+  /// No description provided for @alertsOperatorGt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyüktür (>)'**
+  String get alertsOperatorGt;
+
+  /// No description provided for @alertsOperatorGte.
+  ///
+  /// In tr, this message translates to:
+  /// **'Büyük veya eşittir (>=)'**
+  String get alertsOperatorGte;
+
+  /// No description provided for @alertsOperatorLt.
+  ///
+  /// In tr, this message translates to:
+  /// **'Küçüktür (<)'**
+  String get alertsOperatorLt;
+
+  /// No description provided for @alertsOperatorSpike.
+  ///
+  /// In tr, this message translates to:
+  /// **'Anomali Artışı (x Kat)'**
+  String get alertsOperatorSpike;
+
+  /// No description provided for @alertsMetricErrorCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata Sayısı'**
+  String get alertsMetricErrorCount;
+
+  /// No description provided for @alertsMetricErrorRate.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata Oranı (%)'**
+  String get alertsMetricErrorRate;
+
+  /// No description provided for @alertsMetricP95Duration.
+  ///
+  /// In tr, this message translates to:
+  /// **'p95 Yanıt Süresi (ms)'**
+  String get alertsMetricP95Duration;
+
+  /// No description provided for @alertsMetricCrashCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çökme Sayısı'**
+  String get alertsMetricCrashCount;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

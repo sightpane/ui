@@ -2292,6 +2292,210 @@ class FakeApi implements SightpaneApi {
     calls.add('triggerUptimeCheck $projectId id=$monitorId');
     return {'is_up': true, 'response_time_ms': 42, 'status_code': 200};
   }
+
+  var metricAlertRulesValue = <MetricAlertRule>[
+    MetricAlertRule(
+      id: 1,
+      projectId: 1,
+      name: 'High Error Rate in Checkout',
+      metricType: 'error_rate',
+      targetFilter: 'route:/checkout',
+      comparisonOperator: 'gt',
+      criticalThreshold: 5.0,
+      warningThreshold: 2.5,
+      windowMinutes: 5,
+      channelIds: const [1],
+      isActive: true,
+      currentStatus: 'ok',
+      createdAt: DateTime.now().subtract(const Duration(days: 3)),
+      updatedAt: DateTime.now(),
+    ),
+    MetricAlertRule(
+      id: 2,
+      projectId: 1,
+      name: 'Sudden Crash Spike',
+      metricType: 'unhandled_crash_count',
+      targetFilter: '',
+      comparisonOperator: 'spike_multiplier',
+      criticalThreshold: 3.0,
+      windowMinutes: 10,
+      channelIds: const [],
+      isActive: true,
+      currentStatus: 'firing',
+      createdAt: DateTime.now().subtract(const Duration(days: 1)),
+      updatedAt: DateTime.now(),
+    ),
+  ];
+
+  var metricAlertIncidentsValue = <MetricAlertIncident>[
+    MetricAlertIncident(
+      id: 1,
+      ruleId: 2,
+      projectId: 1,
+      status: 'firing',
+      triggeredAt: DateTime.now().subtract(const Duration(minutes: 15)),
+      peakValue: 18.0,
+      summary: 'Current crashes (18.00) is 4.5x higher than historical baseline (4.00)',
+      ruleName: 'Sudden Crash Spike',
+    ),
+    MetricAlertIncident(
+      id: 2,
+      ruleId: 1,
+      projectId: 1,
+      status: 'resolved',
+      triggeredAt: DateTime.now().subtract(const Duration(hours: 4)),
+      resolvedAt: DateTime.now().subtract(const Duration(hours: 3)),
+      peakValue: 8.2,
+      summary: 'Error rate peaked at 8.2% in checkout',
+      ruleName: 'High Error Rate in Checkout',
+    ),
+  ];
+
+  var metricHistoryPreviewValue = <MetricHistoryPoint>[
+    for (var i = 0; i < 24; i++)
+      MetricHistoryPoint(
+        timestamp: DateTime.now().subtract(Duration(hours: 24 - i)),
+        value: (i % 5 == 0) ? 12.0 : (i % 3 == 0 ? 6.0 : 2.0),
+      ),
+  ];
+
+  @override
+  Future<List<MetricAlertRule>> metricAlertRules(int projectId) async {
+    calls.add('metricAlertRules $projectId');
+    return metricAlertRulesValue;
+  }
+
+  @override
+  Future<MetricAlertRule> metricAlertRule(int projectId, int ruleId) async {
+    calls.add('metricAlertRule $projectId id=$ruleId');
+    return metricAlertRulesValue.firstWhere((r) => r.id == ruleId);
+  }
+
+  @override
+  Future<MetricAlertRule> createMetricAlertRule(
+    int projectId, {
+    required String name,
+    required String metricType,
+    String targetFilter = '',
+    required String comparisonOperator,
+    required double criticalThreshold,
+    double? warningThreshold,
+    int windowMinutes = 5,
+    List<int> channelIds = const [],
+    bool isActive = true,
+  }) async {
+    calls.add('createMetricAlertRule $projectId name=$name');
+    final rule = MetricAlertRule(
+      id: metricAlertRulesValue.length + 1,
+      projectId: projectId,
+      name: name,
+      metricType: metricType,
+      targetFilter: targetFilter,
+      comparisonOperator: comparisonOperator,
+      criticalThreshold: criticalThreshold,
+      warningThreshold: warningThreshold,
+      windowMinutes: windowMinutes,
+      channelIds: channelIds,
+      isActive: isActive,
+      currentStatus: 'ok',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    metricAlertRulesValue.add(rule);
+    return rule;
+  }
+
+  @override
+  Future<MetricAlertRule> updateMetricAlertRule(
+    int projectId,
+    int ruleId, {
+    String? name,
+    String? metricType,
+    String? targetFilter,
+    String? comparisonOperator,
+    double? criticalThreshold,
+    double? warningThreshold,
+    int? windowMinutes,
+    List<int>? channelIds,
+    bool? isActive,
+  }) async {
+    calls.add('updateMetricAlertRule $projectId id=$ruleId');
+    final idx = metricAlertRulesValue.indexWhere((r) => r.id == ruleId);
+    if (idx != -1) {
+      final old = metricAlertRulesValue[idx];
+      final updated = MetricAlertRule(
+        id: old.id,
+        projectId: old.projectId,
+        name: name ?? old.name,
+        metricType: metricType ?? old.metricType,
+        targetFilter: targetFilter ?? old.targetFilter,
+        comparisonOperator: comparisonOperator ?? old.comparisonOperator,
+        criticalThreshold: criticalThreshold ?? old.criticalThreshold,
+        warningThreshold: warningThreshold ?? old.warningThreshold,
+        windowMinutes: windowMinutes ?? old.windowMinutes,
+        channelIds: channelIds ?? old.channelIds,
+        isActive: isActive ?? old.isActive,
+        currentStatus: old.currentStatus,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      metricAlertRulesValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Metric alert rule not found');
+  }
+
+  @override
+  Future<void> deleteMetricAlertRule(int projectId, int ruleId) async {
+    calls.add('deleteMetricAlertRule $projectId id=$ruleId');
+    metricAlertRulesValue.removeWhere((r) => r.id == ruleId);
+  }
+
+  @override
+  Future<List<MetricAlertIncident>> metricAlertIncidents(int projectId, {int? ruleId, int limit = 50}) async {
+    calls.add('metricAlertIncidents $projectId');
+    if (ruleId != null) {
+      return metricAlertIncidentsValue.where((i) => i.ruleId == ruleId).toList();
+    }
+    return metricAlertIncidentsValue;
+  }
+
+  @override
+  Future<Map<String, Object?>> metricAlertRulePreview(int projectId, int ruleId, {int days = 7}) async {
+    calls.add('metricAlertRulePreview $projectId id=$ruleId');
+    final rule = metricAlertRulesValue.firstWhere((r) => r.id == ruleId);
+    return {
+      'rule': rule,
+      'points': [
+        for (final p in metricHistoryPreviewValue)
+          {'timestamp': p.timestamp.toIso8601String(), 'value': p.value},
+      ],
+    };
+  }
+
+  @override
+  Future<List<MetricHistoryPoint>> metricAlertPreview(
+    int projectId, {
+    required String metricType,
+    String? targetFilter,
+    int windowMinutes = 5,
+    int days = 7,
+  }) async {
+    calls.add('metricAlertPreview $projectId type=$metricType');
+    return metricHistoryPreviewValue;
+  }
+
+  @override
+  Future<Map<String, Object?>> testMetricAlertRule(int projectId, int ruleId) async {
+    calls.add('testMetricAlertRule $projectId id=$ruleId');
+    return {
+      'rule_id': ruleId,
+      'current_value': 7.5,
+      'event_count': 15,
+      'is_firing': true,
+      'summary': 'Metric threshold exceeded (current: 7.50)',
+    };
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];
