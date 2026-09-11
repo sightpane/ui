@@ -242,5 +242,28 @@ final surveyResponsesProvider =
   (ref, k) => ref.watch(apiProvider).surveyResponses(k.projectId, k.surveyId),
 );
 
+final cronMonitorsProvider =
+    FutureProvider.autoDispose.family<List<CronMonitor>, int>(
+  (ref, projectId) => ref.watch(apiProvider).cronMonitors(projectId),
+);
+
+final cronStatsProvider =
+    FutureProvider.autoDispose.family<CronStats, int>(
+  (ref, projectId) => ref.watch(apiProvider).cronStats(projectId),
+);
+
+typedef CronMonitorKey = ({int projectId, int monitorId});
+
+final cronMonitorProvider =
+    FutureProvider.autoDispose.family<CronMonitor, CronMonitorKey>(
+  (ref, k) => ref.watch(apiProvider).cronMonitor(k.projectId, k.monitorId),
+);
+
+final cronCheckinsProvider =
+    FutureProvider.autoDispose.family<List<CronCheckin>, CronMonitorKey>(
+  (ref, k) => ref.watch(apiProvider).cronCheckins(k.projectId, k.monitorId),
+);
+
+
 
 

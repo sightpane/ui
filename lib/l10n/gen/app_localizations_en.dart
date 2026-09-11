@@ -1736,4 +1736,84 @@ class LEn extends L {
 
   @override
   String get surveysInactive => 'Inactive';
+
+  @override
+  String get navCrons => 'Crons & Heartbeats';
+
+  @override
+  String get cronsTitle => 'Cron Jobs & Heartbeat Monitoring';
+
+  @override
+  String get cronsDesc =>
+      'Monitor background jobs, scheduled tasks, and worker heartbeats with instant alerts on missed deadlines.';
+
+  @override
+  String get cronsNew => 'New Cron Monitor';
+
+  @override
+  String get cronsSchedule => 'Schedule (Crontab)';
+
+  @override
+  String get cronsTimezone => 'Timezone';
+
+  @override
+  String get cronsGracePeriod => 'Grace Period (min)';
+
+  @override
+  String get cronsMaxRuntime => 'Max Runtime (min)';
+
+  @override
+  String get cronsNextExpected => 'Next Expected';
+
+  @override
+  String get cronsLastCheckin => 'Last Check-in';
+
+  @override
+  String get cronsStatusOk => 'Healthy';
+
+  @override
+  String get cronsStatusInProgress => 'In Progress';
+
+  @override
+  String get cronsStatusMissed => 'Missed';
+
+  @override
+  String get cronsStatusError => 'Failed';
+
+  @override
+  String get cronsTimeline24h => '24-Hour Status Timeline';
+
+  @override
+  String get cronsIntegrationSnippets => 'Integration Code Snippets';
+
+  @override
+  String get cronsHistory => 'Check-in History';
+
+  @override
+  String get cronsEmpty => 'No cron monitors created yet.';
+
+  @override
+  String get cronsDeleteConfirm =>
+      'Are you sure you want to delete this cron monitor?';
+
+  @override
+  String get cronsDeleted => 'Cron monitor deleted.';
+
+  @override
+  String get cronsSaved => 'Cron monitor saved.';
+
+  @override
+  String get cronsSlug => 'Slug / Identifier';
+
+  @override
+  String get cronsName => 'Monitor Name';
+
+  @override
+  String get cronsDuration => 'Duration';
+
+  @override
+  String get cronsMessage => 'Message';
+
+  @override
+  String get cronsTotal => 'Total Monitors';
 }

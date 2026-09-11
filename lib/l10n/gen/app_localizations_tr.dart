@@ -1657,4 +1657,84 @@ class LTr extends L {
 
   @override
   String get surveysInactive => 'Pasif';
+
+  @override
+  String get navCrons => 'Cron & Heartbeat';
+
+  @override
+  String get cronsTitle => 'Cron İşleri & Heartbeat İzleme';
+
+  @override
+  String get cronsDesc =>
+      'Arka plan işlerinizi, zamanlanmış görevleri ve worker heartbeat sinyallerini izleyin, gecikmelerde anında uyarı alın.';
+
+  @override
+  String get cronsNew => 'Yeni Cron İzleyici';
+
+  @override
+  String get cronsSchedule => 'Zamanlama (Crontab)';
+
+  @override
+  String get cronsTimezone => 'Zaman Dilimi';
+
+  @override
+  String get cronsGracePeriod => 'Tolerans Süresi (dk)';
+
+  @override
+  String get cronsMaxRuntime => 'Maks Çalışma Süresi (dk)';
+
+  @override
+  String get cronsNextExpected => 'Sonraki Beklenen';
+
+  @override
+  String get cronsLastCheckin => 'Son Check-in';
+
+  @override
+  String get cronsStatusOk => 'Çalışıyor';
+
+  @override
+  String get cronsStatusInProgress => 'İşlemde';
+
+  @override
+  String get cronsStatusMissed => 'Kaçırıldı';
+
+  @override
+  String get cronsStatusError => 'Hata Aldı';
+
+  @override
+  String get cronsTimeline24h => '24 Saatlik Durum Geçmişi';
+
+  @override
+  String get cronsIntegrationSnippets => 'Entegrasyon Kodları';
+
+  @override
+  String get cronsHistory => 'Check-in Geçmişi';
+
+  @override
+  String get cronsEmpty => 'Henüz bir cron izleyicisi eklenmedi.';
+
+  @override
+  String get cronsDeleteConfirm =>
+      'Bu cron izleyicisini silmek istediğinizden emin misiniz?';
+
+  @override
+  String get cronsDeleted => 'Cron izleyicisi silindi.';
+
+  @override
+  String get cronsSaved => 'Cron izleyicisi kaydedildi.';
+
+  @override
+  String get cronsSlug => 'Slug / Tanımlayıcı';
+
+  @override
+  String get cronsName => 'İzleyici Adı';
+
+  @override
+  String get cronsDuration => 'Süre';
+
+  @override
+  String get cronsMessage => 'Mesaj';
+
+  @override
+  String get cronsTotal => 'Toplam İzleyici';
 }

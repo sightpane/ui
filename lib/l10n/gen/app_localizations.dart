@@ -3108,6 +3108,162 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Pasif'**
   String get surveysInactive;
+
+  /// No description provided for @navCrons.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cron & Heartbeat'**
+  String get navCrons;
+
+  /// No description provided for @cronsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cron İşleri & Heartbeat İzleme'**
+  String get cronsTitle;
+
+  /// No description provided for @cronsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Arka plan işlerinizi, zamanlanmış görevleri ve worker heartbeat sinyallerini izleyin, gecikmelerde anında uyarı alın.'**
+  String get cronsDesc;
+
+  /// No description provided for @cronsNew.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Cron İzleyici'**
+  String get cronsNew;
+
+  /// No description provided for @cronsSchedule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zamanlama (Crontab)'**
+  String get cronsSchedule;
+
+  /// No description provided for @cronsTimezone.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman Dilimi'**
+  String get cronsTimezone;
+
+  /// No description provided for @cronsGracePeriod.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tolerans Süresi (dk)'**
+  String get cronsGracePeriod;
+
+  /// No description provided for @cronsMaxRuntime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Maks Çalışma Süresi (dk)'**
+  String get cronsMaxRuntime;
+
+  /// No description provided for @cronsNextExpected.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonraki Beklenen'**
+  String get cronsNextExpected;
+
+  /// No description provided for @cronsLastCheckin.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son Check-in'**
+  String get cronsLastCheckin;
+
+  /// No description provided for @cronsStatusOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çalışıyor'**
+  String get cronsStatusOk;
+
+  /// No description provided for @cronsStatusInProgress.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlemde'**
+  String get cronsStatusInProgress;
+
+  /// No description provided for @cronsStatusMissed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kaçırıldı'**
+  String get cronsStatusMissed;
+
+  /// No description provided for @cronsStatusError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata Aldı'**
+  String get cronsStatusError;
+
+  /// No description provided for @cronsTimeline24h.
+  ///
+  /// In tr, this message translates to:
+  /// **'24 Saatlik Durum Geçmişi'**
+  String get cronsTimeline24h;
+
+  /// No description provided for @cronsIntegrationSnippets.
+  ///
+  /// In tr, this message translates to:
+  /// **'Entegrasyon Kodları'**
+  String get cronsIntegrationSnippets;
+
+  /// No description provided for @cronsHistory.
+  ///
+  /// In tr, this message translates to:
+  /// **'Check-in Geçmişi'**
+  String get cronsHistory;
+
+  /// No description provided for @cronsEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir cron izleyicisi eklenmedi.'**
+  String get cronsEmpty;
+
+  /// No description provided for @cronsDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu cron izleyicisini silmek istediğinizden emin misiniz?'**
+  String get cronsDeleteConfirm;
+
+  /// No description provided for @cronsDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cron izleyicisi silindi.'**
+  String get cronsDeleted;
+
+  /// No description provided for @cronsSaved.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cron izleyicisi kaydedildi.'**
+  String get cronsSaved;
+
+  /// No description provided for @cronsSlug.
+  ///
+  /// In tr, this message translates to:
+  /// **'Slug / Tanımlayıcı'**
+  String get cronsSlug;
+
+  /// No description provided for @cronsName.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleyici Adı'**
+  String get cronsName;
+
+  /// No description provided for @cronsDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Süre'**
+  String get cronsDuration;
+
+  /// No description provided for @cronsMessage.
+  ///
+  /// In tr, this message translates to:
+  /// **'Mesaj'**
+  String get cronsMessage;
+
+  /// No description provided for @cronsTotal.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam İzleyici'**
+  String get cronsTotal;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

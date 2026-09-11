@@ -241,6 +241,29 @@ abstract class SightpaneApi {
   Future<void> deleteSurvey(int projectId, int surveyId);
   Future<SurveyResults> surveyResults(int projectId, int surveyId);
   Future<List<SurveyResponse>> surveyResponses(int projectId, int surveyId, {int limit = 100});
+  Future<List<CronMonitor>> cronMonitors(int projectId);
+  Future<CronStats> cronStats(int projectId);
+  Future<CronMonitor> cronMonitor(int projectId, int monitorId);
+  Future<CronMonitor> createCronMonitor(
+    int projectId, {
+    required String name,
+    required String slug,
+    required String schedule,
+    String timezone = 'UTC',
+    int gracePeriodMinutes = 15,
+    int maxRuntimeMinutes = 60,
+  });
+  Future<CronMonitor> updateCronMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? schedule,
+    String? timezone,
+    int? gracePeriodMinutes,
+    int? maxRuntimeMinutes,
+  });
+  Future<void> deleteCronMonitor(int projectId, int monitorId);
+  Future<List<CronCheckin>> cronCheckins(int projectId, int monitorId, {int limit = 50});
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -1152,6 +1175,109 @@ class HttpSightpaneApi implements SightpaneApi {
     ))
       SurveyResponse.fromJson(_map(r)),
   ];
+
+  @override
+  Future<List<CronMonitor>> cronMonitors(int projectId) async {
+    final res = _map(await _send('GET', '/api/v1/projects/$projectId/crons'));
+    return [
+      for (final m in _list(res['monitors']))
+        CronMonitor.fromJson(_map(m)),
+    ];
+  }
+
+  @override
+  Future<CronStats> cronStats(int projectId) async {
+    final res = _map(await _send('GET', '/api/v1/projects/$projectId/crons'));
+    return CronStats.fromJson(_map(res['stats']));
+  }
+
+  @override
+  Future<CronMonitor> cronMonitor(int projectId, int monitorId) async =>
+      CronMonitor.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/crons/$monitorId',
+          ),
+        ),
+      );
+
+  @override
+  Future<CronMonitor> createCronMonitor(
+    int projectId, {
+    required String name,
+    required String slug,
+    required String schedule,
+    String timezone = 'UTC',
+    int gracePeriodMinutes = 15,
+    int maxRuntimeMinutes = 60,
+  }) async =>
+      CronMonitor.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/crons',
+            body: {
+              'name': name,
+              'slug': slug,
+              'schedule': schedule,
+              'timezone': timezone,
+              'grace_period_minutes': gracePeriodMinutes,
+              'max_runtime_minutes': maxRuntimeMinutes,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<CronMonitor> updateCronMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? schedule,
+    String? timezone,
+    int? gracePeriodMinutes,
+    int? maxRuntimeMinutes,
+  }) async =>
+      CronMonitor.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/crons/$monitorId',
+            body: {
+              'name': ?name,
+              'schedule': ?schedule,
+              'timezone': ?timezone,
+              'grace_period_minutes': ?gracePeriodMinutes,
+              'max_runtime_minutes': ?maxRuntimeMinutes,
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteCronMonitor(int projectId, int monitorId) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/crons/$monitorId');
+  }
+
+  @override
+  Future<List<CronCheckin>> cronCheckins(
+    int projectId,
+    int monitorId, {
+    int limit = 50,
+  }) async {
+    final res = _map(
+      await _send(
+        'GET',
+        '/api/v1/projects/$projectId/crons/$monitorId/checkins',
+        query: {'limit': '$limit'},
+      ),
+    );
+    return [
+      for (final c in _list(res['checkins']))
+        CronCheckin.fromJson(_map(c)),
+    ];
+  }
 
   @override
   Future<SessionDetail> session(String id) async =>

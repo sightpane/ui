@@ -2066,5 +2066,107 @@ class SurveyResults {
   );
 }
 
+class CronMonitor {
+  const CronMonitor({
+    required this.id,
+    required this.projectId,
+    required this.slug,
+    required this.name,
+    required this.schedule,
+    required this.timezone,
+    required this.gracePeriodMinutes,
+    required this.maxRuntimeMinutes,
+    required this.status,
+    this.lastCheckinAt,
+    this.nextExpectedAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String slug;
+  final String name;
+  final String schedule;
+  final String timezone;
+  final int gracePeriodMinutes;
+  final int maxRuntimeMinutes;
+  final String status;
+  final DateTime? lastCheckinAt;
+  final DateTime? nextExpectedAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  factory CronMonitor.fromJson(Map<String, Object?> j) => CronMonitor(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    slug: _s(j['slug']),
+    name: _s(j['name']),
+    schedule: _s(j['schedule']),
+    timezone: _s(j['timezone']).isEmpty ? 'UTC' : _s(j['timezone']),
+    gracePeriodMinutes: _i(j['grace_period_minutes']) == 0 ? 15 : _i(j['grace_period_minutes']),
+    maxRuntimeMinutes: _i(j['max_runtime_minutes']) == 0 ? 60 : _i(j['max_runtime_minutes']),
+    status: _s(j['status']).isEmpty ? 'ok' : _s(j['status']),
+    lastCheckinAt: _t(j['last_checkin_at']),
+    nextExpectedAt: _t(j['next_expected_at']),
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
+    updatedAt: _t(j['updated_at']) ?? DateTime.now(),
+  );
+}
+
+class CronCheckin {
+  const CronCheckin({
+    required this.id,
+    required this.monitorId,
+    required this.projectId,
+    required this.status,
+    this.durationMs,
+    required this.message,
+    required this.createdAt,
+  });
+
+  final int id;
+  final int monitorId;
+  final int projectId;
+  final String status;
+  final int? durationMs;
+  final String message;
+  final DateTime createdAt;
+
+  factory CronCheckin.fromJson(Map<String, Object?> j) => CronCheckin(
+    id: _i(j['id']),
+    monitorId: _i(j['monitor_id']),
+    projectId: _i(j['project_id']),
+    status: _s(j['status']),
+    durationMs: j['duration_ms'] != null ? _i(j['duration_ms']) : null,
+    message: _s(j['message']),
+    createdAt: _t(j['created_at']) ?? DateTime.now(),
+  );
+}
+
+class CronStats {
+  const CronStats({
+    this.totalMonitors = 0,
+    this.okCount = 0,
+    this.inProgressCount = 0,
+    this.errorCount = 0,
+    this.missedCount = 0,
+  });
+
+  final int totalMonitors;
+  final int okCount;
+  final int inProgressCount;
+  final int errorCount;
+  final int missedCount;
+
+  factory CronStats.fromJson(Map<String, Object?> j) => CronStats(
+    totalMonitors: _i(j['total_monitors']),
+    okCount: _i(j['ok_count']),
+    inProgressCount: _i(j['in_progress_count']),
+    errorCount: _i(j['error_count']),
+    missedCount: _i(j['missed_count']),
+  );
+}
+
 
 

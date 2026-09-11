@@ -1964,6 +1964,144 @@ class FakeApi implements SightpaneApi {
     calls.add('surveyResponses $projectId id=$surveyId');
     return surveyResponsesValue;
   }
+
+  var cronMonitorsValue = <CronMonitor>[
+    CronMonitor(
+      id: 1,
+      projectId: 1,
+      name: 'Daily Backup',
+      slug: 'daily-backup',
+      schedule: '0 2 * * *',
+      timezone: 'UTC',
+      gracePeriodMinutes: 15,
+      maxRuntimeMinutes: 60,
+      status: 'ok',
+      lastCheckinAt: DateTime.now().subtract(const Duration(hours: 2)),
+      nextExpectedAt: DateTime.now().add(const Duration(hours: 22)),
+      createdAt: DateTime.now().subtract(const Duration(days: 7)),
+      updatedAt: DateTime.now().subtract(const Duration(days: 7)),
+    ),
+  ];
+
+  var cronStatsValue = const CronStats(
+    totalMonitors: 1,
+    okCount: 1,
+    inProgressCount: 0,
+    missedCount: 0,
+    errorCount: 0,
+  );
+
+  var cronCheckinsValue = <CronCheckin>[
+    CronCheckin(
+      id: 1,
+      monitorId: 1,
+      projectId: 1,
+      status: 'ok',
+      durationMs: 1250,
+      message: 'Backup completed cleanly',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+    ),
+  ];
+
+  @override
+  Future<List<CronMonitor>> cronMonitors(int projectId) async {
+    calls.add('cronMonitors $projectId');
+    return cronMonitorsValue;
+  }
+
+  @override
+  Future<CronStats> cronStats(int projectId) async {
+    calls.add('cronStats $projectId');
+    return cronStatsValue;
+  }
+
+  @override
+  Future<CronMonitor> cronMonitor(int projectId, int monitorId) async {
+    calls.add('cronMonitor $projectId id=$monitorId');
+    return cronMonitorsValue.firstWhere(
+      (m) => m.id == monitorId,
+      orElse: () => cronMonitorsValue.first,
+    );
+  }
+
+  @override
+  Future<CronMonitor> createCronMonitor(
+    int projectId, {
+    required String name,
+    required String slug,
+    required String schedule,
+    String timezone = 'UTC',
+    int gracePeriodMinutes = 15,
+    int maxRuntimeMinutes = 60,
+  }) async {
+    calls.add('createCronMonitor $projectId name=$name slug=$slug');
+    final m = CronMonitor(
+      id: cronMonitorsValue.length + 1,
+      projectId: projectId,
+      name: name,
+      slug: slug,
+      schedule: schedule,
+      timezone: timezone,
+      gracePeriodMinutes: gracePeriodMinutes,
+      maxRuntimeMinutes: maxRuntimeMinutes,
+      status: 'ok',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+    cronMonitorsValue.add(m);
+    return m;
+  }
+
+  @override
+  Future<CronMonitor> updateCronMonitor(
+    int projectId,
+    int monitorId, {
+    String? name,
+    String? schedule,
+    String? timezone,
+    int? gracePeriodMinutes,
+    int? maxRuntimeMinutes,
+  }) async {
+    calls.add('updateCronMonitor $projectId id=$monitorId');
+    final idx = cronMonitorsValue.indexWhere((m) => m.id == monitorId);
+    if (idx != -1) {
+      final old = cronMonitorsValue[idx];
+      final updated = CronMonitor(
+        id: old.id,
+        projectId: old.projectId,
+        name: name ?? old.name,
+        slug: old.slug,
+        schedule: schedule ?? old.schedule,
+        timezone: timezone ?? old.timezone,
+        gracePeriodMinutes: gracePeriodMinutes ?? old.gracePeriodMinutes,
+        maxRuntimeMinutes: maxRuntimeMinutes ?? old.maxRuntimeMinutes,
+        status: old.status,
+        lastCheckinAt: old.lastCheckinAt,
+        nextExpectedAt: old.nextExpectedAt,
+        createdAt: old.createdAt,
+        updatedAt: DateTime.now(),
+      );
+      cronMonitorsValue[idx] = updated;
+      return updated;
+    }
+    throw Exception('Cron monitor not found');
+  }
+
+  @override
+  Future<void> deleteCronMonitor(int projectId, int monitorId) async {
+    calls.add('deleteCronMonitor $projectId id=$monitorId');
+    cronMonitorsValue.removeWhere((m) => m.id == monitorId);
+  }
+
+  @override
+  Future<List<CronCheckin>> cronCheckins(
+    int projectId,
+    int monitorId, {
+    int limit = 50,
+  }) async {
+    calls.add('cronCheckins $projectId id=$monitorId');
+    return cronCheckinsValue;
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];
