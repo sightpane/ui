@@ -93,6 +93,7 @@ table of `key: (tr, en, placeholders)` that emits `lib/l10n/app_tr.arb` (templat
 ## Repo conventions
 
 - `.claude/skills/` carries `shadcn-flutter` (the UI kit — consult it before writing a widget), `flutter-chart` (the `graphic` package, not yet a dependency), and the shared workflow skills. Provenance of the vendored ones is in `SOURCE-vendored-skills.md`.
+- **Shadcn-first rule**: If a component already exists in `shadcn_flutter` (e.g. `Breadcrumb`, `Accordion`, `Avatar`, `Dialog`, `Sheet`, `Popover`, `Select`, `Steps`, `Timeline`, `Tabs`, `Table`, etc.), NEVER build it from scratch. Always consult the `/shadcn-flutter` skill first and wrap or reuse the official component in `lib/shared/widgets/`.
 - The official `dart-flutter` plugin is enabled at project scope in `.claude/settings.json`. Its skills are generic Flutter guidance; where they conflict with this repository (Material widgets vs shadcn_flutter, `pumpWidget(MaterialApp(...))` vs `pumpApp`/`FakeApi`), this repository wins.
 - `lib/l10n/gen/` is generated but committed, so a fresh clone analyzes without a build step. Regenerate whenever `tool/gen_arb.py` changes.
 - The brand mark is drawn, not an asset: `lib/shared/brand.dart` has the
