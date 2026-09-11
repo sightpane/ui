@@ -34,7 +34,10 @@ import '../features/alerts/metric_alerts_page.dart';
 import '../features/alerts/metric_alert_rule_form_page.dart';
 import '../features/traces/traces_page.dart';
 import '../features/traces/trace_detail_page.dart';
+import '../features/profiling/profiling_page.dart';
+import '../features/profiling/profile_detail_page.dart';
 import '../features/users/user_detail_page.dart';
+
 import '../features/users/users_page.dart';
 import '../shell/app_shell.dart';
 
@@ -264,9 +267,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ],
               ),
               GoRoute(
+                path: 'profiling',
+                builder: (_, s) => ProfilingPage(projectId: _id(s)),
+                routes: [
+                  GoRoute(
+                    path: ':profileId',
+                    builder: (_, s) => ProfileDetailPage(
+                      projectId: _id(s),
+                      profileId: s.pathParameters['profileId'] ?? '',
+                    ),
+                  ),
+                ],
+              ),
+              GoRoute(
                 path: 'settings',
                 builder: (_, s) => SettingsPage(projectId: _id(s)),
               ),
+
             ],
           ),
         ],

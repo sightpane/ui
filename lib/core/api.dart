@@ -340,7 +340,21 @@ abstract class SightpaneApi {
     int limit = 50,
   });
   Future<TraceDetail> trace(int projectId, String traceId);
+  Future<List<ProfileSummary>> profiles(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 50,
+  });
+  Future<ProfileDetail> profile(int projectId, String profileId);
+  Future<List<SlowFunction>> topSlowFunctions(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 20,
+  });
   Future<SessionDetail> session(String id);
+
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
     int projectId, {
@@ -1613,7 +1627,46 @@ class HttpSightpaneApi implements SightpaneApi {
   }
 
   @override
+  Future<List<ProfileSummary>> profiles(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 50,
+  }) async {
+    final q = <String, String>{
+      'days': '$days',
+      'limit': '$limit',
+      if (transaction != null && transaction.isNotEmpty) 'transaction': transaction,
+    };
+    final res = await _send('GET', '/api/v1/projects/$projectId/profiles', query: q);
+    return [for (final p in _list(res)) ProfileSummary.fromJson(p)];
+  }
+
+  @override
+  Future<ProfileDetail> profile(int projectId, String profileId) async {
+    final res = await _send('GET', '/api/v1/projects/$projectId/profiles/$profileId');
+    return ProfileDetail.fromJson(_map(res));
+  }
+
+  @override
+  Future<List<SlowFunction>> topSlowFunctions(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 20,
+  }) async {
+    final q = <String, String>{
+      'days': '$days',
+      'limit': '$limit',
+      if (transaction != null && transaction.isNotEmpty) 'transaction': transaction,
+    };
+    final res = await _send('GET', '/api/v1/projects/$projectId/profiles/functions/top', query: q);
+    return [for (final f in _list(res)) SlowFunction.fromJson(f)];
+  }
+
+  @override
   Future<SessionDetail> session(String id) async =>
+
       SessionDetail.fromJson(_map(await _send('GET', '/api/v1/sessions/$id')));
   @override
   String frameUrl(String sessionId, int seq) {

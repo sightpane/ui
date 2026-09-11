@@ -2648,6 +2648,174 @@ class TraceDetail {
       );
 }
 
+class ProfileSummary {
+  const ProfileSummary({
+    required this.id,
+    required this.transactionName,
+    required this.sessionId,
+    required this.traceId,
+    required this.durationMs,
+    required this.cpuTimeMs,
+    required this.threadName,
+    required this.platform,
+    required this.createdAt,
+  });
 
+  final String id;
+  final String transactionName;
+  final String sessionId;
+  final String traceId;
+  final double durationMs;
+  final double cpuTimeMs;
+  final String threadName;
+  final String platform;
+  final DateTime createdAt;
 
+  factory ProfileSummary.fromJson(Map<String, Object?> j) => ProfileSummary(
+        id: _s(j['id']),
+        transactionName: _s(j['transaction_name']),
+        sessionId: _s(j['session_id']),
+        traceId: _s(j['trace_id']),
+        durationMs: _d(j['duration_ms']),
+        cpuTimeMs: _d(j['cpu_time_ms']),
+        threadName: _s(j['thread_name']),
+        platform: _s(j['platform']),
+        createdAt: _t(j['created_at']) ?? DateTime.now(),
+      );
+}
 
+class ProfileFrame {
+  const ProfileFrame({
+    required this.name,
+    this.file = '',
+    this.line = 0,
+  });
+
+  final String name;
+  final String file;
+  final int line;
+
+  factory ProfileFrame.fromJson(Map<String, Object?> j) => ProfileFrame(
+        name: _s(j['name']),
+        file: _s(j['file']),
+        line: _i(j['line']),
+      );
+
+  Map<String, Object?> toJson() => {
+        'name': name,
+        if (file.isNotEmpty) 'file': file,
+        if (line > 0) 'line': line,
+      };
+}
+
+class ProfileSample {
+  const ProfileSample({
+    required this.elapsedMs,
+    required this.stackId,
+  });
+
+  final double elapsedMs;
+  final List<int> stackId;
+
+  factory ProfileSample.fromJson(Map<String, Object?> j) => ProfileSample(
+        elapsedMs: _d(j['elapsed_ms']),
+        stackId: [for (final id in (j['stack_id'] as List? ?? const [])) _i(id)],
+      );
+
+  Map<String, Object?> toJson() => {
+        'elapsed_ms': elapsedMs,
+        'stack_id': stackId,
+      };
+}
+
+class ProfileCallTree {
+  const ProfileCallTree({
+    required this.frames,
+    required this.samples,
+  });
+
+  final List<ProfileFrame> frames;
+  final List<ProfileSample> samples;
+
+  factory ProfileCallTree.fromJson(Map<String, Object?> j) {
+    final shared = _m(j['shared']);
+    final framesList = shared['frames'] as List? ?? const [];
+    final samplesList = j['samples'] as List? ?? const [];
+    return ProfileCallTree(
+      frames: [for (final f in framesList) ProfileFrame.fromJson(_m(f))],
+      samples: [for (final s in samplesList) ProfileSample.fromJson(_m(s))],
+    );
+  }
+}
+
+class ProfileDetail {
+  const ProfileDetail({
+    required this.id,
+    required this.projectId,
+    required this.transactionName,
+    required this.sessionId,
+    required this.traceId,
+    required this.durationMs,
+    required this.cpuTimeMs,
+    required this.threadName,
+    required this.platform,
+    required this.callTree,
+    required this.createdAt,
+  });
+
+  final String id;
+  final int projectId;
+  final String transactionName;
+  final String sessionId;
+  final String traceId;
+  final double durationMs;
+  final double cpuTimeMs;
+  final String threadName;
+  final String platform;
+  final ProfileCallTree callTree;
+  final DateTime createdAt;
+
+  factory ProfileDetail.fromJson(Map<String, Object?> j) {
+    final rawProfileData = j['profile_data'];
+    final callTree = rawProfileData is Map<String, Object?>
+        ? ProfileCallTree.fromJson(rawProfileData)
+        : ProfileCallTree.fromJson(_m(rawProfileData));
+    return ProfileDetail(
+      id: _s(j['id']),
+      projectId: _i(j['project_id']),
+      transactionName: _s(j['transaction_name']),
+      sessionId: _s(j['session_id']),
+      traceId: _s(j['trace_id']),
+      durationMs: _d(j['duration_ms']),
+      cpuTimeMs: _d(j['cpu_time_ms']),
+      threadName: _s(j['thread_name']),
+      platform: _s(j['platform']),
+      callTree: callTree,
+      createdAt: _t(j['created_at']) ?? DateTime.now(),
+    );
+  }
+}
+
+class SlowFunction {
+  const SlowFunction({
+    required this.name,
+    required this.file,
+    required this.totalTimeMs,
+    required this.selfTimeMs,
+    required this.callCount,
+  });
+
+  final String name;
+  final String file;
+  final double totalTimeMs;
+  final double selfTimeMs;
+  final int callCount;
+
+  factory SlowFunction.fromJson(Map<String, Object?> j) => SlowFunction(
+        name: _s(j['name']),
+        file: _s(j['file']),
+        totalTimeMs: _d(j['total_time_ms']),
+        selfTimeMs: _d(j['self_time_ms']),
+        callCount: _i(j['call_count']),
+      );
+}

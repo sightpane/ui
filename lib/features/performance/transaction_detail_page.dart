@@ -277,6 +277,16 @@ class _TransactionDetailPageState extends ConsumerState<TransactionDetailPage> {
                                       child: Text(context.l10n.performanceViewTrace),
                                     ),
                                   ],
+                                  const Gap(8),
+                                  SecondaryButton(
+                                    size: ButtonSize.small,
+                                    density: ButtonDensity.compact,
+                                    leading: const Icon(LucideIcons.flame, size: 12),
+                                    onPressed: () => context.go(
+                                      '/projects/${widget.projectId}/profiling?transaction=${Uri.encodeComponent(widget.name)}',
+                                    ),
+                                    child: Text(context.l10n.profilingViewProfile),
+                                  ),
                                 ],
                               ),
                             ],

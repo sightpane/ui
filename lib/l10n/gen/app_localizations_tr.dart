@@ -2038,4 +2038,71 @@ class LTr extends L {
 
   @override
   String get performanceViewTrace => 'İz / Trace';
+
+  @override
+  String get navProfiling => 'Sürekli Profilleme';
+
+  @override
+  String get profilingTitle => 'Sürekli CPU Profilleme & Flame Chart';
+
+  @override
+  String get profilingSubtitle =>
+      'Üretim ortamındaki çağrı yığınlarını (call stack) ve en yavaş fonksiyonları interaktif alev grafiği ile analiz edin.';
+
+  @override
+  String get profilingEmpty => 'Henüz bir CPU profil kaydı bulunamadı.';
+
+  @override
+  String get profilingTransaction => 'İşlem (Transaction)';
+
+  @override
+  String get profilingDuration => 'Toplam Süre';
+
+  @override
+  String get profilingCpuTime => 'CPU Süresi';
+
+  @override
+  String get profilingThread => 'İş Parçacığı (Thread)';
+
+  @override
+  String get profilingPlatform => 'Platform';
+
+  @override
+  String get profilingSamples => 'Örnek Sayısı (Samples)';
+
+  @override
+  String get profilingFrames => 'Fonksiyon Sayısı (Frames)';
+
+  @override
+  String get profilingSlowFunctions => 'En Yavaş Fonksiyonlar';
+
+  @override
+  String get profilingFunctionName => 'Fonksiyon Adı';
+
+  @override
+  String get profilingSelfTime => 'Öz Süre (Self Time)';
+
+  @override
+  String get profilingTotalTime => 'Toplam Süre (Total Time)';
+
+  @override
+  String get profilingCallCount => 'Çağrı Sayısı';
+
+  @override
+  String get profilingDetailTitle => 'Profil & Flame Graph Detayı';
+
+  @override
+  String get profilingSearchFrame => 'Fonksiyon veya dosya ara...';
+
+  @override
+  String get profilingInvertFlame => 'Aşağıdan Yukarı (Icicle)';
+
+  @override
+  String get profilingResetZoom => 'Yakınlaştırmayı Sıfırla';
+
+  @override
+  String get profilingSelectedFrame => 'Seçili Fonksiyon Detayı';
+
+  @override
+  String get profilingViewProfile => 'Profili Görüntüle';
 }

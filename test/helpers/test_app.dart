@@ -2665,7 +2665,104 @@ class FakeApi implements SightpaneApi {
       ],
     );
   }
+
+  var profilesValue = <ProfileSummary>[
+    ProfileSummary(
+      id: 'prof-1',
+      transactionName: 'route:/feed',
+      sessionId: 'sess-1',
+      traceId: 'trace-1',
+      durationMs: 450.0,
+      cpuTimeMs: 380.0,
+      threadName: 'main',
+      platform: 'flutter',
+      createdAt: DateTime(2026, 9, 11, 10),
+    ),
+  ];
+  var profileDetailsValue = <String, ProfileDetail>{
+    'prof-1': ProfileDetail(
+      id: 'prof-1',
+      projectId: 1,
+      transactionName: 'route:/feed',
+      sessionId: 'sess-1',
+      traceId: 'trace-1',
+      durationMs: 450.0,
+      cpuTimeMs: 380.0,
+      threadName: 'main',
+      platform: 'flutter',
+      callTree: ProfileCallTree(
+        frames: [
+          ProfileFrame(name: 'root', file: 'main.dart', line: 10),
+          ProfileFrame(name: 'loadFeed', file: 'feed.dart', line: 45),
+          ProfileFrame(name: 'parseJSON', file: 'parser.dart', line: 80),
+        ],
+        samples: [
+          ProfileSample(elapsedMs: 10.0, stackId: [0, 1]),
+          ProfileSample(elapsedMs: 20.0, stackId: [0, 1, 2]),
+        ],
+      ),
+      createdAt: DateTime(2026, 9, 11, 10),
+    ),
+  };
+  var topSlowFunctionsValue = <SlowFunction>[
+    SlowFunction(
+      name: 'parseJSON',
+      file: 'parser.dart',
+      totalTimeMs: 120.0,
+      selfTimeMs: 85.0,
+      callCount: 15,
+    ),
+  ];
+
+  @override
+  Future<List<ProfileSummary>> profiles(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 50,
+  }) async {
+    calls.add('profiles $projectId');
+    return profilesValue.where((p) {
+      if (transaction != null && transaction.isNotEmpty && p.transactionName != transaction) {
+        return false;
+      }
+      return true;
+    }).toList();
+  }
+
+  @override
+  Future<ProfileDetail> profile(int projectId, String profileId) async {
+    calls.add('profile $projectId id=$profileId');
+    if (profileDetailsValue.containsKey(profileId)) {
+      return profileDetailsValue[profileId]!;
+    }
+    return ProfileDetail(
+      id: profileId,
+      projectId: projectId,
+      transactionName: 'fallback-tx',
+      sessionId: 'sess-fallback',
+      traceId: 'trace-fallback',
+      durationMs: 100.0,
+      cpuTimeMs: 80.0,
+      threadName: 'main',
+      platform: 'flutter',
+      callTree: const ProfileCallTree(frames: [], samples: []),
+      createdAt: DateTime.now(),
+    );
+  }
+
+  @override
+  Future<List<SlowFunction>> topSlowFunctions(
+    int projectId, {
+    int days = 14,
+    String? transaction,
+    int limit = 20,
+  }) async {
+    calls.add('topSlowFunctions $projectId');
+    return topSlowFunctionsValue;
+  }
 }
+
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];
 

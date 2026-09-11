@@ -2123,4 +2123,72 @@ class LEn extends L {
 
   @override
   String get performanceViewTrace => 'View Trace';
+
+  @override
+  String get navProfiling => 'Profiling';
+
+  @override
+  String get profilingTitle => 'Continuous Profiling & Flame Graph';
+
+  @override
+  String get profilingSubtitle =>
+      'Analyze production call stacks, CPU bottlenecks, and slowest functions with interactive flame graphs.';
+
+  @override
+  String get profilingEmpty =>
+      'No CPU profiles found for the selected filters.';
+
+  @override
+  String get profilingTransaction => 'Transaction';
+
+  @override
+  String get profilingDuration => 'Total Duration';
+
+  @override
+  String get profilingCpuTime => 'CPU Time';
+
+  @override
+  String get profilingThread => 'Thread';
+
+  @override
+  String get profilingPlatform => 'Platform';
+
+  @override
+  String get profilingSamples => 'Samples';
+
+  @override
+  String get profilingFrames => 'Frames';
+
+  @override
+  String get profilingSlowFunctions => 'Slowest Functions';
+
+  @override
+  String get profilingFunctionName => 'Function Name';
+
+  @override
+  String get profilingSelfTime => 'Self Time';
+
+  @override
+  String get profilingTotalTime => 'Total Time';
+
+  @override
+  String get profilingCallCount => 'Call Count';
+
+  @override
+  String get profilingDetailTitle => 'Profile & Flame Graph Detail';
+
+  @override
+  String get profilingSearchFrame => 'Search function or file...';
+
+  @override
+  String get profilingInvertFlame => 'Invert Graph (Icicle)';
+
+  @override
+  String get profilingResetZoom => 'Reset Zoom';
+
+  @override
+  String get profilingSelectedFrame => 'Selected Frame Details';
+
+  @override
+  String get profilingViewProfile => 'View Profile';
 }

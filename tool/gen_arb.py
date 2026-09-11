@@ -693,6 +693,31 @@ k('traceRootSpan', 'Kök İşlem', 'Root Operation')
 k('traceTimestamp', 'Başlangıç Zamanı', 'Start Time')
 k('performanceViewTrace', 'İz / Trace', 'View Trace')
 
+# ---------------- continuous profiling & flame chart ----------------
+k('navProfiling', 'Sürekli Profilleme', 'Profiling')
+k('profilingTitle', 'Sürekli CPU Profilleme & Flame Chart', 'Continuous Profiling & Flame Graph')
+k('profilingSubtitle', 'Üretim ortamındaki çağrı yığınlarını (call stack) ve en yavaş fonksiyonları interaktif alev grafiği ile analiz edin.', 'Analyze production call stacks, CPU bottlenecks, and slowest functions with interactive flame graphs.')
+k('profilingEmpty', 'Henüz bir CPU profil kaydı bulunamadı.', 'No CPU profiles found for the selected filters.')
+k('profilingTransaction', 'İşlem (Transaction)', 'Transaction')
+k('profilingDuration', 'Toplam Süre', 'Total Duration')
+k('profilingCpuTime', 'CPU Süresi', 'CPU Time')
+k('profilingThread', 'İş Parçacığı (Thread)', 'Thread')
+k('profilingPlatform', 'Platform', 'Platform')
+k('profilingSamples', 'Örnek Sayısı (Samples)', 'Samples')
+k('profilingFrames', 'Fonksiyon Sayısı (Frames)', 'Frames')
+k('profilingSlowFunctions', 'En Yavaş Fonksiyonlar', 'Slowest Functions')
+k('profilingFunctionName', 'Fonksiyon Adı', 'Function Name')
+k('profilingSelfTime', 'Öz Süre (Self Time)', 'Self Time')
+k('profilingTotalTime', 'Toplam Süre (Total Time)', 'Total Time')
+k('profilingCallCount', 'Çağrı Sayısı', 'Call Count')
+k('profilingDetailTitle', 'Profil & Flame Graph Detayı', 'Profile & Flame Graph Detail')
+k('profilingSearchFrame', 'Fonksiyon veya dosya ara...', 'Search function or file...')
+k('profilingInvertFlame', 'Aşağıdan Yukarı (Icicle)', 'Invert Graph (Icicle)')
+k('profilingResetZoom', 'Yakınlaştırmayı Sıfırla', 'Reset Zoom')
+k('profilingSelectedFrame', 'Seçili Fonksiyon Detayı', 'Selected Frame Details')
+k('profilingViewProfile', 'Profili Görüntüle', 'View Profile')
+
+
 
 def arb(lang, idx):
     out = collections.OrderedDict()

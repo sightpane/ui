@@ -349,8 +349,43 @@ final traceProvider =
   (ref, k) => ref.watch(apiProvider).trace(k.projectId, k.traceId),
 );
 
+typedef ProfilesKey = ({
+  int projectId,
+  int days,
+  String? transaction,
+  int limit,
+});
 
+final profilesProvider =
+    FutureProvider.autoDispose.family<List<ProfileSummary>, ProfilesKey>(
+  (ref, k) => ref.watch(apiProvider).profiles(
+    k.projectId,
+    days: k.days,
+    transaction: k.transaction,
+    limit: k.limit,
+  ),
+);
 
+typedef ProfileDetailKey = ({int projectId, String profileId});
 
+final profileDetailProvider =
+    FutureProvider.autoDispose.family<ProfileDetail, ProfileDetailKey>(
+  (ref, k) => ref.watch(apiProvider).profile(k.projectId, k.profileId),
+);
 
+typedef SlowFunctionsKey = ({
+  int projectId,
+  int days,
+  String? transaction,
+  int limit,
+});
 
+final topSlowFunctionsProvider =
+    FutureProvider.autoDispose.family<List<SlowFunction>, SlowFunctionsKey>(
+  (ref, k) => ref.watch(apiProvider).topSlowFunctions(
+    k.projectId,
+    days: k.days,
+    transaction: k.transaction,
+    limit: k.limit,
+  ),
+);

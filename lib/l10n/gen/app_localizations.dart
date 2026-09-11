@@ -3846,6 +3846,138 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'İz / Trace'**
   String get performanceViewTrace;
+
+  /// No description provided for @navProfiling.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürekli Profilleme'**
+  String get navProfiling;
+
+  /// No description provided for @profilingTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürekli CPU Profilleme & Flame Chart'**
+  String get profilingTitle;
+
+  /// No description provided for @profilingSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üretim ortamındaki çağrı yığınlarını (call stack) ve en yavaş fonksiyonları interaktif alev grafiği ile analiz edin.'**
+  String get profilingSubtitle;
+
+  /// No description provided for @profilingEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz bir CPU profil kaydı bulunamadı.'**
+  String get profilingEmpty;
+
+  /// No description provided for @profilingTransaction.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşlem (Transaction)'**
+  String get profilingTransaction;
+
+  /// No description provided for @profilingDuration.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Süre'**
+  String get profilingDuration;
+
+  /// No description provided for @profilingCpuTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'CPU Süresi'**
+  String get profilingCpuTime;
+
+  /// No description provided for @profilingThread.
+  ///
+  /// In tr, this message translates to:
+  /// **'İş Parçacığı (Thread)'**
+  String get profilingThread;
+
+  /// No description provided for @profilingPlatform.
+  ///
+  /// In tr, this message translates to:
+  /// **'Platform'**
+  String get profilingPlatform;
+
+  /// No description provided for @profilingSamples.
+  ///
+  /// In tr, this message translates to:
+  /// **'Örnek Sayısı (Samples)'**
+  String get profilingSamples;
+
+  /// No description provided for @profilingFrames.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fonksiyon Sayısı (Frames)'**
+  String get profilingFrames;
+
+  /// No description provided for @profilingSlowFunctions.
+  ///
+  /// In tr, this message translates to:
+  /// **'En Yavaş Fonksiyonlar'**
+  String get profilingSlowFunctions;
+
+  /// No description provided for @profilingFunctionName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fonksiyon Adı'**
+  String get profilingFunctionName;
+
+  /// No description provided for @profilingSelfTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Öz Süre (Self Time)'**
+  String get profilingSelfTime;
+
+  /// No description provided for @profilingTotalTime.
+  ///
+  /// In tr, this message translates to:
+  /// **'Toplam Süre (Total Time)'**
+  String get profilingTotalTime;
+
+  /// No description provided for @profilingCallCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çağrı Sayısı'**
+  String get profilingCallCount;
+
+  /// No description provided for @profilingDetailTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Profil & Flame Graph Detayı'**
+  String get profilingDetailTitle;
+
+  /// No description provided for @profilingSearchFrame.
+  ///
+  /// In tr, this message translates to:
+  /// **'Fonksiyon veya dosya ara...'**
+  String get profilingSearchFrame;
+
+  /// No description provided for @profilingInvertFlame.
+  ///
+  /// In tr, this message translates to:
+  /// **'Aşağıdan Yukarı (Icicle)'**
+  String get profilingInvertFlame;
+
+  /// No description provided for @profilingResetZoom.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yakınlaştırmayı Sıfırla'**
+  String get profilingResetZoom;
+
+  /// No description provided for @profilingSelectedFrame.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçili Fonksiyon Detayı'**
+  String get profilingSelectedFrame;
+
+  /// No description provided for @profilingViewProfile.
+  ///
+  /// In tr, this message translates to:
+  /// **'Profili Görüntüle'**
+  String get profilingViewProfile;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {
