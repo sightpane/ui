@@ -151,6 +151,8 @@ String _navIssues(L l) => l.navIssues;
 String _navSessions(L l) => l.navSessions;
 String _navUsers(L l) => l.navUsers;
 String _navFunnels(L l) => l.navFunnels;
+String _navRetention(L l) => l.navRetention;
+String _navCohorts(L l) => l.navCohorts;
 String _navPerformance(L l) => l.performanceTitle;
 String _navReleases(L l) => l.navReleases;
 String _navEvents(L l) => l.navEvents;
@@ -162,6 +164,8 @@ const projectNavEntries = [
   NavEntry(_navSessions, LucideIcons.video, '/sessions'),
   NavEntry(_navUsers, LucideIcons.users, '/users'),
   NavEntry(_navFunnels, LucideIcons.filter, '/funnels'),
+  NavEntry(_navRetention, LucideIcons.calendarDays, '/retention'),
+  NavEntry(_navCohorts, LucideIcons.layers, '/cohorts'),
   NavEntry(_navPerformance, LucideIcons.gauge, '/performance'),
   NavEntry(_navReleases, LucideIcons.tag, '/releases'),
   NavEntry(_navEvents, LucideIcons.chartBar, '/events'),

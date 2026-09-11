@@ -108,6 +108,39 @@ abstract class SightpaneApi {
     int days = 7,
     int limit = 50,
   });
+  Future<List<Cohort>> cohorts(int projectId);
+  Future<Cohort> createCohort(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDynamic = true,
+    List<CohortRule> rules = const [],
+  });
+  Future<Cohort> cohort(int projectId, int id);
+  Future<Cohort> updateCohort(
+    int projectId,
+    int id, {
+    String? name,
+    String? description,
+    bool? isDynamic,
+    List<CohortRule>? rules,
+  });
+  Future<void> deleteCohort(int projectId, int id);
+  Future<List<String>> cohortMembers(
+    int projectId,
+    int id, {
+    int limit = 50,
+    int offset = 0,
+  });
+  Future<Map<String, Object?>> refreshCohort(int projectId, int id);
+  Future<RetentionResult> retention(
+    int projectId, {
+    int days = 30,
+    String period = 'day',
+    String targetEvent = '',
+    String returnEvent = '',
+    int? cohortId,
+  });
   Future<SessionDetail> session(String id);
   String frameUrl(String sessionId, int seq);
   Future<List<Issue>> issues(
@@ -567,6 +600,115 @@ class HttpSightpaneApi implements SightpaneApi {
       for (final s in (res['session_ids'] as List? ?? const [])) '$s',
     ];
   }
+
+  @override
+  Future<List<Cohort>> cohorts(int projectId) async => [
+    for (final c in _list(await _send('GET', '/api/v1/projects/$projectId/cohorts')))
+      Cohort.fromJson(c),
+  ];
+
+  @override
+  Future<Cohort> createCohort(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDynamic = true,
+    List<CohortRule> rules = const [],
+  }) async =>
+      Cohort.fromJson(
+        _map(
+          await _send(
+            'POST',
+            '/api/v1/projects/$projectId/cohorts',
+            body: {
+              'name': name,
+              'description': description,
+              'is_dynamic': isDynamic,
+              'rules': [for (final r in rules) r.toJson()],
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<Cohort> cohort(int projectId, int id) async => Cohort.fromJson(
+    _map(await _send('GET', '/api/v1/projects/$projectId/cohorts/$id')),
+  );
+
+  @override
+  Future<Cohort> updateCohort(
+    int projectId,
+    int id, {
+    String? name,
+    String? description,
+    bool? isDynamic,
+    List<CohortRule>? rules,
+  }) async =>
+      Cohort.fromJson(
+        _map(
+          await _send(
+            'PUT',
+            '/api/v1/projects/$projectId/cohorts/$id',
+            body: {
+              'name': ?name,
+              'description': ?description,
+              'is_dynamic': ?isDynamic,
+              if (rules != null) 'rules': [for (final r in rules) r.toJson()],
+            },
+          ),
+        ),
+      );
+
+  @override
+  Future<void> deleteCohort(int projectId, int id) async {
+    await _send('DELETE', '/api/v1/projects/$projectId/cohorts/$id');
+  }
+
+  @override
+  Future<List<String>> cohortMembers(
+    int projectId,
+    int id, {
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    final res = _map(
+      await _send(
+        'GET',
+        '/api/v1/projects/$projectId/cohorts/$id/members',
+        query: {'limit': '$limit', 'offset': '$offset'},
+      ),
+    );
+    return [for (final m in (res['members'] as List? ?? const [])) '$m'];
+  }
+
+  @override
+  Future<Map<String, Object?>> refreshCohort(int projectId, int id) async =>
+      _map(await _send('POST', '/api/v1/projects/$projectId/cohorts/$id/refresh'));
+
+  @override
+  Future<RetentionResult> retention(
+    int projectId, {
+    int days = 30,
+    String period = 'day',
+    String targetEvent = '',
+    String returnEvent = '',
+    int? cohortId,
+  }) async =>
+      RetentionResult.fromJson(
+        _map(
+          await _send(
+            'GET',
+            '/api/v1/projects/$projectId/retention',
+            query: {
+              'days': '$days',
+              'period': period,
+              if (targetEvent.isNotEmpty) 'target_event': targetEvent,
+              if (returnEvent.isNotEmpty) 'return_event': returnEvent,
+              if (cohortId != null) 'cohort_id': '$cohortId',
+            },
+          ),
+        ),
+      );
 
   @override
   Future<SessionDetail> session(String id) async =>

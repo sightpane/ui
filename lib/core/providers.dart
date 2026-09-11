@@ -141,3 +141,34 @@ final funnelResultsProvider =
     FutureProvider.autoDispose.family<FunnelResult, FunnelResultKey>(
   (ref, k) => ref.watch(apiProvider).funnelResults(k.project, k.funnelId, days: k.days),
 );
+
+final cohortsProvider =
+    FutureProvider.autoDispose.family<List<Cohort>, int>(
+  (ref, id) => ref.watch(apiProvider).cohorts(id),
+);
+
+final cohortProvider =
+    FutureProvider.autoDispose.family<Cohort, ({int project, int id})>(
+  (ref, k) => ref.watch(apiProvider).cohort(k.project, k.id),
+);
+
+typedef RetentionKey = ({
+  int project,
+  int days,
+  String period,
+  String targetEvent,
+  String returnEvent,
+  int? cohortId,
+});
+
+final retentionProvider =
+    FutureProvider.autoDispose.family<RetentionResult, RetentionKey>(
+  (ref, k) => ref.watch(apiProvider).retention(
+    k.project,
+    days: k.days,
+    period: k.period,
+    targetEvent: k.targetEvent,
+    returnEvent: k.returnEvent,
+    cohortId: k.cohortId,
+  ),
+);

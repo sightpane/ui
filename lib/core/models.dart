@@ -1408,3 +1408,155 @@ class FunnelResult {
     ],
   );
 }
+
+class CohortRule {
+  const CohortRule({
+    this.type = 'event',
+    this.eventName = '',
+    this.propertyKey = '',
+    this.operator = 'gte',
+    this.value = '1',
+    this.windowDays = 30,
+  });
+
+  final String type;
+  final String eventName;
+  final String propertyKey;
+  final String operator;
+  final String value;
+  final int windowDays;
+
+  factory CohortRule.fromJson(Map<String, Object?> j) => CohortRule(
+    type: _s(j['type']).isEmpty ? 'event' : _s(j['type']),
+    eventName: _s(j['event_name']),
+    propertyKey: _s(j['property_key']),
+    operator: _s(j['operator']).isEmpty ? 'gte' : _s(j['operator']),
+    value: _s(j['value']),
+    windowDays: _i(j['window_days']) > 0 ? _i(j['window_days']) : 30,
+  );
+
+  Map<String, Object?> toJson() => {
+    'type': type,
+    'event_name': eventName,
+    'property_key': propertyKey,
+    'operator': operator,
+    'value': value,
+    'window_days': windowDays,
+  };
+}
+
+class Cohort {
+  const Cohort({
+    required this.id,
+    required this.projectId,
+    required this.name,
+    this.description = '',
+    this.isDynamic = true,
+    this.rules = const [],
+    this.memberCount = 0,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  final int id;
+  final int projectId;
+  final String name;
+  final String description;
+  final bool isDynamic;
+  final List<CohortRule> rules;
+  final int memberCount;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+
+  factory Cohort.fromJson(Map<String, Object?> j) => Cohort(
+    id: _i(j['id']),
+    projectId: _i(j['project_id']),
+    name: _s(j['name']),
+    description: _s(j['description']),
+    isDynamic: j['is_dynamic'] as bool? ?? true,
+    rules: [
+      for (final r in (j['rules'] as List? ?? const []))
+        CohortRule.fromJson(_m(r)),
+    ],
+    memberCount: _i(j['member_count']),
+    createdAt: _t(j['created_at']),
+    updatedAt: _t(j['updated_at']),
+  );
+
+  Map<String, Object?> toJson() => {
+    'id': id,
+    'project_id': projectId,
+    'name': name,
+    'description': description,
+    'is_dynamic': isDynamic,
+    'rules': [for (final r in rules) r.toJson()],
+  };
+}
+
+class RetentionPeriodActivity {
+  const RetentionPeriodActivity({
+    required this.periodIndex,
+    required this.activeUsers,
+    required this.percentage,
+  });
+
+  final int periodIndex;
+  final int activeUsers;
+  final double percentage;
+
+  factory RetentionPeriodActivity.fromJson(Map<String, Object?> j) =>
+      RetentionPeriodActivity(
+        periodIndex: _i(j['period_index']),
+        activeUsers: _i(j['active_users']),
+        percentage: _d(j['percentage']),
+      );
+}
+
+class RetentionCohortBucket {
+  const RetentionCohortBucket({
+    required this.bucketStart,
+    required this.totalUsers,
+    this.periods = const [],
+  });
+
+  final String bucketStart;
+  final int totalUsers;
+  final List<RetentionPeriodActivity> periods;
+
+  factory RetentionCohortBucket.fromJson(Map<String, Object?> j) =>
+      RetentionCohortBucket(
+        bucketStart: _s(j['bucket_start']),
+        totalUsers: _i(j['total_users']),
+        periods: [
+          for (final p in (j['periods'] as List? ?? const []))
+            RetentionPeriodActivity.fromJson(_m(p)),
+        ],
+      );
+}
+
+class RetentionResult {
+  const RetentionResult({
+    required this.periodUnit,
+    required this.targetEvent,
+    required this.returnEvent,
+    required this.totalBuckets,
+    this.buckets = const [],
+  });
+
+  final String periodUnit;
+  final String targetEvent;
+  final String returnEvent;
+  final int totalBuckets;
+  final List<RetentionCohortBucket> buckets;
+
+  factory RetentionResult.fromJson(Map<String, Object?> j) => RetentionResult(
+    periodUnit: _s(j['period_unit']).isEmpty ? 'day' : _s(j['period_unit']),
+    targetEvent: _s(j['target_event']),
+    returnEvent: _s(j['return_event']),
+    totalBuckets: _i(j['total_buckets']),
+    buckets: [
+      for (final b in (j['buckets'] as List? ?? const []))
+        RetentionCohortBucket.fromJson(_m(b)),
+    ],
+  );
+}

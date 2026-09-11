@@ -28,6 +28,9 @@ class LTr extends L {
   String get commonCreate => 'Oluştur';
 
   @override
+  String get commonApply => 'Uygula';
+
+  @override
   String get commonLoading => 'Yükleniyor';
 
   @override
@@ -1284,4 +1287,118 @@ class LTr extends L {
 
   @override
   String get funnelStepMin => 'En az 2 adım gereklidir.';
+
+  @override
+  String get navRetention => 'Elde Tutma (Retention)';
+
+  @override
+  String get navCohorts => 'Kohortlar';
+
+  @override
+  String get retentionTitle => 'Kullanıcı Elde Tutma Matrisi';
+
+  @override
+  String get retentionSubtitle =>
+      'Kullanıcıların zaman içinde uygulamanıza geri dönüş oranlarını kohort bazında analiz edin.';
+
+  @override
+  String get retentionPeriodDay => 'Günlük';
+
+  @override
+  String get retentionPeriodWeek => 'Haftalık';
+
+  @override
+  String get retentionTargetEvent => 'İlk Olay (Hedef)';
+
+  @override
+  String get retentionReturnEvent => 'Dönüş Olayı';
+
+  @override
+  String get retentionAllUsers => 'Tüm Kullanıcılar';
+
+  @override
+  String get retentionCohortFilter => 'Kohort Filtresi';
+
+  @override
+  String get retentionHeatmapTitle => 'Elde Tutma Isı Haritası';
+
+  @override
+  String get retentionBucket => 'Kohort Başlangıcı';
+
+  @override
+  String get retentionUsers => 'Kullanıcı';
+
+  @override
+  String retentionPeriodN(String unit, int index) {
+    return '$unit $index';
+  }
+
+  @override
+  String get retentionEmpty => 'Seçilen aralıkta elde tutma verisi bulunamadı.';
+
+  @override
+  String get cohortsTitle => 'Davranışsal Kohortlar';
+
+  @override
+  String get cohortsSubtitle =>
+      'Kullanıcıları belirli davranış ve özelliklere göre segmentlere ayırın.';
+
+  @override
+  String get newCohort => 'Yeni Kohort';
+
+  @override
+  String get cohortName => 'Kohort Adı';
+
+  @override
+  String get cohortDescription => 'Açıklama';
+
+  @override
+  String get cohortRules => 'Dinamik Kurallar';
+
+  @override
+  String get cohortDynamic => 'Dinamik';
+
+  @override
+  String get cohortStatic => 'Statik';
+
+  @override
+  String get cohortMemberCount => 'Üye Sayısı';
+
+  @override
+  String get refreshCohort => 'Kohortu Güncelle';
+
+  @override
+  String get cohortRefreshed => 'Kohort üyeleri güncellendi.';
+
+  @override
+  String get cohortCreated => 'Kohort oluşturuldu.';
+
+  @override
+  String get cohortDeleted => 'Kohort silindi.';
+
+  @override
+  String get cohortDeleteConfirm =>
+      'Bu kohortu silmek istediğinizden emin misiniz?';
+
+  @override
+  String get cohortEmpty => 'Henüz tanımlanmış bir kohort yok.';
+
+  @override
+  String get cohortEmptyHint =>
+      'Kullanıcıları davranışlarına göre gruplandırmak için ilk kohortunuzu oluşturun.';
+
+  @override
+  String get cohortAddRule => 'Kural Ekle';
+
+  @override
+  String get cohortEventName => 'Olay Adı';
+
+  @override
+  String get cohortOperator => 'İşleç';
+
+  @override
+  String get cohortValue => 'Değer';
+
+  @override
+  String get cohortWindowDays => 'Zaman Penceresi (Gün)';
 }

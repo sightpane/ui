@@ -1336,6 +1336,145 @@ class FakeApi implements SightpaneApi {
     calls.add('funnelDropoffs $projectId $funnelId step=$step');
     return ['abcdef12-3456'];
   }
+
+  var cohortList = <Cohort>[
+    Cohort(
+      id: 1,
+      projectId: 1,
+      name: 'Power Users',
+      description: 'Users with at least 5 visits',
+      isDynamic: true,
+      rules: const [
+        CohortRule(type: 'event', eventName: 'page_view', operator: 'gte', value: '5'),
+      ],
+      memberCount: 42,
+      createdAt: DateTime(2026, 9, 1),
+    ),
+  ];
+
+  var retentionResultValue = const RetentionResult(
+    periodUnit: 'day',
+    targetEvent: 'session_start',
+    returnEvent: 'page_view',
+    totalBuckets: 3,
+    buckets: [
+      RetentionCohortBucket(
+        bucketStart: '2026-09-01',
+        totalUsers: 100,
+        periods: [
+          RetentionPeriodActivity(periodIndex: 0, activeUsers: 100, percentage: 100.0),
+          RetentionPeriodActivity(periodIndex: 1, activeUsers: 40, percentage: 40.0),
+          RetentionPeriodActivity(periodIndex: 2, activeUsers: 25, percentage: 25.0),
+        ],
+      ),
+      RetentionCohortBucket(
+        bucketStart: '2026-09-02',
+        totalUsers: 80,
+        periods: [
+          RetentionPeriodActivity(periodIndex: 0, activeUsers: 80, percentage: 100.0),
+          RetentionPeriodActivity(periodIndex: 1, activeUsers: 32, percentage: 40.0),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  Future<List<Cohort>> cohorts(int projectId) async {
+    calls.add('cohorts $projectId');
+    return cohortList.where((c) => c.projectId == projectId).toList();
+  }
+
+  @override
+  Future<Cohort> createCohort(
+    int projectId, {
+    required String name,
+    String description = '',
+    bool isDynamic = true,
+    List<CohortRule> rules = const [],
+  }) async {
+    calls.add('createCohort $projectId name=$name');
+    final c = Cohort(
+      id: cohortList.length + 1,
+      projectId: projectId,
+      name: name,
+      description: description,
+      isDynamic: isDynamic,
+      rules: rules,
+      memberCount: 1,
+      createdAt: DateTime.now(),
+    );
+    cohortList.add(c);
+    return c;
+  }
+
+  @override
+  Future<Cohort> cohort(int projectId, int id) async {
+    calls.add('cohort $projectId $id');
+    return cohortList.firstWhere((c) => c.id == id);
+  }
+
+  @override
+  Future<Cohort> updateCohort(
+    int projectId,
+    int id, {
+    String? name,
+    String? description,
+    bool? isDynamic,
+    List<CohortRule>? rules,
+  }) async {
+    calls.add('updateCohort $projectId $id');
+    final idx = cohortList.indexWhere((c) => c.id == id);
+    final cur = cohortList[idx];
+    final updated = Cohort(
+      id: cur.id,
+      projectId: cur.projectId,
+      name: name ?? cur.name,
+      description: description ?? cur.description,
+      isDynamic: isDynamic ?? cur.isDynamic,
+      rules: rules ?? cur.rules,
+      memberCount: cur.memberCount,
+      createdAt: cur.createdAt,
+      updatedAt: DateTime.now(),
+    );
+    cohortList[idx] = updated;
+    return updated;
+  }
+
+  @override
+  Future<void> deleteCohort(int projectId, int id) async {
+    calls.add('deleteCohort $projectId $id');
+    cohortList.removeWhere((c) => c.id == id);
+  }
+
+  @override
+  Future<List<String>> cohortMembers(
+    int projectId,
+    int id, {
+    int limit = 50,
+    int offset = 0,
+  }) async {
+    calls.add('cohortMembers $projectId $id');
+    return ['user-101', 'user-102'];
+  }
+
+  @override
+  Future<Map<String, Object?>> refreshCohort(int projectId, int id) async {
+    calls.add('refreshCohort $projectId $id');
+    return {'member_count': 42};
+  }
+
+  @override
+  Future<RetentionResult> retention(
+    int projectId, {
+    int days = 30,
+    String period = 'day',
+    String targetEvent = '',
+    String returnEvent = '',
+    int? cohortId,
+  }) async {
+    calls.add('retention $projectId days=$days period=$period');
+    return retentionResultValue;
+  }
 }
 
 List<dynamic> overridesFor(FakeApi api) => [apiProvider.overrideWithValue(api)];

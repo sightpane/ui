@@ -28,6 +28,9 @@ class LEn extends L {
   String get commonCreate => 'Create';
 
   @override
+  String get commonApply => 'Apply';
+
+  @override
   String get commonLoading => 'Loading';
 
   @override
@@ -1362,4 +1365,119 @@ class LEn extends L {
 
   @override
   String get funnelStepMin => 'At least 2 steps are required.';
+
+  @override
+  String get navRetention => 'Retention';
+
+  @override
+  String get navCohorts => 'Cohorts';
+
+  @override
+  String get retentionTitle => 'User Retention Matrix';
+
+  @override
+  String get retentionSubtitle =>
+      'Analyze how cohorts of users return to your application over time.';
+
+  @override
+  String get retentionPeriodDay => 'Daily';
+
+  @override
+  String get retentionPeriodWeek => 'Weekly';
+
+  @override
+  String get retentionTargetEvent => 'Target Event (Initial)';
+
+  @override
+  String get retentionReturnEvent => 'Return Event';
+
+  @override
+  String get retentionAllUsers => 'All Users';
+
+  @override
+  String get retentionCohortFilter => 'Cohort Filter';
+
+  @override
+  String get retentionHeatmapTitle => 'Retention Heatmap';
+
+  @override
+  String get retentionBucket => 'Cohort Date';
+
+  @override
+  String get retentionUsers => 'Users';
+
+  @override
+  String retentionPeriodN(String unit, int index) {
+    return '$unit $index';
+  }
+
+  @override
+  String get retentionEmpty =>
+      'No retention data found for the selected range.';
+
+  @override
+  String get cohortsTitle => 'Behavioral Cohorts';
+
+  @override
+  String get cohortsSubtitle =>
+      'Segment users by behavioral patterns and event frequency.';
+
+  @override
+  String get newCohort => 'New Cohort';
+
+  @override
+  String get cohortName => 'Cohort Name';
+
+  @override
+  String get cohortDescription => 'Description';
+
+  @override
+  String get cohortRules => 'Dynamic Rules';
+
+  @override
+  String get cohortDynamic => 'Dynamic';
+
+  @override
+  String get cohortStatic => 'Static';
+
+  @override
+  String get cohortMemberCount => 'Member Count';
+
+  @override
+  String get refreshCohort => 'Refresh Cohort';
+
+  @override
+  String get cohortRefreshed => 'Cohort members refreshed.';
+
+  @override
+  String get cohortCreated => 'Cohort created.';
+
+  @override
+  String get cohortDeleted => 'Cohort deleted.';
+
+  @override
+  String get cohortDeleteConfirm =>
+      'Are you sure you want to delete this cohort?';
+
+  @override
+  String get cohortEmpty => 'No cohorts defined yet.';
+
+  @override
+  String get cohortEmptyHint =>
+      'Create your first cohort to group users by their actions.';
+
+  @override
+  String get cohortAddRule => 'Add Rule';
+
+  @override
+  String get cohortEventName => 'Event Name';
+
+  @override
+  String get cohortOperator => 'Operator';
+
+  @override
+  String get cohortValue => 'Value';
+
+  @override
+  String get cohortWindowDays => 'Window (Days)';
 }

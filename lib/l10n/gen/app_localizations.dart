@@ -133,6 +133,12 @@ abstract class L {
   /// **'Oluştur'**
   String get commonCreate;
 
+  /// No description provided for @commonApply.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uygula'**
+  String get commonApply;
+
   /// No description provided for @commonLoading.
   ///
   /// In tr, this message translates to:
@@ -2394,6 +2400,222 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'En az 2 adım gereklidir.'**
   String get funnelStepMin;
+
+  /// No description provided for @navRetention.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elde Tutma (Retention)'**
+  String get navRetention;
+
+  /// No description provided for @navCohorts.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohortlar'**
+  String get navCohorts;
+
+  /// No description provided for @retentionTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı Elde Tutma Matrisi'**
+  String get retentionTitle;
+
+  /// No description provided for @retentionSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcıların zaman içinde uygulamanıza geri dönüş oranlarını kohort bazında analiz edin.'**
+  String get retentionSubtitle;
+
+  /// No description provided for @retentionPeriodDay.
+  ///
+  /// In tr, this message translates to:
+  /// **'Günlük'**
+  String get retentionPeriodDay;
+
+  /// No description provided for @retentionPeriodWeek.
+  ///
+  /// In tr, this message translates to:
+  /// **'Haftalık'**
+  String get retentionPeriodWeek;
+
+  /// No description provided for @retentionTargetEvent.
+  ///
+  /// In tr, this message translates to:
+  /// **'İlk Olay (Hedef)'**
+  String get retentionTargetEvent;
+
+  /// No description provided for @retentionReturnEvent.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dönüş Olayı'**
+  String get retentionReturnEvent;
+
+  /// No description provided for @retentionAllUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm Kullanıcılar'**
+  String get retentionAllUsers;
+
+  /// No description provided for @retentionCohortFilter.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort Filtresi'**
+  String get retentionCohortFilter;
+
+  /// No description provided for @retentionHeatmapTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Elde Tutma Isı Haritası'**
+  String get retentionHeatmapTitle;
+
+  /// No description provided for @retentionBucket.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort Başlangıcı'**
+  String get retentionBucket;
+
+  /// No description provided for @retentionUsers.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcı'**
+  String get retentionUsers;
+
+  /// No description provided for @retentionPeriodN.
+  ///
+  /// In tr, this message translates to:
+  /// **'{unit} {index}'**
+  String retentionPeriodN(String unit, int index);
+
+  /// No description provided for @retentionEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Seçilen aralıkta elde tutma verisi bulunamadı.'**
+  String get retentionEmpty;
+
+  /// No description provided for @cohortsTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Davranışsal Kohortlar'**
+  String get cohortsTitle;
+
+  /// No description provided for @cohortsSubtitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcıları belirli davranış ve özelliklere göre segmentlere ayırın.'**
+  String get cohortsSubtitle;
+
+  /// No description provided for @newCohort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yeni Kohort'**
+  String get newCohort;
+
+  /// No description provided for @cohortName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort Adı'**
+  String get cohortName;
+
+  /// No description provided for @cohortDescription.
+  ///
+  /// In tr, this message translates to:
+  /// **'Açıklama'**
+  String get cohortDescription;
+
+  /// No description provided for @cohortRules.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dinamik Kurallar'**
+  String get cohortRules;
+
+  /// No description provided for @cohortDynamic.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dinamik'**
+  String get cohortDynamic;
+
+  /// No description provided for @cohortStatic.
+  ///
+  /// In tr, this message translates to:
+  /// **'Statik'**
+  String get cohortStatic;
+
+  /// No description provided for @cohortMemberCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'Üye Sayısı'**
+  String get cohortMemberCount;
+
+  /// No description provided for @refreshCohort.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohortu Güncelle'**
+  String get refreshCohort;
+
+  /// No description provided for @cohortRefreshed.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort üyeleri güncellendi.'**
+  String get cohortRefreshed;
+
+  /// No description provided for @cohortCreated.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort oluşturuldu.'**
+  String get cohortCreated;
+
+  /// No description provided for @cohortDeleted.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kohort silindi.'**
+  String get cohortDeleted;
+
+  /// No description provided for @cohortDeleteConfirm.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu kohortu silmek istediğinizden emin misiniz?'**
+  String get cohortDeleteConfirm;
+
+  /// No description provided for @cohortEmpty.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz tanımlanmış bir kohort yok.'**
+  String get cohortEmpty;
+
+  /// No description provided for @cohortEmptyHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcıları davranışlarına göre gruplandırmak için ilk kohortunuzu oluşturun.'**
+  String get cohortEmptyHint;
+
+  /// No description provided for @cohortAddRule.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kural Ekle'**
+  String get cohortAddRule;
+
+  /// No description provided for @cohortEventName.
+  ///
+  /// In tr, this message translates to:
+  /// **'Olay Adı'**
+  String get cohortEventName;
+
+  /// No description provided for @cohortOperator.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşleç'**
+  String get cohortOperator;
+
+  /// No description provided for @cohortValue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Değer'**
+  String get cohortValue;
+
+  /// No description provided for @cohortWindowDays.
+  ///
+  /// In tr, this message translates to:
+  /// **'Zaman Penceresi (Gün)'**
+  String get cohortWindowDays;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

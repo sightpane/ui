@@ -6,7 +6,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:sightpane_dashboard/core/models.dart';
 import 'package:sightpane_dashboard/features/funnels/funnel_create_dialog.dart';
 import 'package:sightpane_dashboard/features/funnels/funnel_detail_page.dart';
 import 'package:sightpane_dashboard/features/funnels/funnels_page.dart';

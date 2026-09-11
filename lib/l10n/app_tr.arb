@@ -6,6 +6,7 @@
   "commonSave": "Kaydet",
   "commonDelete": "Sil",
   "commonCreate": "Oluştur",
+  "commonApply": "Uygula",
   "commonLoading": "Yükleniyor",
   "commonCopied": "Kopyalandı",
   "commonAll": "Tümü",
@@ -791,5 +792,51 @@
   "funnelDeleted": "Huni silindi.",
   "funnelCreated": "Huni oluşturuldu.",
   "funnelUpdated": "Huni güncellendi.",
-  "funnelStepMin": "En az 2 adım gereklidir."
+  "funnelStepMin": "En az 2 adım gereklidir.",
+  "navRetention": "Elde Tutma (Retention)",
+  "navCohorts": "Kohortlar",
+  "retentionTitle": "Kullanıcı Elde Tutma Matrisi",
+  "retentionSubtitle": "Kullanıcıların zaman içinde uygulamanıza geri dönüş oranlarını kohort bazında analiz edin.",
+  "retentionPeriodDay": "Günlük",
+  "retentionPeriodWeek": "Haftalık",
+  "retentionTargetEvent": "İlk Olay (Hedef)",
+  "retentionReturnEvent": "Dönüş Olayı",
+  "retentionAllUsers": "Tüm Kullanıcılar",
+  "retentionCohortFilter": "Kohort Filtresi",
+  "retentionHeatmapTitle": "Elde Tutma Isı Haritası",
+  "retentionBucket": "Kohort Başlangıcı",
+  "retentionUsers": "Kullanıcı",
+  "retentionPeriodN": "{unit} {index}",
+  "@retentionPeriodN": {
+    "placeholders": {
+      "unit": {
+        "type": "String"
+      },
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "retentionEmpty": "Seçilen aralıkta elde tutma verisi bulunamadı.",
+  "cohortsTitle": "Davranışsal Kohortlar",
+  "cohortsSubtitle": "Kullanıcıları belirli davranış ve özelliklere göre segmentlere ayırın.",
+  "newCohort": "Yeni Kohort",
+  "cohortName": "Kohort Adı",
+  "cohortDescription": "Açıklama",
+  "cohortRules": "Dinamik Kurallar",
+  "cohortDynamic": "Dinamik",
+  "cohortStatic": "Statik",
+  "cohortMemberCount": "Üye Sayısı",
+  "refreshCohort": "Kohortu Güncelle",
+  "cohortRefreshed": "Kohort üyeleri güncellendi.",
+  "cohortCreated": "Kohort oluşturuldu.",
+  "cohortDeleted": "Kohort silindi.",
+  "cohortDeleteConfirm": "Bu kohortu silmek istediğinizden emin misiniz?",
+  "cohortEmpty": "Henüz tanımlanmış bir kohort yok.",
+  "cohortEmptyHint": "Kullanıcıları davranışlarına göre gruplandırmak için ilk kohortunuzu oluşturun.",
+  "cohortAddRule": "Kural Ekle",
+  "cohortEventName": "Olay Adı",
+  "cohortOperator": "İşleç",
+  "cohortValue": "Değer",
+  "cohortWindowDays": "Zaman Penceresi (Gün)"
 }

@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../core/auth.dart';
 import '../core/models.dart';
 import '../features/auth/auth_pages.dart';
+import '../features/cohorts/cohorts_page.dart';
 import '../features/events/events_page.dart';
 import '../features/funnels/funnel_detail_page.dart';
 import '../features/funnels/funnels_page.dart';
@@ -13,6 +14,7 @@ import '../features/issues/issues_page.dart';
 import '../features/projects/overview_page.dart';
 import '../features/projects/projects_page.dart';
 import '../features/projects/settings_page.dart';
+import '../features/retention/retention_page.dart';
 import '../features/performance/performance_page.dart';
 import '../features/performance/transaction_detail_page.dart';
 import '../features/releases/releases_page.dart';
@@ -148,6 +150,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                     ),
                   ),
                 ],
+              ),
+              GoRoute(
+                path: 'retention',
+                builder: (_, s) => RetentionPage(projectId: _id(s)),
+              ),
+              GoRoute(
+                path: 'cohorts',
+                builder: (_, s) => CohortsPage(projectId: _id(s)),
               ),
               GoRoute(
                 path: 'settings',
