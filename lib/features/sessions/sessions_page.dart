@@ -39,8 +39,12 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
     final expected = widget.query.isNotEmpty
         ? widget.query
         : (widget.user.isNotEmpty ? 'user:${widget.user}' : '');
-    if (_query.text != expected) {
-      _query.text = expected;
+    if (_query.text.trim() != expected.trim()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _query.text.trim() != expected.trim()) {
+          _query.text = expected;
+        }
+      });
     }
   }
 
@@ -84,6 +88,163 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
     }
   }
 
+  List<FilterKeyDefinition> _buildFilterKeys(BuildContext context, List<Session>? sessions) {
+    return [
+      FilterKeyDefinition(
+        key: 'browser',
+        label: 'browser',
+        description: context.l10n.filterBrowserDesc,
+        icon: LucideIcons.globe,
+        options: const [
+          FilterOption(value: 'Chrome', label: 'Google Chrome', icon: LucideIcons.globe),
+          FilterOption(value: 'Firefox', label: 'Mozilla Firefox', icon: LucideIcons.globe),
+          FilterOption(value: 'Safari', label: 'Apple Safari', icon: LucideIcons.globe),
+          FilterOption(value: 'Edge', label: 'Microsoft Edge', icon: LucideIcons.globe),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            final b = s.browserName.isNotEmpty ? s.browserName : s.browser;
+            if (b.isNotEmpty && seen.add(b.toLowerCase())) {
+              res.add(FilterOption(value: b, icon: LucideIcons.globe));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'platform',
+        label: 'platform',
+        description: context.l10n.filterPlatformDesc,
+        icon: LucideIcons.layers,
+        options: const [
+          FilterOption(value: 'web', label: 'Web application', icon: LucideIcons.globe),
+          FilterOption(value: 'android', label: 'Android app', icon: LucideIcons.smartphone),
+          FilterOption(value: 'ios', label: 'iOS app', icon: LucideIcons.smartphone),
+          FilterOption(value: 'linux', label: 'Linux desktop', icon: LucideIcons.terminal),
+          FilterOption(value: 'macos', label: 'macOS desktop', icon: LucideIcons.laptop),
+          FilterOption(value: 'windows', label: 'Windows desktop', icon: LucideIcons.monitor),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            if (s.platform.isNotEmpty && seen.add(s.platform.toLowerCase())) {
+              res.add(FilterOption(value: s.platform, icon: LucideIcons.layers));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'release',
+        label: 'release',
+        description: context.l10n.filterReleaseDesc,
+        icon: LucideIcons.tag,
+        options: const [
+          FilterOption(value: '1.0.0', icon: LucideIcons.tag),
+          FilterOption(value: '1.0.0+1', icon: LucideIcons.tag),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            if (s.release.isNotEmpty && seen.add(s.release.toLowerCase())) {
+              res.add(FilterOption(value: s.release, icon: LucideIcons.tag));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'route',
+        label: 'route',
+        description: context.l10n.filterRouteDesc,
+        icon: LucideIcons.milestone,
+        options: const [
+          FilterOption(value: '/', label: 'Home root', icon: LucideIcons.milestone),
+          FilterOption(value: '/cashier', label: 'Cashier checkout', icon: LucideIcons.milestone),
+          FilterOption(value: '/login', label: 'Sign in', icon: LucideIcons.milestone),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            if (s.currentRoute.isNotEmpty && seen.add(s.currentRoute.toLowerCase())) {
+              res.add(FilterOption(value: s.currentRoute, icon: LucideIcons.milestone));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'user',
+        label: 'user',
+        description: context.l10n.filterUserDesc,
+        icon: LucideIcons.user,
+        options: const [
+          FilterOption(value: 'anonymous', label: 'Anonymous sessions', icon: LucideIcons.userX),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            if (s.userId.isNotEmpty && seen.add(s.userId.toLowerCase())) {
+              res.add(
+                FilterOption(
+                  value: s.userId,
+                  label: s.userLabel.isNotEmpty ? s.userLabel : null,
+                  icon: LucideIcons.user,
+                ),
+              );
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'os',
+        label: 'os',
+        description: context.l10n.filterOsDesc,
+        icon: LucideIcons.cpu,
+        options: const [
+          FilterOption(value: 'Linux', icon: LucideIcons.terminal),
+          FilterOption(value: 'macOS', icon: LucideIcons.laptop),
+          FilterOption(value: 'Windows', icon: LucideIcons.monitor),
+          FilterOption(value: 'Android', icon: LucideIcons.smartphone),
+          FilterOption(value: 'iOS', icon: LucideIcons.smartphone),
+        ],
+        dynamicOptions: () {
+          if (sessions == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final s in sessions) {
+            if (s.osName.isNotEmpty && s.osName != '—' && seen.add(s.osName.toLowerCase())) {
+              res.add(FilterOption(value: s.osName, icon: LucideIcons.cpu));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'errors',
+        label: 'errors',
+        description: context.l10n.filterErrorsDesc,
+        icon: LucideIcons.circleAlert,
+        options: const [
+          FilterOption(value: 'true', label: 'Sessions with errors', icon: LucideIcons.circleAlert),
+          FilterOption(value: 'false', label: 'Sessions without errors', icon: LucideIcons.circleCheck),
+        ],
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final effectiveQuery = widget.query.isNotEmpty
@@ -107,28 +268,13 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                 ? null
                 : context.l10n.sessionsCount(sessions.value!.length),
             actions: [
-              SizedBox(
+              FilterSearchField(
+                controller: _query,
+                placeholder: context.l10n.searchHint,
+                onSubmitted: (v) => _go(query: v.trim()),
+                onClear: () => _go(query: ''),
+                filterKeys: _buildFilterKeys(context, sessions.value),
                 width: 320,
-                child: TextField(
-                  controller: _query,
-                  placeholder: Text(context.l10n.searchHint),
-                  onSubmitted: (v) => _go(query: v.trim()),
-                  features: [
-                    const InputFeature.leading(Icon(LucideIcons.search, size: 14)),
-                    if (_query.text.isNotEmpty)
-                      InputFeature.trailing(
-                        GhostButton(
-                          density: ButtonDensity.compact,
-                          size: ButtonSize.xSmall,
-                          onPressed: () {
-                            _query.clear();
-                            _go(query: '');
-                          },
-                          child: const Icon(LucideIcons.x, size: 12),
-                        ),
-                      ),
-                  ],
-                ),
               ),
               Toggle(
                 value: widget.onlyErrors,

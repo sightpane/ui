@@ -1339,6 +1339,90 @@ abstract class L {
   /// **'Hata ara (örn: title:boom resolved:false)'**
   String get searchPlaceholderIssues;
 
+  /// No description provided for @filterByField.
+  ///
+  /// In tr, this message translates to:
+  /// **'ALANA GÖRE FİLTRELE'**
+  String get filterByField;
+
+  /// No description provided for @filterValues.
+  ///
+  /// In tr, this message translates to:
+  /// **'DEĞER SEÇİN'**
+  String get filterValues;
+
+  /// No description provided for @filterBrowserDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tarayıcıya göre filtrele'**
+  String get filterBrowserDesc;
+
+  /// No description provided for @filterPlatformDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Platforma göre filtrele'**
+  String get filterPlatformDesc;
+
+  /// No description provided for @filterReleaseDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sürüme göre filtrele'**
+  String get filterReleaseDesc;
+
+  /// No description provided for @filterRouteDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ekran / rotaya göre filtrele'**
+  String get filterRouteDesc;
+
+  /// No description provided for @filterUserDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Kullanıcıya göre filtrele'**
+  String get filterUserDesc;
+
+  /// No description provided for @filterOsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İşletim sistemine göre filtrele'**
+  String get filterOsDesc;
+
+  /// No description provided for @filterErrorsDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata durumuna göre filtrele'**
+  String get filterErrorsDesc;
+
+  /// No description provided for @filterStatusDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Duruma göre filtrele'**
+  String get filterStatusDesc;
+
+  /// No description provided for @filterAssigneeDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sorumluya göre filtrele'**
+  String get filterAssigneeDesc;
+
+  /// No description provided for @filterTitleDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Başlığa göre filtrele'**
+  String get filterTitleDesc;
+
+  /// No description provided for @filterExceptionDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'İstisna türüne göre filtrele'**
+  String get filterExceptionDesc;
+
+  /// No description provided for @filterResolvedDesc.
+  ///
+  /// In tr, this message translates to:
+  /// **'Çözülme durumuna göre filtrele'**
+  String get filterResolvedDesc;
+
   /// No description provided for @colUser.
   ///
   /// In tr, this message translates to:

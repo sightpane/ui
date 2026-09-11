@@ -705,6 +705,48 @@ class LTr extends L {
       'Hata ara (örn: title:boom resolved:false)';
 
   @override
+  String get filterByField => 'ALANA GÖRE FİLTRELE';
+
+  @override
+  String get filterValues => 'DEĞER SEÇİN';
+
+  @override
+  String get filterBrowserDesc => 'Tarayıcıya göre filtrele';
+
+  @override
+  String get filterPlatformDesc => 'Platforma göre filtrele';
+
+  @override
+  String get filterReleaseDesc => 'Sürüme göre filtrele';
+
+  @override
+  String get filterRouteDesc => 'Ekran / rotaya göre filtrele';
+
+  @override
+  String get filterUserDesc => 'Kullanıcıya göre filtrele';
+
+  @override
+  String get filterOsDesc => 'İşletim sistemine göre filtrele';
+
+  @override
+  String get filterErrorsDesc => 'Hata durumuna göre filtrele';
+
+  @override
+  String get filterStatusDesc => 'Duruma göre filtrele';
+
+  @override
+  String get filterAssigneeDesc => 'Sorumluya göre filtrele';
+
+  @override
+  String get filterTitleDesc => 'Başlığa göre filtrele';
+
+  @override
+  String get filterExceptionDesc => 'İstisna türüne göre filtrele';
+
+  @override
+  String get filterResolvedDesc => 'Çözülme durumuna göre filtrele';
+
+  @override
   String get colUser => 'Kullanıcı';
 
   @override

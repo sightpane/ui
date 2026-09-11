@@ -765,6 +765,48 @@ class LEn extends L {
       'Search issues (e.g. title:boom resolved:false)';
 
   @override
+  String get filterByField => 'FILTER BY FIELD';
+
+  @override
+  String get filterValues => 'SELECT VALUE';
+
+  @override
+  String get filterBrowserDesc => 'Filter by browser';
+
+  @override
+  String get filterPlatformDesc => 'Filter by platform';
+
+  @override
+  String get filterReleaseDesc => 'Filter by release version';
+
+  @override
+  String get filterRouteDesc => 'Filter by route';
+
+  @override
+  String get filterUserDesc => 'Filter by user ID or email';
+
+  @override
+  String get filterOsDesc => 'Filter by operating system';
+
+  @override
+  String get filterErrorsDesc => 'Filter by error state';
+
+  @override
+  String get filterStatusDesc => 'Filter by status';
+
+  @override
+  String get filterAssigneeDesc => 'Filter by assignee';
+
+  @override
+  String get filterTitleDesc => 'Filter by title';
+
+  @override
+  String get filterExceptionDesc => 'Filter by exception';
+
+  @override
+  String get filterResolvedDesc => 'Filter by resolved status';
+
+  @override
   String get colUser => 'User';
 
   @override

@@ -31,8 +31,12 @@ class _IssuesPageState extends ConsumerState<IssuesPage> {
   @override
   void didUpdateWidget(IssuesPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_query.text != widget.query) {
-      _query.text = widget.query;
+    if (_query.text.trim() != widget.query.trim()) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && _query.text.trim() != widget.query.trim()) {
+          _query.text = widget.query;
+        }
+      });
     }
   }
 
@@ -76,6 +80,87 @@ class _IssuesPageState extends ConsumerState<IssuesPage> {
     }
   }
 
+  List<FilterKeyDefinition> _buildFilterKeys(BuildContext context, List<Issue>? issues) {
+    return [
+      FilterKeyDefinition(
+        key: 'status',
+        label: 'status',
+        description: context.l10n.filterStatusDesc,
+        icon: LucideIcons.circleDot,
+        options: const [
+          FilterOption(value: 'open', label: 'Open issues', icon: LucideIcons.circleDot),
+          FilterOption(value: 'resolved', label: 'Resolved issues', icon: LucideIcons.checkCheck),
+          FilterOption(value: 'ignored', label: 'Ignored issues', icon: LucideIcons.eyeOff),
+          FilterOption(value: 'snoozed', label: 'Snoozed issues', icon: LucideIcons.bellOff),
+        ],
+      ),
+      FilterKeyDefinition(
+        key: 'resolved',
+        label: 'resolved',
+        description: context.l10n.filterResolvedDesc,
+        icon: LucideIcons.checkCheck,
+        options: const [
+          FilterOption(value: 'false', label: 'Unresolved', icon: LucideIcons.circleDot),
+          FilterOption(value: 'true', label: 'Resolved', icon: LucideIcons.checkCheck),
+        ],
+      ),
+      FilterKeyDefinition(
+        key: 'assignee',
+        label: 'assignee',
+        description: context.l10n.filterAssigneeDesc,
+        icon: LucideIcons.userCheck,
+        options: const [
+          FilterOption(value: 'unassigned', label: 'No assignee', icon: LucideIcons.userX),
+        ],
+        dynamicOptions: () {
+          if (issues == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final i in issues) {
+            if (i.assigneeEmail != null && i.assigneeEmail!.isNotEmpty && seen.add(i.assigneeEmail!.toLowerCase())) {
+              res.add(FilterOption(value: i.assigneeEmail!, icon: LucideIcons.user));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'title',
+        label: 'title',
+        description: context.l10n.filterTitleDesc,
+        icon: LucideIcons.type,
+        dynamicOptions: () {
+          if (issues == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final i in issues) {
+            if (i.title.isNotEmpty && seen.add(i.title.toLowerCase())) {
+              res.add(FilterOption(value: i.title, icon: LucideIcons.type));
+            }
+          }
+          return res;
+        },
+      ),
+      FilterKeyDefinition(
+        key: 'exception',
+        label: 'exception',
+        description: context.l10n.filterExceptionDesc,
+        icon: LucideIcons.bug,
+        dynamicOptions: () {
+          if (issues == null) return const [];
+          final res = <FilterOption>[];
+          final seen = <String>{};
+          for (final i in issues) {
+            if (i.exception.isNotEmpty && seen.add(i.exception.toLowerCase())) {
+              res.add(FilterOption(value: i.exception, icon: LucideIcons.bug));
+            }
+          }
+          return res;
+        },
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final key = (
@@ -97,28 +182,13 @@ class _IssuesPageState extends ConsumerState<IssuesPage> {
                     issues.value!.where((i) => !i.resolved).length,
                   ),
             actions: [
-              SizedBox(
+              FilterSearchField(
+                controller: _query,
+                placeholder: context.l10n.searchPlaceholderIssues,
+                onSubmitted: (v) => _go(query: v.trim()),
+                onClear: () => _go(query: ''),
+                filterKeys: _buildFilterKeys(context, issues.value),
                 width: 280,
-                child: TextField(
-                  controller: _query,
-                  placeholder: Text(context.l10n.searchPlaceholderIssues),
-                  onSubmitted: (v) => _go(query: v.trim()),
-                  features: [
-                    const InputFeature.leading(Icon(LucideIcons.search, size: 14)),
-                    if (_query.text.isNotEmpty)
-                      InputFeature.trailing(
-                        GhostButton(
-                          density: ButtonDensity.compact,
-                          size: ButtonSize.xSmall,
-                          onPressed: () {
-                            _query.clear();
-                            _go(query: '');
-                          },
-                          child: const Icon(LucideIcons.x, size: 12),
-                        ),
-                      ),
-                  ],
-                ),
               ),
               Toggle(
                 value: widget.includeResolved,

@@ -56,6 +56,33 @@ void main() {
     expect(r.state.uri.toString(), isNot(contains('q=browser%3AChrome')));
   });
 
+  testWidgets('sessions search autocomplete suggests keys and values', (tester) async {
+    final r = await go(tester, '/projects/1/sessions');
+    final searchField = find.byType(FilterSearchField);
+    expect(searchField, findsOneWidget);
+
+    // Tap to focus search field
+    await tester.tap(searchField);
+    await settle(tester);
+
+    // Dropdown should show 'browser:'
+    expect(find.text('browser:'), findsOneWidget);
+    expect(find.text('platform:'), findsOneWidget);
+
+    // Tap 'browser:' key in dropdown
+    await tester.tap(find.text('browser:'));
+    await settle(tester);
+
+    // Value mode: should show 'Chrome'
+    expect(find.text('Chrome'), findsOneWidget);
+
+    // Tap 'Chrome'
+    await tester.tap(find.text('Chrome'));
+    await settle(tester);
+
+    expect(r.state.uri.toString(), contains('q=browser%3AChrome'));
+  });
+
   testWidgets(
     'session detail: player, timeline seek, error detail with breadcrumbs, issue link',
     (tester) async {
