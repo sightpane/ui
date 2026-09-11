@@ -95,12 +95,11 @@ class ClientEnvironmentCard extends StatelessWidget {
           icon: LucideIcons.cpu,
           mono: true,
         ),
-      if (s.cpuCores != null)
-        EnvItem(
-          label: l.clientCores,
-          value: '${s.cpuCores}',
-          icon: LucideIcons.gauge,
-        ),
+      EnvItem(
+        label: l.clientCores,
+        value: (s.cpuCores != null && s.cpuCores! > 0) ? '${s.cpuCores}' : '-',
+        icon: LucideIcons.gauge,
+      ),
       if (s.screenResolution.isNotEmpty)
         EnvItem(
           label: l.clientScreen,

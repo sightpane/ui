@@ -294,6 +294,26 @@ void main() {
     },
   );
 
+  testWidgets(
+    'client environment card renders "-" when cpu_cores is absent',
+    (tester) async {
+      final session = Session(
+        id: 'ffff0000-2222',
+        projectId: 1,
+        startedAt: DateTime(2026, 9, 7, 11),
+        lastSeenAt: DateTime(2026, 9, 7, 11, 1),
+        platform: 'web',
+        device: const {
+          'platform_category': 'web',
+          'os': 'Linux',
+          'browser': 'Chrome',
+        },
+      );
+      await pumpWidgetWithL10n(tester, ClientEnvironmentCard(session: session));
+      expect(find.text('-'), findsOneWidget);
+    },
+  );
+
   testWidgets('users page renders KPIs, DAU chart, users table and navigates', (tester) async {
     final r = await go(tester, '/projects/1/users');
     expect(find.byType(UsersPage), findsOneWidget);
