@@ -756,6 +756,9 @@ class LTr extends L {
   String get colIp => 'IP';
 
   @override
+  String get colLocation => 'Konum';
+
+  @override
   String get colPlatform => 'Platform';
 
   @override
@@ -890,6 +893,12 @@ class LTr extends L {
 
   @override
   String get clientLocale => 'Dil / Yerel Ayar';
+
+  @override
+  String get clientLocation => 'Konum';
+
+  @override
+  String get clientCoordinates => 'Koordinatlar';
 
   @override
   String get clientSdk => 'SDK';
@@ -2301,13 +2310,4 @@ class LTr extends L {
   String dashboardsCount(int count) {
     return '$count pano';
   }
-
-  @override
-  String get clientLocation => 'Konum';
-
-  @override
-  String get clientCoordinates => 'Koordinatlar';
-
-  @override
-  String get colLocation => 'Konum';
 }

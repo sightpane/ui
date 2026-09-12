@@ -488,6 +488,7 @@
   "filterResolvedDesc": "Çözülme durumuna göre filtrele",
   "colUser": "Kullanıcı",
   "colIp": "IP",
+  "colLocation": "Konum",
   "colPlatform": "Platform",
   "colRelease": "Sürüm",
   "colStart": "Başlangıç",
@@ -608,6 +609,8 @@
   "clientCores": "CPU Çekirdekleri",
   "clientScreen": "Ekran Çözünürlüğü",
   "clientLocale": "Dil / Yerel Ayar",
+  "clientLocation": "Konum",
+  "clientCoordinates": "Koordinatlar",
   "clientSdk": "SDK",
   "eventsTitle": "Olaylar",
   "eventsSubtitle": "son 30 gün",
@@ -1149,8 +1152,5 @@
         "type": "int"
       }
     }
-  },
-  "clientLocation": "Konum",
-  "clientCoordinates": "Koordinatlar",
-  "colLocation": "Konum"
+  }
 }

@@ -375,6 +375,7 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                       Text(
                         s.ip.isEmpty ? context.l10n.commonEmpty : s.ip,
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       LocationBadge(
                         session: s,
@@ -394,16 +395,19 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                           fontSize: 12,
                           color: Tokens.textMuted,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         s.release.isEmpty
                             ? context.l10n.commonEmpty
                             : s.release,
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         context.fmt.dateTime(s.startedAt),
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         context.fmt.duration(s.duration),

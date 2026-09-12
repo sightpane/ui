@@ -25,7 +25,7 @@ class LocationBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cc = session.countryCode.trim().toUpperCase();
-    final hasFlag = cc.length == 2 && cc != 'LOCAL';
+    final hasFlag = cc.length == 2 && RegExp(r'^[A-Z]{2}$').hasMatch(cc) && cc != 'LOCAL';
     final locLabel = session.locationLabel;
     final coords = session.coordinatesLabel;
 

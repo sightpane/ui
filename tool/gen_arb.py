@@ -256,6 +256,7 @@ k('filterExceptionDesc', 'İstisna türüne göre filtrele', 'Filter by exceptio
 k('filterResolvedDesc', 'Çözülme durumuna göre filtrele', 'Filter by resolved status')
 k('colUser', 'Kullanıcı', 'User')
 k('colIp', 'IP', 'IP')
+k('colLocation', 'Konum', 'Location')
 k('colPlatform', 'Platform', 'Platform')
 k('colRelease', 'Sürüm', 'Release')
 k('colStart', 'Başlangıç', 'Started')
@@ -298,6 +299,8 @@ k('clientArch', 'Mimari', 'Architecture')
 k('clientCores', 'CPU Çekirdekleri', 'CPU Cores')
 k('clientScreen', 'Ekran Çözünürlüğü', 'Screen Resolution')
 k('clientLocale', 'Dil / Yerel Ayar', 'Locale')
+k('clientLocation', 'Konum', 'Location')
+k('clientCoordinates', 'Koordinatlar', 'Coordinates')
 k('clientSdk', 'SDK', 'SDK')
 
 # ---------------- events ----------------

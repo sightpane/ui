@@ -816,6 +816,9 @@ class LEn extends L {
   String get colIp => 'IP';
 
   @override
+  String get colLocation => 'Location';
+
+  @override
   String get colPlatform => 'Platform';
 
   @override
@@ -956,6 +959,12 @@ class LEn extends L {
 
   @override
   String get clientLocale => 'Locale';
+
+  @override
+  String get clientLocation => 'Location';
+
+  @override
+  String get clientCoordinates => 'Coordinates';
 
   @override
   String get clientSdk => 'SDK';
@@ -2381,7 +2390,7 @@ class LEn extends L {
 
   @override
   String get insightDeleteConfirm =>
-      'Bu görüyü silmek istediğinizden emin misiniz?';
+      'Are you sure you want to delete this insight?';
 
   @override
   String dashboardsCount(int count) {
@@ -2393,13 +2402,4 @@ class LEn extends L {
     );
     return '$_temp0';
   }
-
-  @override
-  String get clientLocation => 'Location';
-
-  @override
-  String get clientCoordinates => 'Coordinates';
-
-  @override
-  String get colLocation => 'Location';
 }

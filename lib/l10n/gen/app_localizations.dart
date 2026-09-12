@@ -1441,6 +1441,12 @@ abstract class L {
   /// **'IP'**
   String get colIp;
 
+  /// No description provided for @colLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum'**
+  String get colLocation;
+
   /// No description provided for @colPlatform.
   ///
   /// In tr, this message translates to:
@@ -1668,6 +1674,18 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Dil / Yerel Ayar'**
   String get clientLocale;
+
+  /// No description provided for @clientLocation.
+  ///
+  /// In tr, this message translates to:
+  /// **'Konum'**
+  String get clientLocation;
+
+  /// No description provided for @clientCoordinates.
+  ///
+  /// In tr, this message translates to:
+  /// **'Koordinatlar'**
+  String get clientCoordinates;
 
   /// No description provided for @clientSdk.
   ///
@@ -4356,24 +4374,6 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'{count} pano'**
   String dashboardsCount(int count);
-
-  /// No description provided for @clientLocation.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum'**
-  String get clientLocation;
-
-  /// No description provided for @clientCoordinates.
-  ///
-  /// In tr, this message translates to:
-  /// **'Koordinatlar'**
-  String get clientCoordinates;
-
-  /// No description provided for @colLocation.
-  ///
-  /// In tr, this message translates to:
-  /// **'Konum'**
-  String get colLocation;
 }
 
 class _LDelegate extends LocalizationsDelegate<L> {

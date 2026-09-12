@@ -120,7 +120,7 @@ class ClientEnvironmentCard extends StatelessWidget {
               ? s.locationLabel
               : (s.countryCode == 'LOCAL' ? 'Local Network' : s.countryCode),
           icon: LucideIcons.mapPin,
-          customLeading: (s.countryCode.length == 2 && s.countryCode != 'LOCAL')
+          customLeading: (s.countryCode.length == 2 && RegExp(r'^[A-Za-z]{2}$').hasMatch(s.countryCode) && s.countryCode != 'LOCAL')
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(2),
                   child: SizedBox(

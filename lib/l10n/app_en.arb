@@ -224,6 +224,7 @@
   "filterResolvedDesc": "Filter by resolved status",
   "colUser": "User",
   "colIp": "IP",
+  "colLocation": "Location",
   "colPlatform": "Platform",
   "colRelease": "Release",
   "colStart": "Started",
@@ -262,6 +263,8 @@
   "clientCores": "CPU Cores",
   "clientScreen": "Screen Resolution",
   "clientLocale": "Locale",
+  "clientLocation": "Location",
+  "clientCoordinates": "Coordinates",
   "clientSdk": "SDK",
   "eventsTitle": "Events",
   "eventsSubtitle": "last 30 days",
@@ -708,8 +711,6 @@
   "insightEmptyResults": "No data points found for this query.",
   "insightCached": "Cached (60s)",
   "insightDelete": "Delete Insight",
-  "dashboardsCount": "{count, plural, =1{1 dashboard} other{{count} dashboards}}",
-  "clientLocation": "Location",
-  "clientCoordinates": "Coordinates",
-  "colLocation": "Location"
+  "insightDeleteConfirm": "Are you sure you want to delete this insight?",
+  "dashboardsCount": "{count, plural, =1{1 dashboard} other{{count} dashboards}}"
 }
