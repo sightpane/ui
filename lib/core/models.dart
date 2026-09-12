@@ -269,6 +269,8 @@ class ProjectStats {
     this.crashFree = 1,
     this.daily = const [],
     this.platforms = const [],
+    this.appTypes = const [],
+    this.operatingSystems = const [],
     this.releases = const [],
     this.topIssues = const [],
     this.topEvents = const [],
@@ -276,7 +278,7 @@ class ProjectStats {
   final int days, sessions, users, errors, events, frames, openIssues, dropped;
   final double crashFree;
   final List<DayStat> daily;
-  final List<NameCount> platforms, releases, topEvents;
+  final List<NameCount> platforms, appTypes, operatingSystems, releases, topEvents;
   final List<Issue> topIssues;
   factory ProjectStats.fromJson(Map<String, Object?> j) => ProjectStats(
     days: _i(j['days']),
@@ -294,6 +296,14 @@ class ProjectStats {
     ],
     platforms: [
       for (final d in (j['platforms'] as List? ?? const []))
+        NameCount.fromJson(_m(d)),
+    ],
+    appTypes: [
+      for (final d in (j['app_types'] as List? ?? const []))
+        NameCount.fromJson(_m(d)),
+    ],
+    operatingSystems: [
+      for (final d in (j['operating_systems'] as List? ?? const []))
         NameCount.fromJson(_m(d)),
     ],
     releases: [
@@ -332,18 +342,28 @@ class Session {
     this.currentRoute = '',
     this.sdkName = '',
     this.sdkVersion = '',
-  });
+    this.appType = '',
+    this.os = '',
+    String? osVersion,
+  }) : rawOsVersion = osVersion ?? '';
   final String id;
   final int projectId;
   final DateTime startedAt, lastSeenAt;
   final DateTime? endedAt;
   final String userId, platform, release, ip, browser, currentRoute, sdkName, sdkVersion;
+  final String appType, os;
+  final String rawOsVersion;
   final Map<String, Object?> user, device, props;
   final int errorCount, eventCount, frameCount;
   Duration get duration => (endedAt ?? lastSeenAt).difference(startedAt);
 
   /// Form factor category: 'Desktop', 'Web', 'Mobile'
   String get platformCategory {
+    final at = appType.toLowerCase();
+    if (at == 'browser' || at == 'web') return 'Web';
+    if (at == 'mobile') return 'Mobile';
+    if (at == 'desktop') return 'Desktop';
+
     final cat = _s(device['platform_category']).toLowerCase();
     if (cat == 'desktop') return 'Desktop';
     if (cat == 'mobile') return 'Mobile';
@@ -358,9 +378,12 @@ class Session {
 
   /// OS name: 'Ubuntu', 'macOS', 'Windows', 'Android', 'iOS', 'Linux'
   String get osName {
-    final os = _s(device['os']);
     if (os.isNotEmpty && os.toLowerCase() != 'web') {
       return os;
+    }
+    final devOS = _s(device['os']);
+    if (devOS.isNotEmpty && devOS.toLowerCase() != 'web') {
+      return devOS;
     }
     final p = platform.toLowerCase();
     if (p == 'macos') return 'macOS';
@@ -368,11 +391,12 @@ class Session {
     if (p == 'windows') return 'Windows';
     if (p == 'android') return 'Android';
     if (p == 'ios') return 'iOS';
-    return os.isNotEmpty ? os : (platform.isNotEmpty ? platform : '—');
+    return devOS.isNotEmpty ? devOS : (platform.isNotEmpty ? platform : '—');
   }
 
   /// OS version: e.g. '24.04', '14.5'
-  String get osVersion => _s(device['os_version']);
+  String get osVersion =>
+      rawOsVersion.isNotEmpty ? rawOsVersion : _s(device['os_version']);
 
   /// Linux kernel: 'Linux'
   String get kernel => _s(device['kernel']);
@@ -463,6 +487,15 @@ class Session {
     currentRoute: _s(j['current_route']),
     sdkName: _s(j['sdk_name']),
     sdkVersion: _s(j['sdk_version']),
+    appType: _s(j['app_type']).isNotEmpty
+        ? _s(j['app_type'])
+        : _s(_m(j['device'])['app_type']),
+    os: _s(j['os']).isNotEmpty
+        ? _s(j['os'])
+        : _s(_m(j['device'])['os']),
+    osVersion: _s(j['os_version']).isNotEmpty
+        ? _s(j['os_version'])
+        : _s(_m(j['device'])['os_version']),
   );
 }
 

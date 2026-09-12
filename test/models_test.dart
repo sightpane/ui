@@ -31,10 +31,16 @@ void main() {
       'error_count': 2,
       'event_count': 5,
       'frame_count': 9,
+      'app_type': 'browser',
+      'os': 'Linux',
+      'os_version': '6.8.0',
     });
     expect(s.duration, const Duration(minutes: 5));
     expect(s.userLabel, 'a@b.c');
     expect(s.endedAt, isNull);
+    expect(s.appType, 'browser');
+    expect(s.os, 'Linux');
+    expect(s.osVersion, '6.8.0');
     final d = SessionDetail.fromJson({
       'id': 'abc',
       'project_id': 1,
@@ -183,10 +189,18 @@ void main() {
       'platforms': [
         {'name': 'web', 'count': 3},
       ],
+      'app_types': [
+        {'name': 'browser', 'count': 3},
+      ],
+      'operating_systems': [
+        {'name': 'Linux', 'count': 2},
+      ],
     });
     expect(st.daily.single.sessions, 1);
     expect(st.topIssues.single.title, 't');
     expect(st.platforms.single.count, 3);
+    expect(st.appTypes.single.name, 'browser');
+    expect(st.operatingSystems.single.name, 'Linux');
     expect(
       const SightpaneUser(id: 1, email: 'x@y.z', name: 'Ada Lovelace').initials,
       'AL',
@@ -200,6 +214,28 @@ void main() {
     expect(platformLabel('web', 'web'), 'web');
     expect(platformLabel('', ''), '—');
     expect(platformLabel('', '', empty: 'n/a'), 'n/a');
+
+    // Multi-part platformLabel with appType, OS and version
+    expect(
+      platformLabel('web', 'Chrome', appType: 'browser', os: 'Windows', osVersion: '10'),
+      'browser · Chrome · Windows 10',
+    );
+    expect(
+      platformLabel('linux', '', appType: 'desktop', os: 'Ubuntu', osVersion: '24.04'),
+      'desktop · Ubuntu 24.04',
+    );
+    expect(
+      platformLabel('android', '', appType: 'mobile', os: 'Android', osVersion: '14'),
+      'mobile · Android 14',
+    );
+    expect(
+      platformLabel('linux', '', appType: 'desktop', os: 'Ubuntu'),
+      'desktop · Ubuntu',
+    );
+    expect(
+      platformLabel('web', 'Firefox', appType: 'browser'),
+      'browser · Firefox',
+    );
   });
 
   test('formatters follow the language', () {

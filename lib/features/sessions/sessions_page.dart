@@ -379,6 +379,9 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                         platformLabel(
                           s.platform,
                           s.browser,
+                          appType: s.appType,
+                          os: s.osName,
+                          osVersion: s.osVersion,
                           empty: context.l10n.commonEmpty,
                         ),
                         style: const TextStyle(
@@ -433,13 +436,47 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
   }
 }
 
-/// "web · Chrome"; only the platform when there is no browser, and no
-/// repetition when the two are the same. [empty] is the text shown when neither
-/// is known (it comes from the translations).
-String platformLabel(String platform, String browser, {String empty = '—'}) {
-  final parts = <String>[
-    if (platform.isNotEmpty) platform,
-    if (browser.isNotEmpty && browser != platform) browser,
+/// Formats a multi-part label for the session platform / device.
+/// e.g. "browser · Chrome · Windows 10" or "desktop · Ubuntu 24.04" or "mobile · Android 14".
+/// When appType is empty, it falls back to the legacy "platform · browser" format.
+/// [empty] is the text shown when neither is known (it comes from the translations).
+String platformLabel(
+  String platform,
+  String browser, {
+  String appType = '',
+  String os = '',
+  String osVersion = '',
+  String empty = '—',
+}) {
+  final parts = <String>[];
+  final primaryType = appType.isNotEmpty ? appType : platform;
+  if (primaryType.isNotEmpty) {
+    parts.add(primaryType);
+  }
+
+  // Include browser if present and adds information beyond the primary type
+  if (browser.isNotEmpty &&
+      browser.toLowerCase() != primaryType.toLowerCase() &&
+      !browser.endsWith(' app')) {
+    parts.add(browser);
+  }
+
+  // Include OS (e.g. "Ubuntu 24.04" or "Windows 10" or "Android 14")
+  final osParts = <String>[
+    if (os.isNotEmpty &&
+        os != '—' &&
+        os.toLowerCase() != primaryType.toLowerCase() &&
+        os.toLowerCase() != browser.toLowerCase())
+      os,
+    if (osVersion.isNotEmpty &&
+        os.isNotEmpty &&
+        os != '—' &&
+        os.toLowerCase() != primaryType.toLowerCase())
+      osVersion,
   ];
+  if (osParts.isNotEmpty) {
+    parts.add(osParts.join(' '));
+  }
+
   return parts.isEmpty ? empty : parts.join(' · ');
 }
