@@ -2301,4 +2301,13 @@ class LTr extends L {
   String dashboardsCount(int count) {
     return '$count pano';
   }
+
+  @override
+  String get clientLocation => 'Konum';
+
+  @override
+  String get clientCoordinates => 'Koordinatlar';
+
+  @override
+  String get colLocation => 'Konum';
 }

@@ -15,6 +15,7 @@ export 'widgets/field_error.dart';
 export 'widgets/field_label.dart';
 export 'widgets/kpi_row.dart';
 export 'widgets/kpi_tile.dart';
+export 'widgets/location_badge.dart';
 export 'widgets/page_header.dart';
 export 'widgets/panel_card.dart';
 export 'widgets/panel_message.dart';

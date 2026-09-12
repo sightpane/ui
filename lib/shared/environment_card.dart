@@ -113,6 +113,33 @@ class ClientEnvironmentCard extends StatelessWidget {
           value: s.locale,
           icon: LucideIcons.languages,
         ),
+      if (s.countryCode.isNotEmpty || s.locationLabel.isNotEmpty)
+        EnvItem(
+          label: l.clientLocation,
+          value: s.locationLabel.isNotEmpty
+              ? s.locationLabel
+              : (s.countryCode == 'LOCAL' ? 'Local Network' : s.countryCode),
+          icon: LucideIcons.mapPin,
+          customLeading: (s.countryCode.length == 2 && s.countryCode != 'LOCAL')
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(2),
+                  child: SizedBox(
+                    width: 17,
+                    height: 12,
+                    child: CountryFlag.fromCountryCode(
+                      s.countryCode.toUpperCase(),
+                    ),
+                  ),
+                )
+              : null,
+        ),
+      if (s.hasCoordinates)
+        EnvItem(
+          label: l.clientCoordinates,
+          value: s.coordinatesLabel,
+          icon: LucideIcons.compass,
+          mono: true,
+        ),
       if (s.sdkName.isNotEmpty)
         EnvItem(
           label: l.clientSdk,
@@ -144,12 +171,14 @@ class EnvItem {
     required this.label,
     required this.value,
     required this.icon,
+    this.customLeading,
     this.highlight = false,
     this.mono = false,
   });
   final String label;
   final String value;
   final IconData icon;
+  final Widget? customLeading;
   final bool highlight;
   final bool mono;
 }
@@ -172,11 +201,15 @@ class EnvBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            item.icon,
-            size: 13,
-            color: item.highlight ? Tokens.brand : Tokens.textDim,
-          ),
+          if (item.customLeading != null) ...[
+            item.customLeading!,
+          ] else ...[
+            Icon(
+              item.icon,
+              size: 13,
+              color: item.highlight ? Tokens.brand : Tokens.textDim,
+            ),
+          ],
           const Gap(6),
           Text(
             '${item.label}:',

@@ -342,6 +342,7 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                       (context.l10n.colSession, 2, false),
                       (context.l10n.colUser, 3, false),
                       (context.l10n.colIp, 2, false),
+                      (context.l10n.colLocation, 3, false),
                       (context.l10n.colPlatform, 2, false),
                       (context.l10n.colRelease, 2, false),
                       (context.l10n.colStart, 3, false),
@@ -374,6 +375,11 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                       Text(
                         s.ip.isEmpty ? context.l10n.commonEmpty : s.ip,
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                      ),
+                      LocationBadge(
+                        session: s,
+                        compact: true,
+                        showCoordinates: false,
                       ),
                       Text(
                         platformLabel(

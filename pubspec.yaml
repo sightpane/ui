@@ -17,6 +17,7 @@ dependencies:
   intl: any
   shadcn_flutter: ^0.0.54
   shared_preferences: ^2.5.5
+  country_flags: ^4.1.2
   web: ^1.1.1
 
 dev_dependencies:

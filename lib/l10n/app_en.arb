@@ -708,6 +708,8 @@
   "insightEmptyResults": "No data points found for this query.",
   "insightCached": "Cached (60s)",
   "insightDelete": "Delete Insight",
-  "insightDeleteConfirm": "Are you sure you want to delete this insight?",
-  "dashboardsCount": "{count, plural, =1{1 dashboard} other{{count} dashboards}}"
+  "dashboardsCount": "{count, plural, =1{1 dashboard} other{{count} dashboards}}",
+  "clientLocation": "Location",
+  "clientCoordinates": "Coordinates",
+  "colLocation": "Location"
 }

@@ -1149,5 +1149,8 @@
         "type": "int"
       }
     }
-  }
+  },
+  "clientLocation": "Konum",
+  "clientCoordinates": "Koordinatlar",
+  "colLocation": "Konum"
 }

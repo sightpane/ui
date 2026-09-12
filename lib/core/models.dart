@@ -3,6 +3,7 @@ library;
 
 int _i(Object? v) => v is num ? v.toInt() : int.tryParse('$v') ?? 0;
 double _d(Object? v) => v is num ? v.toDouble() : double.tryParse('$v') ?? 0;
+double? _optDouble(Object? v) => v == null ? null : (v is num ? v.toDouble() : double.tryParse('$v'));
 String _s(Object? v) => v?.toString() ?? '';
 DateTime? _t(Object? v) =>
     v == null ? null : DateTime.tryParse('$v')?.toLocal();
@@ -345,6 +346,12 @@ class Session {
     this.appType = '',
     this.os = '',
     String? osVersion,
+    this.countryCode = '',
+    this.countryName = '',
+    this.region = '',
+    this.city = '',
+    this.latitude,
+    this.longitude,
   }) : rawOsVersion = osVersion ?? '';
   final String id;
   final int projectId;
@@ -353,9 +360,29 @@ class Session {
   final String userId, platform, release, ip, browser, currentRoute, sdkName, sdkVersion;
   final String appType, os;
   final String rawOsVersion;
+  final String countryCode, countryName, region, city;
+  final double? latitude, longitude;
   final Map<String, Object?> user, device, props;
   final int errorCount, eventCount, frameCount;
   Duration get duration => (endedAt ?? lastSeenAt).difference(startedAt);
+
+  /// Whether valid coordinates are available
+  bool get hasCoordinates => latitude != null && longitude != null;
+
+  /// Formatted coordinates: e.g. '41.0082, 28.9784'
+  String get coordinatesLabel =>
+      hasCoordinates ? '${latitude!.toStringAsFixed(4)}, ${longitude!.toStringAsFixed(4)}' : '';
+
+  /// Human readable location label: e.g. 'Istanbul, Turkey' or 'Local Network'
+  String get locationLabel {
+    if (countryCode == 'LOCAL') return 'Local Network';
+    final parts = [
+      if (city.isNotEmpty) city,
+      if (region.isNotEmpty && region != city) region,
+      if (countryName.isNotEmpty) countryName else if (countryCode.isNotEmpty) countryCode,
+    ];
+    return parts.join(', ');
+  }
 
   /// Form factor category: 'Desktop', 'Web', 'Mobile'
   String get platformCategory {
@@ -496,6 +523,12 @@ class Session {
     osVersion: _s(j['os_version']).isNotEmpty
         ? _s(j['os_version'])
         : _s(_m(j['device'])['os_version']),
+    countryCode: _s(j['country_code']),
+    countryName: _s(j['country_name']),
+    region: _s(j['region']),
+    city: _s(j['city']),
+    latitude: _optDouble(j['latitude']),
+    longitude: _optDouble(j['longitude']),
   );
 }
 

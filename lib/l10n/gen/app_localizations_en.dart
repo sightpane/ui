@@ -2381,7 +2381,7 @@ class LEn extends L {
 
   @override
   String get insightDeleteConfirm =>
-      'Are you sure you want to delete this insight?';
+      'Bu görüyü silmek istediğinizden emin misiniz?';
 
   @override
   String dashboardsCount(int count) {
@@ -2393,4 +2393,13 @@ class LEn extends L {
     );
     return '$_temp0';
   }
+
+  @override
+  String get clientLocation => 'Location';
+
+  @override
+  String get clientCoordinates => 'Coordinates';
+
+  @override
+  String get colLocation => 'Location';
 }

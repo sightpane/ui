@@ -153,6 +153,8 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                 title: context.l10n.sessionHeader(context.fmt.shortId(s.id)),
                 subtitle:
                     '${s.userLabel.isEmpty ? context.l10n.commonAnonymous : s.userLabel}'
+                    '${s.locationLabel.isNotEmpty ? ' · ${s.locationLabel}' : (s.countryCode.isNotEmpty ? ' · ${s.countryCode}' : '')}'
+                    '${s.hasCoordinates ? ' (${s.coordinatesLabel})' : ''}'
                     '${s.ip.isEmpty ? '' : ' · ${s.ip}'} · ${s.platformCategory} · ${s.osName}'
                     '${s.osVersion.isNotEmpty ? ' ${s.osVersion}' : ''}'
                     '${s.isLinuxDesktop && s.kernelVersion.isNotEmpty ? ' (${s.kernel} ${s.kernelVersion})' : ''}'
