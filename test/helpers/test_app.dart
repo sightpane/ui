@@ -581,6 +581,11 @@ class FakeApi implements SightpaneApi {
         lastBrowser: 'Chrome',
         lastIP: '10.1.2.3',
         user: const {'email': 'ops@casino.local', 'role': 'admin'},
+        countryCode: 'TR',
+        countryName: 'Turkey',
+        city: 'Istanbul',
+        latitude: 41.0082,
+        longitude: 28.9784,
       ),
       UserSummary(
         userId: 'u2',
@@ -593,6 +598,24 @@ class FakeApi implements SightpaneApi {
         lastSeen: DateTime(2026, 9, 7),
         lastPlatform: 'linux',
         lastIP: '10.1.2.4',
+      ),
+    ],
+    locations: const [
+      GeoLocationPoint(
+        countryCode: 'TR',
+        countryName: 'Turkey',
+        city: 'Istanbul',
+        latitude: 41.0082,
+        longitude: 28.9784,
+        count: 5,
+      ),
+      GeoLocationPoint(
+        countryCode: 'DE',
+        countryName: 'Germany',
+        city: 'Berlin',
+        latitude: 52.5200,
+        longitude: 13.4050,
+        count: 2,
       ),
     ],
   );

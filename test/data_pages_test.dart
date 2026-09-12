@@ -363,13 +363,20 @@ void main() {
     expect(find.text('Ortalama Süre'), findsOneWidget);
     expect(find.text('Kullanıcı Başı Oturum'), findsOneWidget);
     expect(find.text('Günlük Aktif Kullanıcılar (DAU)'), findsOneWidget);
+    expect(find.text('Ziyaretçi Haritası'), findsOneWidget);
+
+    // Scroll and click on user to open detail page
+    await tester.scrollUntilVisible(
+      find.text('Ops User'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
     expect(find.text('Ops User'), findsOneWidget);
     expect(find.text('ops@casino.local'), findsOneWidget);
     expect(find.text('u2'), findsOneWidget);
     expect(find.text('web'), findsOneWidget);
     expect(find.text('Chrome'), findsOneWidget);
 
-    // Click on user to open detail page
     await tester.tap(find.text('Ops User'));
     await settle(tester);
     expect(find.byType(UserDetailPage), findsOneWidget);

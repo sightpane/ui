@@ -16,20 +16,81 @@ class LocationBadge extends StatelessWidget {
     required this.session,
     this.compact = true,
     this.showCoordinates = false,
-  });
+  })  : countryCode = null,
+        countryName = null,
+        region = null,
+        city = null,
+        latitude = null,
+        longitude = null,
+        ip = null;
 
-  final Session session;
+  LocationBadge.fromUser({
+    super.key,
+    required UserSummary user,
+    this.compact = true,
+    this.showCoordinates = false,
+  })  : session = null,
+        countryCode = user.countryCode,
+        countryName = user.countryName,
+        region = '',
+        city = user.city,
+        latitude = user.latitude,
+        longitude = user.longitude,
+        ip = user.lastIP;
+
+  const LocationBadge.raw({
+    super.key,
+    required this.countryCode,
+    this.countryName,
+    this.region,
+    this.city,
+    this.latitude,
+    this.longitude,
+    this.ip,
+    this.compact = true,
+    this.showCoordinates = false,
+  }) : session = null;
+
+  final Session? session;
+  final String? countryCode;
+  final String? countryName;
+  final String? region;
+  final String? city;
+  final double? latitude;
+  final double? longitude;
+  final String? ip;
   final bool compact;
   final bool showCoordinates;
 
   @override
   Widget build(BuildContext context) {
-    final cc = session.countryCode.trim().toUpperCase();
+    final cc = (session?.countryCode ?? countryCode ?? '').trim().toUpperCase();
     final hasFlag = cc.length == 2 && RegExp(r'^[A-Z]{2}$').hasMatch(cc) && cc != 'LOCAL';
-    final locLabel = session.locationLabel;
-    final coords = session.coordinatesLabel;
+    final cName = session?.countryName ?? countryName ?? '';
+    final rName = session?.region ?? region ?? '';
+    final cCity = session?.city ?? city ?? '';
+    final lat = session?.latitude ?? latitude;
+    final lon = session?.longitude ?? longitude;
+    final clientIp = session?.ip ?? ip ?? '';
+    final hasCoords = lat != null && lon != null;
+    final coords = session != null
+        ? session!.coordinatesLabel
+        : (hasCoords ? '${lat.toStringAsFixed(4)}, ${lon.toStringAsFixed(4)}' : '');
 
-    if (locLabel.isEmpty && cc.isEmpty && !session.hasCoordinates) {
+    String locLabel = '';
+    if (session != null) {
+      locLabel = session!.locationLabel;
+    } else if (cCity.isNotEmpty && cName.isNotEmpty) {
+      locLabel = '$cCity, $cName';
+    } else if (cCity.isNotEmpty && cc.isNotEmpty) {
+      locLabel = '$cCity, $cc';
+    } else if (cCity.isNotEmpty) {
+      locLabel = cCity;
+    } else if (cName.isNotEmpty) {
+      locLabel = cName;
+    }
+
+    if (locLabel.isEmpty && cc.isEmpty && !hasCoords) {
       return Text(
         '—',
         style: TextStyle(
@@ -63,9 +124,9 @@ class LocationBadge extends StatelessWidget {
 
     final tooltipParts = <String>[
       if (displayText.isNotEmpty) displayText,
-      if (session.region.isNotEmpty && !displayText.contains(session.region)) session.region,
+      if (rName.isNotEmpty && !displayText.contains(rName)) rName,
       if (coords.isNotEmpty) 'Coordinates: $coords',
-      if (session.ip.isNotEmpty) 'IP: ${session.ip}',
+      if (clientIp.isNotEmpty) 'IP: $clientIp',
     ];
 
     Widget content = Row(

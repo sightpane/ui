@@ -754,6 +754,28 @@
   "userDeleteConfirm": "Bu kullanıcının tüm oturum ve hata kayıtları silinsin mi?",
   "userDeleteSuccess": "Kullanıcı verisi başarıyla silindi.",
   "userCustomProps": "Özel Nitelikler",
+  "usersVisitorMapTitle": "Ziyaretçi Haritası",
+  "usersVisitorMapSub": "GeoIP konumlarına göre ziyaretçi coğrafi dağılımı",
+  "usersMapNoData": "Bu dönem için konum verisi kaydedilmemiş.",
+  "usersMapVisitorsCount": "{count} ziyaretçi",
+  "@usersMapVisitorsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usersMapLocationsCount": "{count} konum",
+  "@usersMapLocationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "usersMapResetView": "Görünümü Sıfırla",
+  "usersMapZoomIn": "Yakınlaştır",
+  "usersMapZoomOut": "Uzaklaştır",
   "navFunnels": "Huniler",
   "funnelsTitle": "Dönüşüm Hunileri",
   "funnelsSubtitle": "{count} huni tanımlı",

@@ -9,6 +9,7 @@ import '../../core/format.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../shared/widgets.dart';
+import 'widgets/visitor_map.dart';
 
 class UsersPage extends ConsumerStatefulWidget {
   const UsersPage({
@@ -174,6 +175,8 @@ class _UsersPageState extends ConsumerState<UsersPage> {
                       ),
                     ],
                     const Gap(14),
+                    VisitorMap(locations: data.locations),
+                    const Gap(14),
                     PanelCard(
                       title: context.l10n.usersTitle,
                       subtitle: context.l10n.usersSubtitle(data.users.length),
@@ -240,6 +243,13 @@ class _UsersPageState extends ConsumerState<UsersPage> {
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
+                                          if (u.locationLabel.isNotEmpty) ...[
+                                            const Gap(2),
+                                            LocationBadge.fromUser(
+                                              user: u,
+                                              compact: true,
+                                            ),
+                                          ],
                                         ],
                                       ),
                                     ),

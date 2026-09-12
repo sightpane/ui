@@ -1246,6 +1246,11 @@ class UserSummary {
     this.lastPlatform = '',
     this.lastBrowser = '',
     this.lastIP = '',
+    this.countryCode = '',
+    this.countryName = '',
+    this.city = '',
+    this.latitude,
+    this.longitude,
   });
 
   final String userId;
@@ -1262,6 +1267,11 @@ class UserSummary {
   final String lastPlatform;
   final String lastBrowser;
   final String lastIP;
+  final String countryCode;
+  final String countryName;
+  final String city;
+  final double? latitude;
+  final double? longitude;
 
   String get displayName =>
       (name != null && name!.trim().isNotEmpty)
@@ -1278,6 +1288,15 @@ class UserSummary {
       return (parts[0][0] + parts[1][0]).toUpperCase();
     }
     return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
+  }
+
+  String get locationLabel {
+    if (city.isNotEmpty && countryCode.isNotEmpty) {
+      return '$city, $countryCode';
+    }
+    if (countryName.isNotEmpty) return countryName;
+    if (countryCode.isNotEmpty) return countryCode;
+    return '';
   }
 
   Duration get avgDuration => Duration(seconds: avgDurationSec.round());
@@ -1302,6 +1321,11 @@ class UserSummary {
     lastPlatform: _s(j['last_platform']),
     lastBrowser: _s(j['last_browser']),
     lastIP: _s(j['last_ip']),
+    countryCode: _s(j['country_code']),
+    countryName: _s(j['country_name']),
+    city: _s(j['city']),
+    latitude: j['latitude'] != null ? _d(j['latitude']) : null,
+    longitude: j['longitude'] != null ? _d(j['longitude']) : null,
   );
 }
 
@@ -1326,6 +1350,45 @@ class UserDailyStat {
   );
 }
 
+class GeoLocationPoint {
+  const GeoLocationPoint({
+    this.countryCode = '',
+    this.countryName = '',
+    this.region = '',
+    this.city = '',
+    required this.latitude,
+    required this.longitude,
+    this.count = 1,
+  });
+
+  final String countryCode;
+  final String countryName;
+  final String region;
+  final String city;
+  final double latitude;
+  final double longitude;
+  final int count;
+
+  String get label {
+    if (city.isNotEmpty && countryName.isNotEmpty) {
+      return '$city, $countryName';
+    }
+    if (city.isNotEmpty) return city;
+    if (countryName.isNotEmpty) return countryName;
+    return countryCode;
+  }
+
+  factory GeoLocationPoint.fromJson(Map<String, Object?> j) => GeoLocationPoint(
+    countryCode: _s(j['country_code']),
+    countryName: _s(j['country_name']),
+    region: _s(j['region']),
+    city: _s(j['city']),
+    latitude: _d(j['latitude']),
+    longitude: _d(j['longitude']),
+    count: _i(j['count']) > 0 ? _i(j['count']) : 1,
+  );
+}
+
 class ProjectUsersData {
   const ProjectUsersData({
     required this.totalUsers,
@@ -1335,6 +1398,7 @@ class ProjectUsersData {
     required this.errorUserCount,
     this.daily = const [],
     this.users = const [],
+    this.locations = const [],
   });
 
   final int totalUsers;
@@ -1344,6 +1408,7 @@ class ProjectUsersData {
   final int errorUserCount;
   final List<UserDailyStat> daily;
   final List<UserSummary> users;
+  final List<GeoLocationPoint> locations;
 
   Duration get avgDuration => Duration(seconds: avgDurationSec.round());
 
@@ -1360,6 +1425,10 @@ class ProjectUsersData {
     users: [
       for (final u in (j['users'] as List? ?? const []))
         UserSummary.fromJson(_m(u)),
+    ],
+    locations: [
+      for (final l in (j['locations'] as List? ?? const []))
+        GeoLocationPoint.fromJson(_m(l)),
     ],
   );
 }

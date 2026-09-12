@@ -1208,6 +1208,35 @@ class LTr extends L {
   String get userCustomProps => 'Özel Nitelikler';
 
   @override
+  String get usersVisitorMapTitle => 'Ziyaretçi Haritası';
+
+  @override
+  String get usersVisitorMapSub =>
+      'GeoIP konumlarına göre ziyaretçi coğrafi dağılımı';
+
+  @override
+  String get usersMapNoData => 'Bu dönem için konum verisi kaydedilmemiş.';
+
+  @override
+  String usersMapVisitorsCount(int count) {
+    return '$count ziyaretçi';
+  }
+
+  @override
+  String usersMapLocationsCount(int count) {
+    return '$count konum';
+  }
+
+  @override
+  String get usersMapResetView => 'Görünümü Sıfırla';
+
+  @override
+  String get usersMapZoomIn => 'Yakınlaştır';
+
+  @override
+  String get usersMapZoomOut => 'Uzaklaştır';
+
+  @override
   String get navFunnels => 'Huniler';
 
   @override

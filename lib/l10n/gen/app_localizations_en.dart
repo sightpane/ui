@@ -1280,6 +1280,47 @@ class LEn extends L {
   String get userCustomProps => 'Custom Attributes';
 
   @override
+  String get usersVisitorMapTitle => 'Visitor Map';
+
+  @override
+  String get usersVisitorMapSub =>
+      'Geographic distribution of visitors based on GeoIP';
+
+  @override
+  String get usersMapNoData => 'No location data recorded for this period.';
+
+  @override
+  String usersMapVisitorsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count visitors',
+      one: '1 visitor',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String usersMapLocationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count locations',
+      one: '1 location',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get usersMapResetView => 'Reset View';
+
+  @override
+  String get usersMapZoomIn => 'Zoom In';
+
+  @override
+  String get usersMapZoomOut => 'Zoom Out';
+
+  @override
   String get navFunnels => 'Funnels';
 
   @override

@@ -2251,6 +2251,54 @@ abstract class L {
   /// **'Özel Nitelikler'**
   String get userCustomProps;
 
+  /// No description provided for @usersVisitorMapTitle.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ziyaretçi Haritası'**
+  String get usersVisitorMapTitle;
+
+  /// No description provided for @usersVisitorMapSub.
+  ///
+  /// In tr, this message translates to:
+  /// **'GeoIP konumlarına göre ziyaretçi coğrafi dağılımı'**
+  String get usersVisitorMapSub;
+
+  /// No description provided for @usersMapNoData.
+  ///
+  /// In tr, this message translates to:
+  /// **'Bu dönem için konum verisi kaydedilmemiş.'**
+  String get usersMapNoData;
+
+  /// No description provided for @usersMapVisitorsCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} ziyaretçi'**
+  String usersMapVisitorsCount(int count);
+
+  /// No description provided for @usersMapLocationsCount.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} konum'**
+  String usersMapLocationsCount(int count);
+
+  /// No description provided for @usersMapResetView.
+  ///
+  /// In tr, this message translates to:
+  /// **'Görünümü Sıfırla'**
+  String get usersMapResetView;
+
+  /// No description provided for @usersMapZoomIn.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yakınlaştır'**
+  String get usersMapZoomIn;
+
+  /// No description provided for @usersMapZoomOut.
+  ///
+  /// In tr, this message translates to:
+  /// **'Uzaklaştır'**
+  String get usersMapZoomOut;
+
   /// No description provided for @navFunnels.
   ///
   /// In tr, this message translates to:
