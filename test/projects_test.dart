@@ -40,10 +40,20 @@ void main() {
       expect(find.textContaining('@sightpane/browser'), findsOneWidget);
       await tester.tap(inDialog(find.text('Flutter')));
       await settle(tester);
-      expect(find.textContaining('package:sightpane/sightpane.dart'), findsOneWidget);
+      expect(
+        find.textContaining('package:sightpane/sightpane.dart'),
+        findsOneWidget,
+      );
       await tester.tap(inDialog(find.text('React Native')));
       await settle(tester);
       expect(find.textContaining('@sightpane/react-native'), findsOneWidget);
+      await tester.tap(inDialog(find.text('HTML')));
+      await settle(tester);
+      expect(find.textContaining('/js/sightpane.js'), findsOneWidget);
+      expect(
+        find.textContaining('data-key="newkey1234567890"'),
+        findsOneWidget,
+      );
       await tester.tap(find.text('Projeye git'));
       await settle(tester);
       expect(find.byType(OverviewPage), findsOneWidget);
@@ -194,7 +204,10 @@ void main() {
       await settle(tester);
       await tester.tap(inDialog(find.text('Oluştur')));
       await settle(tester);
-      expect(api.calls, contains('createAlertRule 1 Critical Spike rate_spike'));
+      expect(
+        api.calls,
+        contains('createAlertRule 1 Critical Spike rate_spike'),
+      );
 
       // Delete rule
       await tester.tap(find.byKey(const Key('delete-alert-rule-2')));
@@ -264,4 +277,3 @@ void main() {
     },
   );
 }
-

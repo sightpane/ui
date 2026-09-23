@@ -333,7 +333,7 @@ class _CreateProjectDialogState extends ConsumerState<CreateProjectDialog> {
   }
 }
 
-enum SdkPlatform { flutter, web, reactNative }
+enum SdkPlatform { flutter, web, html, reactNative }
 
 /// Project-specific setup: address + API key + SDK snippet.
 class SetupSnippet extends StatefulWidget {
@@ -351,7 +351,9 @@ class _SetupSnippetState extends State<SetupSnippet> {
   void initState() {
     super.initState();
     final p = widget.project.platform.toLowerCase();
-    if (p == 'web') {
+    if (p == 'html') {
+      _platform = SdkPlatform.html;
+    } else if (p == 'web') {
       _platform = SdkPlatform.web;
     } else if (p.contains('native') || p.contains('rn')) {
       _platform = SdkPlatform.reactNative;
@@ -389,6 +391,18 @@ init({
   release: '1.0.0',
   replay: true, // records DOM mutations & snapshots
 });""",
+    // The backend serves the script-tag build of @sightpane/browser at
+    // /js/sightpane.js; the endpoint defaults to the origin it came from.
+    SdkPlatform.html =>
+      """
+<script src="${AppConfig.apiUrl}/js/sightpane.js"
+        data-key="${widget.project.apiKey}"
+        data-release="1.0.0"
+        data-replay="true"></script>
+<script>
+  // Optional: everything the SDK exports is on window.Sightpane.
+  Sightpane.track('page_viewed', { path: location.pathname });
+</script>""",
     SdkPlatform.reactNative =>
       """
 import * as Sightpane from '@sightpane/react-native';
@@ -416,6 +430,8 @@ Sightpane.init({
           _platformButton(SdkPlatform.flutter, 'Flutter'),
           const Gap(4),
           _platformButton(SdkPlatform.web, 'React / Web'),
+          const Gap(4),
+          _platformButton(SdkPlatform.html, 'HTML'),
           const Gap(4),
           _platformButton(SdkPlatform.reactNative, 'React Native'),
         ],
@@ -450,9 +466,7 @@ Sightpane.init({
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
           color: active ? Tokens.brand.withValues(alpha: 0.15) : Tokens.surface,
-          border: Border.all(
-            color: active ? Tokens.brand : Tokens.border,
-          ),
+          border: Border.all(color: active ? Tokens.brand : Tokens.border),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
