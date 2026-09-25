@@ -362,15 +362,9 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                         context.fmt.shortId(s.id),
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
                       ),
-                      Text(
-                        s.userLabel.isEmpty
-                            ? context.l10n.commonAnonymous
-                            : s.userLabel,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Tokens.text,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      UserIdentity(
+                        name: s.userName.isNotEmpty ? s.userName : s.userLabel,
+                        email: s.userName.isNotEmpty ? s.userEmail : '',
                       ),
                       Text(
                         s.ip.isEmpty ? context.l10n.commonEmpty : s.ip,

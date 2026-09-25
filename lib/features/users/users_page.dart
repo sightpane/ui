@@ -196,64 +196,15 @@ class _UsersPageState extends ConsumerState<UsersPage> {
                               rows: data.users,
                               onTap: (u) => _showUserDetail(context, u),
                               cells: (u) => [
-                                Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      width: 26,
-                                      height: 26,
-                                      decoration: BoxDecoration(
-                                        color: Tokens.accent.withValues(alpha: 0.15),
-                                        borderRadius: BorderRadius.circular(13),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          u.initials,
-                                          style: AppTheme.mono(
-                                            size: 11,
-                                            weight: FontWeight.w700,
-                                            color: Tokens.accent,
-                                          ),
+                                UserIdentity(
+                                  name: u.displayName,
+                                  email: u.name != null ? (u.email ?? '') : '',
+                                  location: u.locationLabel.isEmpty
+                                      ? null
+                                      : LocationBadge.fromUser(
+                                          user: u,
+                                          compact: true,
                                         ),
-                                      ),
-                                    ),
-                                    const Gap(8),
-                                    Flexible(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text(
-                                            u.displayName.isEmpty
-                                                ? context.l10n.commonAnonymous
-                                                : u.displayName,
-                                            style: AppTheme.mono(
-                                              size: 13,
-                                              weight: FontWeight.w600,
-                                              color: Tokens.textStrong,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          if (u.name != null && u.email != null)
-                                            Text(
-                                              u.email!,
-                                              style: const TextStyle(
-                                                fontSize: 11,
-                                                color: Tokens.textDim,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          if (u.locationLabel.isNotEmpty) ...[
-                                            const Gap(2),
-                                            LocationBadge.fromUser(
-                                              user: u,
-                                              compact: true,
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                  ],
                                 ),
                                 Text(
                                   context.fmt.integer(u.sessionCount),

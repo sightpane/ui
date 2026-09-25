@@ -32,6 +32,11 @@ void main() {
     expect(find.text('anonim'), findsOneWidget);
     expect(find.text('açık'), findsNWidgets(2));
     expect(find.text('bitti'), findsOneWidget);
+    // A session whose user is known reads like the Users page: initials, the
+    // name, and the email under it.
+    expect(find.text('MU'), findsOneWidget);
+    expect(find.text('Mustafa Us'), findsOneWidget);
+    expect(find.text('mustafa@privaterelay.appleid.com'), findsOneWidget);
     await tester.tap(find.text('Yalnızca hatalı'));
     await settle(tester);
     expect(r.state.uri.toString(), '/projects/1/sessions?errors=1');

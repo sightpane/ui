@@ -497,6 +497,13 @@ class Session {
   String get locale =>
       _s(device['locale']).isNotEmpty ? _s(device['locale']) : _s(device['locale_name']);
 
+  /// The name the app gave its user, when it gave one.
+  String get userName => _s(user['name']).isNotEmpty
+      ? _s(user['name'])
+      : _s(user['username']);
+
+  String get userEmail => _s(user['email']);
+
   /// The user name to show; returns empty when there is none — the wording for
   /// "anonymous" comes from the translations, so the model keeps no text.
   String get userLabel => _s(user['email']).isNotEmpty
@@ -1238,6 +1245,17 @@ class TransactionDetailResponse {
       );
 }
 
+/// "Mustafa Us" → "MU", "ops@casino.local" → "OP", "" → "?".
+String initialsOf(String name) {
+  final d = name.trim();
+  if (d.isEmpty) return '?';
+  final parts = d.split(RegExp(r'\s+'));
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
+}
+
 class UserSummary {
   const UserSummary({
     required this.userId,
@@ -1288,15 +1306,7 @@ class UserSummary {
               ? email!
               : userId;
 
-  String get initials {
-    final d = displayName.trim();
-    if (d.isEmpty) return '?';
-    final parts = d.split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
-  }
+  String get initials => initialsOf(displayName);
 
   String get locationLabel {
     if (city.isNotEmpty && countryCode.isNotEmpty) {
