@@ -485,6 +485,14 @@ class Session {
     return '';
   }
 
+  /// The screen in logical pixels, as the SDK reported it at session start.
+  ({double w, double h})? get screen {
+    final scr = device['screen'];
+    if (scr is! Map) return null;
+    final w = _d(scr['w']), h = _d(scr['h']);
+    return w > 0 && h > 0 ? (w: w, h: h) : null;
+  }
+
   /// Locale: e.g. 'tr-TR', 'en-US'
   String get locale =>
       _s(device['locale']).isNotEmpty ? _s(device['locale']) : _s(device['locale_name']);

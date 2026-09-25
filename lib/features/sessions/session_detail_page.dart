@@ -17,6 +17,7 @@ import '../../core/providers.dart';
 import '../../shared/widgets.dart';
 import 'browser_fullscreen.dart';
 import 'frame_prefetcher.dart';
+import 'replay_size.dart';
 
 export '../../shared/environment_card.dart';
 
@@ -89,6 +90,7 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
               : ReplayPlayer(
                   controller: _player,
                   isFlutter: d.isFlutter,
+                  screen: s.screen,
                   frameUrl: (seq) => api.frameUrl(s.id, seq),
                   prefetcher: _prefetcher,
                   onTimeChanged: (t) => setState(() {}),
@@ -630,6 +632,7 @@ class ReplayPlayer extends StatefulWidget {
     this.onToggleFullscreen,
     this.fullscreen = false,
     this.isFlutter = true,
+    this.screen,
   });
   final ReplayController controller;
   final String Function(int seq) frameUrl;
@@ -641,11 +644,18 @@ class ReplayPlayer extends StatefulWidget {
   final bool fullscreen;
   final bool isFlutter;
   final VoidCallback? onToggleFullscreen;
+
+  /// The device's screen in logical pixels, as the session reported it. Inline,
+  /// a frame is drawn at this size — what the user saw — and zoomed from there.
+  final ({double w, double h})? screen;
   @override
   State<ReplayPlayer> createState() => _ReplayPlayerState();
 }
 
 class _ReplayPlayerState extends State<ReplayPlayer> {
+  /// Relative to the device's size; null is "as large as fits on screen".
+  double? _zoom = 1;
+
   @override
   void initState() {
     super.initState();
@@ -680,6 +690,79 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
     widget.onTimeChanged?.call(widget.controller.position);
   }
 
+  /// A frame at the device's own size times the zoom, in a letterbox as wide as
+  /// the panel, so a phone is not blown up to the panel's width.
+  Widget _sizedFrame(BuildContext context, Frame f, Widget content) {
+    return Container(
+      color: const Color(0xFF000000),
+      padding: const EdgeInsets.all(12),
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final natural = deviceFrameSize(f.width, f.height, widget.screen);
+          final scale = replayScale(
+            natural,
+            zoom: _zoom,
+            maxWidth: box.maxWidth,
+            maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+          );
+          final atWidth = scale >= box.maxWidth / natural.width - 1e-6;
+          final zoomIn = atWidth ? null : nextZoomStep(scale, up: true);
+          final zoomOut = nextZoomStep(scale, up: false);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: const Icon(LucideIcons.zoomOut, size: 14),
+                      onPressed: zoomOut == null
+                          ? null
+                          : () => setState(() => _zoom = zoomOut),
+                    ),
+                    // The percentage goes back to the device's own size.
+                    GhostButton(
+                      size: ButtonSize.xSmall,
+                      onPressed: () => setState(() => _zoom = 1),
+                      child: Text(
+                        context.fmt.percent((scale * 100).round() / 100),
+                        style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                      ),
+                    ),
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: const Icon(LucideIcons.zoomIn, size: 14),
+                      onPressed: zoomIn == null
+                          ? null
+                          : () => setState(() => _zoom = zoomIn),
+                    ),
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: const Icon(LucideIcons.scan, size: 14),
+                      onPressed: () => setState(() => _zoom = null),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(6),
+              Center(
+                child: SizedBox(
+                  key: const ValueKey('replay-frame'),
+                  width: natural.width * scale,
+                  height: natural.height * scale,
+                  child: content,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = widget.controller;
@@ -688,67 +771,71 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
     final idx = c.currentFrameIndex;
     final ready = pf == null || pf.initialReady;
     final frameCached = pf == null || idx < 0 || pf.isLoaded(idx);
-    final frameBox = AspectRatio(
-      aspectRatio: f == null || f.height == 0
-          ? 16 / 9
-          : (f.width / f.height).clamp(0.4, 3.0),
-      child: Container(
-        color: const Color(0xFF000000),
-        child: f == null
-            ? Center(
-                child: Text(
-                  widget.isFlutter
-                      ? context.l10n.replayNoFrames
-                      : context.l10n.replayNoFramesGeneric,
-                  style: const TextStyle(fontSize: 12, color: Tokens.textDim),
-                ),
-              )
-            : Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image(
-                    image: pf != null && idx >= 0
-                        ? pf.providers[idx]
-                        : NetworkImage(widget.frameUrl(f.seq)),
-                    key: ValueKey(f.seq),
-                    fit: BoxFit.contain,
-                    gaplessPlayback: true,
-                    errorBuilder: (_, _, _) => const Center(
-                      child: Icon(LucideIcons.imageOff, color: Tokens.textDim),
-                    ),
+    final frameContent = Container(
+      color: const Color(0xFF000000),
+      child: f == null
+          ? Center(
+              child: Text(
+                widget.isFlutter
+                    ? context.l10n.replayNoFrames
+                    : context.l10n.replayNoFramesGeneric,
+                style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+              ),
+            )
+          : Stack(
+              fit: StackFit.expand,
+              children: [
+                Image(
+                  image: pf != null && idx >= 0
+                      ? pf.providers[idx]
+                      : NetworkImage(widget.frameUrl(f.seq)),
+                  key: ValueKey(f.seq),
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                  errorBuilder: (_, _, _) => const Center(
+                    child: Icon(LucideIcons.imageOff, color: Tokens.textDim),
                   ),
-                  for (final t in f.taps) TapMarker(tap: t),
-                  if (c.pointer.isNotEmpty)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: CustomPaint(
-                          painter: PointerOverlayPainter(
-                            cursor: c.cursor,
-                            trail: c.trail(),
-                            now: c.current,
-                          ),
+                ),
+                for (final t in f.taps) TapMarker(tap: t),
+                if (c.pointer.isNotEmpty)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: CustomPaint(
+                        painter: PointerOverlayPainter(
+                          cursor: c.cursor,
+                          trail: c.trail(),
+                          now: c.current,
                         ),
                       ),
                     ),
-                  Positioned(
-                    left: 8,
-                    top: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
-                      ),
-                      color: const Color(0xAA000000),
-                      child: Text(
-                        '#${f.seq} · ${context.fmt.clock(f.ts)}',
-                        style: AppTheme.mono(size: 10, color: Tokens.textMuted),
-                      ),
+                  ),
+                Positioned(
+                  left: 8,
+                  top: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    color: const Color(0xAA000000),
+                    child: Text(
+                      '#${f.seq} · ${context.fmt.clock(f.ts)}',
+                      style: AppTheme.mono(size: 10, color: Tokens.textMuted),
                     ),
                   ),
-                ],
-              ),
-      ),
+                ),
+              ],
+            ),
     );
+    // Fullscreen, and the empty player, fill the width they are given.
+    final Widget frameBox = widget.expand || f == null || f.height == 0
+        ? AspectRatio(
+            aspectRatio: f == null || f.height == 0
+                ? 16 / 9
+                : (f.width / f.height).clamp(0.4, 3.0),
+            child: frameContent,
+          )
+        : _sizedFrame(context, f, frameContent);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,

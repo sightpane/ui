@@ -30,7 +30,7 @@ void main() {
     expect(find.text('ops@casino.local'), findsOneWidget);
     expect(find.text('10.1.2.3'), findsOneWidget);
     expect(find.text('anonim'), findsOneWidget);
-    expect(find.text('açık'), findsOneWidget);
+    expect(find.text('açık'), findsNWidgets(2));
     expect(find.text('bitti'), findsOneWidget);
     await tester.tap(find.text('Yalnızca hatalı'));
     await settle(tester);
@@ -157,6 +157,37 @@ void main() {
       await tester.tap(find.text('Hata grubu #7'));
       await settle(tester);
       expect(find.byType(IssueDetailPage), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'session detail: a phone replays at its own screen size and zooms',
+    (tester) async {
+      await go(tester, '/projects/1/sessions/iphone-7f3a', size: tallDesktopSize);
+      await settle(tester);
+      final frame = find.byKey(const ValueKey('replay-frame'));
+      // 393×852 is what the user saw, not the 197×426 PNG nor the panel width.
+      expect(tester.getSize(frame), const Size(393, 852));
+      expect(find.text('%100'), findsOneWidget);
+      await tester.tap(find.byIcon(LucideIcons.zoomIn));
+      await settle(tester);
+      expect(tester.getSize(frame), const Size(393 * 1.5, 852 * 1.5));
+      await tester.tap(find.byIcon(LucideIcons.zoomOut));
+      await settle(tester);
+      await tester.tap(find.byIcon(LucideIcons.zoomOut));
+      await settle(tester);
+      expect(tester.getSize(frame), const Size(393 * 0.75, 852 * 0.75));
+      // The percentage goes back to the device's size.
+      await tester.tap(find.text('%75'));
+      await settle(tester);
+      expect(tester.getSize(frame), const Size(393, 852));
+      // Fit: as large as the panel allows, the shape kept.
+      await tester.tap(find.byIcon(LucideIcons.scan));
+      await settle(tester);
+      final fitted = tester.getSize(frame);
+      expect(fitted.width, greaterThan(393 * 1.5));
+      expect(fitted.width / fitted.height, closeTo(393 / 852, 0.001));
+      expect(find.byIcon(LucideIcons.zoomIn), findsOneWidget);
     },
   );
 
