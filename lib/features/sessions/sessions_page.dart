@@ -362,15 +362,9 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                         context.fmt.shortId(s.id),
                         style: AppTheme.mono(size: 12, color: Tokens.textMuted),
                       ),
-                      Text(
-                        s.userLabel.isEmpty
-                            ? context.l10n.commonAnonymous
-                            : s.userLabel,
-                        style: const TextStyle(
-                          fontSize: 12.5,
-                          color: Tokens.text,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+                      UserIdentity(
+                        name: s.userName.isNotEmpty ? s.userName : s.userLabel,
+                        email: s.userName.isNotEmpty ? s.userEmail : '',
                       ),
                       Text(
                         s.ip.isEmpty ? context.l10n.commonEmpty : s.ip,
@@ -389,6 +383,7 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
                           appType: s.appType,
                           os: s.osName,
                           osVersion: s.osVersion,
+                          device: s.deviceLabel,
                           empty: context.l10n.commonEmpty,
                         ),
                         style: const TextStyle(
@@ -447,7 +442,8 @@ class _SessionsPageState extends ConsumerState<SessionsPage> {
 }
 
 /// Formats a multi-part label for the session platform / device.
-/// e.g. "browser · Chrome · Windows 10" or "desktop · Ubuntu 24.04" or "mobile · Android 14".
+/// e.g. "browser · Chrome · Windows 10" or "desktop · Ubuntu 24.04" or
+/// "mobile · iOS 26.6.1 · Apple iPhone 16" ([device] is [Session.deviceLabel]).
 /// When appType is empty, it falls back to the legacy "platform · browser" format.
 /// [empty] is the text shown when neither is known (it comes from the translations).
 String platformLabel(
@@ -456,6 +452,7 @@ String platformLabel(
   String appType = '',
   String os = '',
   String osVersion = '',
+  String device = '',
   String empty = '—',
 }) {
   final parts = <String>[];
@@ -487,6 +484,7 @@ String platformLabel(
   if (osParts.isNotEmpty) {
     parts.add(osParts.join(' '));
   }
+  if (device.isNotEmpty) parts.add(device);
 
   return parts.isEmpty ? empty : parts.join(' · ');
 }

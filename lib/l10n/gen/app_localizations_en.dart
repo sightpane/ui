@@ -931,6 +931,9 @@ class LEn extends L {
   String get clientPlatformMobile => 'Mobile';
 
   @override
+  String get clientDevice => 'Device';
+
+  @override
   String get clientOS => 'Operating System';
 
   @override

@@ -485,9 +485,43 @@ class Session {
     return '';
   }
 
+  /// The phone, e.g. "Apple iPhone 16" or "Samsung SM-S918B"; empty where the
+  /// SDK reports no model (desktops, browsers). The backend fills model_name
+  /// for an iPhone, whose own model is an identifier such as `iPhone17,3`.
+  String get deviceLabel {
+    final named = _s(device['model_name']);
+    final model = named.isNotEmpty ? named : _s(device['model']);
+    if (model.isEmpty) return '';
+    var maker = _s(device['manufacturer']);
+    if (maker.isEmpty) maker = _s(device['brand']);
+    if (maker.isEmpty || model.toLowerCase().startsWith(maker.toLowerCase())) {
+      return model;
+    }
+    // Android makers report themselves as "samsung", "google".
+    if (maker == maker.toLowerCase()) {
+      maker = maker[0].toUpperCase() + maker.substring(1);
+    }
+    return '$maker $model';
+  }
+
+  /// The screen in logical pixels, as the SDK reported it at session start.
+  ({double w, double h})? get screen {
+    final scr = device['screen'];
+    if (scr is! Map) return null;
+    final w = _d(scr['w']), h = _d(scr['h']);
+    return w > 0 && h > 0 ? (w: w, h: h) : null;
+  }
+
   /// Locale: e.g. 'tr-TR', 'en-US'
   String get locale =>
       _s(device['locale']).isNotEmpty ? _s(device['locale']) : _s(device['locale_name']);
+
+  /// The name the app gave its user, when it gave one.
+  String get userName => _s(user['name']).isNotEmpty
+      ? _s(user['name'])
+      : _s(user['username']);
+
+  String get userEmail => _s(user['email']);
 
   /// The user name to show; returns empty when there is none — the wording for
   /// "anonymous" comes from the translations, so the model keeps no text.
@@ -1230,6 +1264,17 @@ class TransactionDetailResponse {
       );
 }
 
+/// "Mustafa Us" → "MU", "ops@casino.local" → "OP", "" → "?".
+String initialsOf(String name) {
+  final d = name.trim();
+  if (d.isEmpty) return '?';
+  final parts = d.split(RegExp(r'\s+'));
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
+}
+
 class UserSummary {
   const UserSummary({
     required this.userId,
@@ -1280,15 +1325,7 @@ class UserSummary {
               ? email!
               : userId;
 
-  String get initials {
-    final d = displayName.trim();
-    if (d.isEmpty) return '?';
-    final parts = d.split(RegExp(r'\s+'));
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return d.substring(0, d.length >= 2 ? 2 : 1).toUpperCase();
-  }
+  String get initials => initialsOf(displayName);
 
   String get locationLabel {
     if (city.isNotEmpty && countryCode.isNotEmpty) {

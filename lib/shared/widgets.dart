@@ -22,3 +22,4 @@ export 'widgets/panel_message.dart';
 export 'widgets/pill.dart';
 export 'widgets/quick_filter_bar.dart';
 export 'widgets/quick_filter_chip.dart';
+export 'widgets/user_identity.dart';

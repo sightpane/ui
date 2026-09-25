@@ -16,6 +16,40 @@ void main() {
     tr = Fmt(await L.delegate.load(const Locale('tr')));
     en = Fmt(await L.delegate.load(const Locale('en')));
   });
+  test('deviceLabel names the phone: maker once, then the model', () {
+    Session phone(Map<String, Object?> device) => Session(
+      id: 'p',
+      projectId: 1,
+      startedAt: DateTime(2026),
+      lastSeenAt: DateTime(2026),
+      device: device,
+    );
+    // The backend names an iPhone from its identifier.
+    expect(
+      phone({'manufacturer': 'Apple', 'model': 'iPhone17,3', 'model_name': 'iPhone 16'})
+          .deviceLabel,
+      'Apple iPhone 16',
+    );
+    // One it does not know yet stays an identifier.
+    expect(
+      phone({'manufacturer': 'Apple', 'model': 'iPhone99,1'}).deviceLabel,
+      'Apple iPhone99,1',
+    );
+    // Android makers write themselves in lower case.
+    expect(
+      phone({'manufacturer': 'samsung', 'brand': 'samsung', 'model': 'SM-S918B'})
+          .deviceLabel,
+      'Samsung SM-S918B',
+    );
+    // A marketing name that already says the maker is not prefixed twice.
+    expect(
+      phone({'manufacturer': 'Xiaomi', 'model': '24072PX77G', 'model_name': 'Xiaomi 14T Pro'})
+          .deviceLabel,
+      'Xiaomi 14T Pro',
+    );
+    expect(phone({'os': 'Ubuntu'}).deviceLabel, '');
+  });
+
   test('models parse backend json', () {
     final s = Session.fromJson({
       'id': 'abc',

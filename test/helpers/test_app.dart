@@ -235,6 +235,34 @@ class FakeApi implements SightpaneApi {
         'cpu_cores': 16,
       },
     ),
+    // What the Flutter SDK sends from an iPhone 16: frames are captured at
+    // SightpaneReplay's default scale of 0.5, the screen is in logical pixels.
+    Session(
+      id: 'iphone-7f3a',
+      projectId: 1,
+      startedAt: DateTime(2026, 9, 7, 12),
+      lastSeenAt: DateTime(2026, 9, 7, 12, 1),
+      userId: '6a3b3a64edece80ecf272d15',
+      user: const {
+        'id': '6a3b3a64edece80ecf272d15',
+        'email': 'mustafa@privaterelay.appleid.com',
+        'name': 'Mustafa Us',
+      },
+      platform: 'iOS',
+      appType: 'mobile',
+      os: 'iOS',
+      osVersion: '26.6.1',
+      frameCount: 2,
+      device: const {
+        'platform_category': 'mobile',
+        'os': 'iOS',
+        'manufacturer': 'Apple',
+        'brand': 'Apple',
+        'model': 'iPhone17,3',
+        'model_name': 'iPhone 16',
+        'screen': {'w': 393, 'h': 852, 'dpr': 3.0},
+      },
+    ),
   ];
   var issueList = <Issue>[
     Issue(
@@ -258,6 +286,22 @@ class FakeApi implements SightpaneApi {
   ];
 
   SessionDetail detailFor(String id) {
+    if (id == 'iphone-7f3a') {
+      return SessionDetail.withPointer(
+        pointer: const [],
+        session: sessionList.firstWhere((s) => s.id == id),
+        items: const [],
+        frames: [
+          Frame(seq: 1, ts: DateTime(2026, 9, 7, 12), width: 197, height: 426),
+          Frame(
+            seq: 2,
+            ts: DateTime(2026, 9, 7, 12, 0, 5),
+            width: 197,
+            height: 426,
+          ),
+        ],
+      );
+    }
     if (id == 'dom-session') {
       return SessionDetail.withPointer(
         pointer: const [],
