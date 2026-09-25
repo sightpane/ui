@@ -1615,6 +1615,12 @@ abstract class L {
   /// **'Mobil'**
   String get clientPlatformMobile;
 
+  /// No description provided for @clientDevice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cihaz'**
+  String get clientDevice;
+
   /// No description provided for @clientOS.
   ///
   /// In tr, this message translates to:

@@ -485,6 +485,25 @@ class Session {
     return '';
   }
 
+  /// The phone, e.g. "Apple iPhone 16" or "Samsung SM-S918B"; empty where the
+  /// SDK reports no model (desktops, browsers). The backend fills model_name
+  /// for an iPhone, whose own model is an identifier such as `iPhone17,3`.
+  String get deviceLabel {
+    final named = _s(device['model_name']);
+    final model = named.isNotEmpty ? named : _s(device['model']);
+    if (model.isEmpty) return '';
+    var maker = _s(device['manufacturer']);
+    if (maker.isEmpty) maker = _s(device['brand']);
+    if (maker.isEmpty || model.toLowerCase().startsWith(maker.toLowerCase())) {
+      return model;
+    }
+    // Android makers report themselves as "samsung", "google".
+    if (maker == maker.toLowerCase()) {
+      maker = maker[0].toUpperCase() + maker.substring(1);
+    }
+    return '$maker $model';
+  }
+
   /// The screen in logical pixels, as the SDK reported it at session start.
   ({double w, double h})? get screen {
     final scr = device['screen'];

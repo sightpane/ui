@@ -37,6 +37,7 @@ void main() {
     expect(find.text('MU'), findsOneWidget);
     expect(find.text('Mustafa Us'), findsOneWidget);
     expect(find.text('mustafa@privaterelay.appleid.com'), findsOneWidget);
+    expect(find.text('mobile · iOS 26.6.1 · Apple iPhone 16'), findsOneWidget);
     await tester.tap(find.text('Yalnızca hatalı'));
     await settle(tester);
     expect(r.state.uri.toString(), '/projects/1/sessions?errors=1');
@@ -170,6 +171,10 @@ void main() {
     (tester) async {
       await go(tester, '/projects/1/sessions/iphone-7f3a', size: tallDesktopSize);
       await settle(tester);
+      // Which phone it was, in the header and the environment card.
+      expect(find.text('Cihaz:'), findsOneWidget);
+      expect(find.text('Apple iPhone 16'), findsOneWidget);
+      expect(find.textContaining('· Apple iPhone 16 ·'), findsOneWidget);
       final frame = find.byKey(const ValueKey('replay-frame'));
       // 393×852 is what the user saw, not the 197×426 PNG nor the panel width.
       expect(tester.getSize(frame), const Size(393, 852));

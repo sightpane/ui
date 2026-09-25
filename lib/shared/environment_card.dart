@@ -48,6 +48,12 @@ class ClientEnvironmentCard extends StatelessWidget {
         icon: platformIcon,
         highlight: true,
       ),
+      if (s.deviceLabel.isNotEmpty)
+        EnvItem(
+          label: l.clientDevice,
+          value: s.deviceLabel,
+          icon: LucideIcons.smartphone,
+        ),
       EnvItem(
         label: l.clientOS,
         value: s.osName,

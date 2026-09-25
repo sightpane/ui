@@ -865,6 +865,9 @@ class LTr extends L {
   String get clientPlatformMobile => 'Mobil';
 
   @override
+  String get clientDevice => 'Cihaz';
+
+  @override
   String get clientOS => 'İşletim Sistemi';
 
   @override

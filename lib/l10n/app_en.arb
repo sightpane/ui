@@ -253,6 +253,7 @@
   "clientPlatformDesktop": "Desktop",
   "clientPlatformWeb": "Web",
   "clientPlatformMobile": "Mobile",
+  "clientDevice": "Device",
   "clientOS": "Operating System",
   "clientOsVersion": "OS Version",
   "clientKernel": "Kernel",

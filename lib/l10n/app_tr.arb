@@ -599,6 +599,7 @@
   "clientPlatformDesktop": "Masaüstü (Desktop)",
   "clientPlatformWeb": "Web",
   "clientPlatformMobile": "Mobil",
+  "clientDevice": "Cihaz",
   "clientOS": "İşletim Sistemi",
   "clientOsVersion": "OS Sürümü",
   "clientKernel": "Çekirdek (Kernel)",
