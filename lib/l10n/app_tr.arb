@@ -1071,6 +1071,17 @@
   "surveysIndividualResponses": "Bireysel Yanıtlar",
   "surveysActive": "Aktif",
   "surveysInactive": "Pasif",
+  "surveyDelayLabel": "Gösterme gecikmesi (saniye)",
+  "surveyDelayHint": "Tetikleyiciden (olay ya da sayfa) sonra beklenecek süre; 0 hemen gösterir",
+  "surveyDelayInvalid": "Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.",
+  "surveyDelayChip": "{seconds} sn sonra",
+  "@surveyDelayChip": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
   "navCrons": "Cron & Heartbeat",
   "cronsTitle": "Cron İşleri & Heartbeat İzleme",
   "cronsDesc": "Arka plan işlerinizi, zamanlanmış görevleri ve worker heartbeat sinyallerini izleyin, gecikmelerde anında uyarı alın.",

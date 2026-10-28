@@ -3385,6 +3385,30 @@ abstract class L {
   /// **'Pasif'**
   String get surveysInactive;
 
+  /// No description provided for @surveyDelayLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gösterme gecikmesi (saniye)'**
+  String get surveyDelayLabel;
+
+  /// No description provided for @surveyDelayHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tetikleyiciden (olay ya da sayfa) sonra beklenecek süre; 0 hemen gösterir'**
+  String get surveyDelayHint;
+
+  /// No description provided for @surveyDelayInvalid.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.'**
+  String get surveyDelayInvalid;
+
+  /// No description provided for @surveyDelayChip.
+  ///
+  /// In tr, this message translates to:
+  /// **'{seconds} sn sonra'**
+  String surveyDelayChip(int seconds);
+
   /// No description provided for @navCrons.
   ///
   /// In tr, this message translates to:

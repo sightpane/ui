@@ -607,6 +607,10 @@ k('surveysScoreDistribution', 'Puan Dağılımı', 'Score Distribution')
 k('surveysIndividualResponses', 'Bireysel Yanıtlar', 'Individual Responses')
 k('surveysActive', 'Aktif', 'Active')
 k('surveysInactive', 'Pasif', 'Inactive')
+k('surveyDelayLabel', 'Gösterme gecikmesi (saniye)', 'Show delay (seconds)')
+k('surveyDelayHint', 'Tetikleyiciden (olay ya da sayfa) sonra beklenecek süre; 0 hemen gösterir', 'How long to wait after the trigger (event or page); 0 shows it at once')
+k('surveyDelayInvalid', 'Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.', 'The delay must be a whole number between 0 and 3600 seconds.')
+k('surveyDelayChip', '{seconds} sn sonra', 'after {seconds}s', {'seconds': 'int'})
 
 # ---------------- crons ----------------
 k('navCrons', 'Cron & Heartbeat', 'Crons & Heartbeats')

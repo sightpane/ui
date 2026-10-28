@@ -2083,22 +2083,32 @@ class SurveyTargeting {
     this.urlPattern = '',
     this.eventTrigger = '',
     this.sampleRate = 1.0,
+    this.delaySeconds = 0,
   });
+
+  /// The most the backend accepts for [delaySeconds]: an hour.
+  static const maxDelaySeconds = 3600;
 
   final String urlPattern;
   final String eventTrigger;
   final double sampleRate;
 
+  /// How long the SDK waits after the trigger before it shows the survey;
+  /// 0 is at once.
+  final int delaySeconds;
+
   factory SurveyTargeting.fromJson(Map<String, Object?> j) => SurveyTargeting(
     urlPattern: _s(j['url_pattern']),
     eventTrigger: _s(j['event_trigger']),
     sampleRate: j.containsKey('sample_rate') ? _d(j['sample_rate']) : 1.0,
+    delaySeconds: _i(j['delay_seconds']),
   );
 
   Map<String, Object?> toJson() => {
     if (urlPattern.isNotEmpty) 'url_pattern': urlPattern,
     if (eventTrigger.isNotEmpty) 'event_trigger': eventTrigger,
     'sample_rate': sampleRate,
+    if (delaySeconds > 0) 'delay_seconds': delaySeconds,
   };
 }
 

@@ -5,6 +5,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sightpane_dashboard/features/surveys/survey_detail_page.dart';
 import 'package:sightpane_dashboard/features/surveys/survey_dialog.dart';
 import 'package:sightpane_dashboard/features/surveys/surveys_page.dart';
@@ -39,6 +40,46 @@ void main() {
 
     expect(find.byType(SurveyDialog), findsOneWidget);
     expect(find.text('Create New Survey'), findsOneWidget);
+  });
+
+  testWidgets('a survey can wait a while after its event before it shows', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      testContainer(api),
+      path: '/projects/1/surveys',
+      size: tallDesktopSize,
+    );
+    await settle(tester);
+    await tester.tap(find.text('Yeni Anket'));
+    await settle(tester);
+    final fields = find.descendant(
+      of: find.byType(SurveyDialog),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(fields.at(0), 'After paying');
+    await tester.enterText(fields.at(1), 'Happy?');
+    await tester.enterText(fields.at(4), 'purchase');
+    expect(find.text('Gösterme gecikmesi (saniye)'), findsOneWidget);
+
+    // Over an hour is refused before anything is sent.
+    await tester.enterText(find.byKey(const ValueKey('survey-delay')), '4000');
+    await tester.tap(find.text('Create Survey'));
+    await settle(tester);
+    expect(
+      find.text('Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.'),
+      findsOneWidget,
+    );
+    expect(api.calls.where((c) => c.startsWith('createSurvey')), isEmpty);
+
+    await tester.enterText(find.byKey(const ValueKey('survey-delay')), '30');
+    await tester.tap(find.text('Create Survey'));
+    await settle(tester);
+    final created = api.surveysValue.last;
+    expect(created.targeting.eventTrigger, 'purchase');
+    expect(created.targeting.delaySeconds, 30);
+    expect(find.text('30 sn sonra'), findsOneWidget);
   });
 
   testWidgets('survey detail page displays NPS metrics, distribution and response replay link', (tester) async {
