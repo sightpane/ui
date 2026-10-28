@@ -82,6 +82,42 @@ void main() {
     expect(find.text('30 sn sonra'), findsOneWidget);
   });
 
+  testWidgets('a delayed survey can be left to the server to time', (
+    tester,
+  ) async {
+    await pumpApp(
+      tester,
+      testContainer(api),
+      path: '/projects/1/surveys',
+      size: tallDesktopSize,
+    );
+    await settle(tester);
+    await tester.tap(find.text('Yeni Anket'));
+    await settle(tester);
+    final fields = find.descendant(
+      of: find.byType(SurveyDialog),
+      matching: find.byType(TextField),
+    );
+    final toggle = find.byKey(const ValueKey('survey-server-scheduled'));
+    await tester.enterText(fields.at(0), 'After paying');
+    await tester.enterText(fields.at(1), 'Happy?');
+    // Without an event the server has nothing to time.
+    expect(tester.widget<Switch>(toggle).onChanged, isNull);
+    await tester.enterText(fields.at(4), 'purchase');
+    await settle(tester);
+    expect(tester.widget<Switch>(toggle).onChanged, isNotNull);
+    expect(find.text('Sayfa değişse de göster'), findsOneWidget);
+    await tester.tap(toggle);
+    await settle(tester);
+    await tester.enterText(find.byKey(const ValueKey('survey-delay')), '30');
+    await tester.tap(find.text('Create Survey'));
+    await settle(tester);
+    final created = api.surveysValue.last;
+    expect(created.targeting.serverScheduled, true);
+    expect(created.targeting.eventTrigger, 'purchase');
+    expect(find.text('30 sn sonra · sunucu zamanlar'), findsOneWidget);
+  });
+
   testWidgets('survey detail page displays NPS metrics, distribution and response replay link', (tester) async {
     await go(tester, '/projects/1/surveys/1');
     await settle(tester);

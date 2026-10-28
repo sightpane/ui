@@ -318,7 +318,9 @@ class _SurveysPageState extends ConsumerState<SurveysPage> {
                         const Icon(LucideIcons.timer, size: 12),
                         const SizedBox(width: 5),
                         Text(
-                          context.l10n.surveyDelayChip(s.targeting.delaySeconds),
+                          s.targeting.serverScheduled
+                              ? '${context.l10n.surveyDelayChip(s.targeting.delaySeconds)} · ${context.l10n.surveyServerScheduledChip}'
+                              : context.l10n.surveyDelayChip(s.targeting.delaySeconds),
                           style: const TextStyle(fontSize: 11),
                         ),
                       ],

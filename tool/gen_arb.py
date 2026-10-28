@@ -611,6 +611,9 @@ k('surveyDelayLabel', 'Gösterme gecikmesi (saniye)', 'Show delay (seconds)')
 k('surveyDelayHint', 'Tetikleyiciden (olay ya da sayfa) sonra beklenecek süre; 0 hemen gösterir', 'How long to wait after the trigger (event or page); 0 shows it at once')
 k('surveyDelayInvalid', 'Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.', 'The delay must be a whole number between 0 and 3600 seconds.')
 k('surveyDelayChip', '{seconds} sn sonra', 'after {seconds}s', {'seconds': 'int'})
+k('surveyServerScheduled', 'Sayfa değişse de göster', 'Show even if the page changed')
+k('surveyServerScheduledHint', 'Gecikmeyi sunucu sayar: kişi bu arada sayfa değiştirse de, uygulamayı kapatıp 24 saat içinde yeniden açsa da anket gösterilir. Bir olay tetikleyicisi gerekir.', 'The server times the delay: the survey is shown even if the person changed page meanwhile, or closed the app and opens it again within 24 hours. Needs an event trigger.')
+k('surveyServerScheduledChip', 'sunucu zamanlar', 'server-timed')
 
 # ---------------- crons ----------------
 k('navCrons', 'Cron & Heartbeat', 'Crons & Heartbeats')

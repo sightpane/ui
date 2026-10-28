@@ -1840,6 +1840,16 @@ class LTr extends L {
   }
 
   @override
+  String get surveyServerScheduled => 'Sayfa değişse de göster';
+
+  @override
+  String get surveyServerScheduledHint =>
+      'Gecikmeyi sunucu sayar: kişi bu arada sayfa değiştirse de, uygulamayı kapatıp 24 saat içinde yeniden açsa da anket gösterilir. Bir olay tetikleyicisi gerekir.';
+
+  @override
+  String get surveyServerScheduledChip => 'sunucu zamanlar';
+
+  @override
   String get navCrons => 'Cron & Heartbeat';
 
   @override

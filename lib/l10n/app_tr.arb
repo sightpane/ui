@@ -1082,6 +1082,9 @@
       }
     }
   },
+  "surveyServerScheduled": "Sayfa değişse de göster",
+  "surveyServerScheduledHint": "Gecikmeyi sunucu sayar: kişi bu arada sayfa değiştirse de, uygulamayı kapatıp 24 saat içinde yeniden açsa da anket gösterilir. Bir olay tetikleyicisi gerekir.",
+  "surveyServerScheduledChip": "sunucu zamanlar",
   "navCrons": "Cron & Heartbeat",
   "cronsTitle": "Cron İşleri & Heartbeat İzleme",
   "cronsDesc": "Arka plan işlerinizi, zamanlanmış görevleri ve worker heartbeat sinyallerini izleyin, gecikmelerde anında uyarı alın.",
