@@ -1681,6 +1681,30 @@ abstract class L {
   /// **'Hataya git'**
   String get sessionJumpToError;
 
+  /// No description provided for @sessionOpenIssue.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hata detayı'**
+  String get sessionOpenIssue;
+
+  /// No description provided for @sessionErrorBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} hata'**
+  String sessionErrorBadge(int count);
+
+  /// No description provided for @sessionTabDevice.
+  ///
+  /// In tr, this message translates to:
+  /// **'Cihaz ve ortam'**
+  String get sessionTabDevice;
+
+  /// No description provided for @sessionRouteFlow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Rota akışı'**
+  String get sessionRouteFlow;
+
   /// No description provided for @sessionItemCount.
   ///
   /// In tr, this message translates to:
@@ -1723,11 +1747,17 @@ abstract class L {
   /// **'DOM Kaydı ({count} olay)'**
   String replayDomPlayerTitle(int count);
 
-  /// No description provided for @replayPosition.
+  /// No description provided for @replaySkipBack.
   ///
   /// In tr, this message translates to:
-  /// **'{position} / {total} sn'**
-  String replayPosition(String position, String total);
+  /// **'5 sn geri'**
+  String get replaySkipBack;
+
+  /// No description provided for @replaySkipForward.
+  ///
+  /// In tr, this message translates to:
+  /// **'5 sn ileri'**
+  String get replaySkipForward;
 
   /// No description provided for @replayBuffer.
   ///
