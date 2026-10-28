@@ -631,6 +631,17 @@
     }
   },
   "sessionJumpToError": "Hataya git",
+  "sessionOpenIssue": "Hata detayı",
+  "sessionErrorBadge": "{count} hata",
+  "@sessionErrorBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionTabDevice": "Cihaz ve ortam",
+  "sessionRouteFlow": "Rota akışı",
   "sessionItemCount": "{count} öğe",
   "@sessionItemCount": {
     "placeholders": {
@@ -669,17 +680,8 @@
       }
     }
   },
-  "replayPosition": "{position} / {total} sn",
-  "@replayPosition": {
-    "placeholders": {
-      "position": {
-        "type": "String"
-      },
-      "total": {
-        "type": "String"
-      }
-    }
-  },
+  "replaySkipBack": "5 sn geri",
+  "replaySkipForward": "5 sn ileri",
   "replayBuffer": "önbellek {done}/{total}",
   "@replayBuffer": {
     "placeholders": {

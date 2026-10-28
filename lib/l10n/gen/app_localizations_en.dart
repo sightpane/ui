@@ -986,6 +986,26 @@ class LEn extends L {
   String get sessionJumpToError => 'Jump to error';
 
   @override
+  String get sessionOpenIssue => 'Issue details';
+
+  @override
+  String sessionErrorBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count errors',
+      one: '1 error',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get sessionTabDevice => 'Device & environment';
+
+  @override
+  String get sessionRouteFlow => 'Route flow';
+
+  @override
   String sessionItemCount(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -1023,9 +1043,10 @@ class LEn extends L {
   }
 
   @override
-  String replayPosition(String position, String total) {
-    return '$position / ${total}s';
-  }
+  String get replaySkipBack => 'Back 5 s';
+
+  @override
+  String get replaySkipForward => 'Forward 5 s';
 
   @override
   String replayBuffer(int done, int total) {

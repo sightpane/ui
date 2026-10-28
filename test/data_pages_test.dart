@@ -108,7 +108,15 @@ void main() {
       expect(find.textContaining('önbellek'), findsOneWidget);
       await settle(tester);
       expect(find.text('önbellek 0/2'), findsOneWidget);
+      // The header: the user, the error badge and one chip per fact.
       expect(find.textContaining('10.1.2.3'), findsOneWidget);
+      expect(find.text('1 hata'), findsOneWidget);
+      expect(find.textContaining('Chrome 128.0.6613.120'), findsOneWidget);
+      expect(find.text('Rota akışı'), findsNothing); // a single route
+      // The environment card sits in the side panel's second tab.
+      expect(find.text('İstemci ve Ortam Bilgileri'), findsNothing);
+      await tester.tap(find.text('Cihaz ve ortam'));
+      await settle(tester);
       expect(find.text('İstemci ve Ortam Bilgileri'), findsOneWidget);
       expect(find.text('Web'), findsWidgets);
       expect(find.text('macOS'), findsWidgets);
@@ -116,6 +124,8 @@ void main() {
       expect(find.text('Chrome'), findsWidgets);
       expect(find.text('128.0.6613.120'), findsOneWidget);
       expect(find.text('arm64'), findsOneWidget);
+      await tester.tap(find.text('Zaman çizgisi · 3'));
+      await settle(tester);
       expect(
         find.byType(TapMarker),
         findsOneWidget,
@@ -138,7 +148,15 @@ void main() {
       expect(find.text('StateError: Bad state: boom'), findsOneWidget);
       await tester.tap(find.text('StateError: Bad state: boom'));
       await settle(tester);
-      expect(find.textContaining('#0 main'), findsOneWidget);
+      // The stack's first line is also the error row's second line; the full
+      // trace is in the detail.
+      expect(
+        find.descendant(
+          of: find.byType(ItemDetail),
+          matching: find.textContaining('#0 main'),
+        ),
+        findsOneWidget,
+      );
       expect(find.text('tap "Kaydet"'), findsOneWidget);
       expect(find.text('Hata grubu #7'), findsOneWidget);
       // Jumping to the error moment (10:00:04) shows the second frame
@@ -181,6 +199,16 @@ void main() {
       final ReplayController rc = page.controllerForTest;
       // The one error is marked on the scrubber.
       expect(rc.errorMarks, hasLength(1));
+      // Forward and back five seconds, clamped to the session: this one is
+      // four seconds long.
+      await tester.tap(find.byIcon(LucideIcons.rotateCw));
+      await settle(tester);
+      expect(rc.position, rc.total);
+      expect(rc.total, const Duration(seconds: 4));
+      await tester.tap(find.byIcon(LucideIcons.rotateCcw));
+      await tester.tap(find.byIcon(LucideIcons.rotateCcw));
+      await settle(tester);
+      expect(rc.position, Duration.zero);
       expect(find.byType(TimelineRow), findsNWidgets(3));
       await tester.tap(find.text('Olaylar · 1'));
       await settle(tester);
@@ -207,9 +235,11 @@ void main() {
       );
       await settle(tester);
       // Which phone it was, in the header and the environment card.
+      expect(find.textContaining('Apple iPhone 16'), findsOneWidget);
+      await tester.tap(find.text('Cihaz ve ortam'));
+      await settle(tester);
       expect(find.text('Cihaz:'), findsOneWidget);
       expect(find.text('Apple iPhone 16'), findsOneWidget);
-      expect(find.textContaining('· Apple iPhone 16 ·'), findsOneWidget);
       final frame = find.byKey(const ValueKey('replay-frame'));
       // 393×852 is what the user saw, not the 197×426 PNG nor the panel width.
       expect(tester.getSize(frame), const Size(393, 852));

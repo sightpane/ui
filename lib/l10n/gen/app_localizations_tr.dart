@@ -902,6 +902,20 @@ class LTr extends L {
   String get sessionJumpToError => 'Hataya git';
 
   @override
+  String get sessionOpenIssue => 'Hata detayı';
+
+  @override
+  String sessionErrorBadge(int count) {
+    return '$count hata';
+  }
+
+  @override
+  String get sessionTabDevice => 'Cihaz ve ortam';
+
+  @override
+  String get sessionRouteFlow => 'Rota akışı';
+
+  @override
   String sessionItemCount(int count) {
     return '$count öğe';
   }
@@ -933,9 +947,10 @@ class LTr extends L {
   }
 
   @override
-  String replayPosition(String position, String total) {
-    return '$position / $total sn';
-  }
+  String get replaySkipBack => '5 sn geri';
+
+  @override
+  String get replaySkipForward => '5 sn ileri';
 
   @override
   String replayBuffer(int done, int total) {

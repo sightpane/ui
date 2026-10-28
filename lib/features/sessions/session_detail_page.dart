@@ -41,6 +41,9 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
 
   /// The timeline filter: '' for everything, otherwise an item type.
   String _filter = '';
+
+  /// The side panel's tab: 0 the timeline, 1 device and environment.
+  int _tab = 0;
   final _player = ReplayController();
   FramePrefetcher? _prefetcher;
 
@@ -125,91 +128,120 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
           ('event', context.l10n.navEvents),
           ('breadcrumb', context.l10n.sessionFilterBreadcrumbs),
         ];
-        final timeline = PanelCard(
-          title: context.l10n.sessionTimeline,
-          subtitle: context.l10n.sessionItemCount(d.items.length),
-          child: d.items.isEmpty
-              ? PanelMessage(context.l10n.sessionNoItems)
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.min,
+        final timeline = Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 6),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final (type, label) in filters)
+                    if (type.isEmpty || countOf(type) > 0)
+                      QuickFilterChip(
+                        token: context.l10n.sessionFilterLabel(
+                          label,
+                          type.isEmpty ? d.items.length : countOf(type),
+                        ),
+                        selected: _filter == type,
+                        onTap: () => setState(() => _filter = type),
+                      ),
+                ],
+              ),
+            ),
+            if (d.items.isEmpty)
+              PanelMessage(context.l10n.sessionNoItems)
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(6, 0, 6, 6),
+                itemCount: shown.length,
+                itemBuilder: (context, i) {
+                  final it = shown[i];
+                  return TimelineRow(
+                    item: it,
+                    start: _player.t0,
+                    active: _player.isCurrent(it.ts) || _selected == it,
+                    upcoming: it.ts.isAfter(_player.current),
+                    onTap: () {
+                      _player.seekTo(it.ts);
+                      setState(() => _selected = it);
+                    },
+                  );
+                },
+              ),
+          ],
+        );
+        final side = Card(
+          padding: EdgeInsets.zero,
+          filled: true,
+          fillColor: Tokens.panel,
+          borderColor: Tokens.border,
+          borderRadius: BorderRadius.circular(Tokens.radius),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+                decoration: const BoxDecoration(
+                  border: Border(bottom: BorderSide(color: Tokens.border)),
+                ),
+                child: TabList(
+                  index: _tab,
+                  onChanged: (i) => setState(() => _tab = i),
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
-                      child: Wrap(
-                        spacing: 6,
-                        runSpacing: 6,
-                        children: [
-                          for (final (type, label) in filters)
-                            if (type.isEmpty || countOf(type) > 0)
-                              QuickFilterChip(
-                                token: context.l10n.sessionFilterLabel(
-                                  label,
-                                  type.isEmpty ? d.items.length : countOf(type),
-                                ),
-                                selected: _filter == type,
-                                onTap: () => setState(() => _filter = type),
-                              ),
-                        ],
+                    TabItem(
+                      child: Text(
+                        '${context.l10n.sessionTimeline} · ${d.items.length}',
                       ),
                     ),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: shown.length,
-                      itemBuilder: (context, i) {
-                        final it = shown[i];
-                        final active = _player.isCurrent(it.ts);
-                        return TimelineRow(
-                          item: it,
-                          active: active || _selected == it,
-                          onTap: () {
-                            _player.seekTo(it.ts);
-                            setState(() => _selected = it);
-                          },
-                        );
-                      },
-                    ),
+                    TabItem(child: Text(context.l10n.sessionTabDevice)),
                   ],
                 ),
+              ),
+              if (_tab == 0)
+                timeline
+              else
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: ClientEnvironmentCard(session: s),
+                ),
+            ],
+          ),
         );
         final firstError = d.items
             .where((it) => it.type == 'error')
             .firstOrNull;
+        final routes = routeStops(d.items);
         final detailPanel = _selected == null
             ? null
             : ItemDetail(item: _selected!, projectId: widget.projectId);
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(28, 20, 28, 40),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              PageHeader(
-                breadcrumb: AppBreadcrumb(
-                  items: [
-                    BreadcrumbItem(
-                      label: context.l10n.sessionsTitle,
-                      path: '/projects/${widget.projectId}/sessions',
+              AppBreadcrumb(
+                items: [
+                  BreadcrumbItem(
+                    label: context.l10n.sessionsTitle,
+                    path: '/projects/${widget.projectId}/sessions',
+                  ),
+                  BreadcrumbItem(
+                    label: context.l10n.sessionHeader(
+                      context.fmt.shortId(s.id),
                     ),
-                    BreadcrumbItem(
-                      label: context.l10n.sessionHeader(
-                        context.fmt.shortId(s.id),
-                      ),
-                    ),
-                  ],
-                ),
-                title: context.l10n.sessionHeader(context.fmt.shortId(s.id)),
-                subtitle:
-                    '${s.userLabel.isEmpty ? context.l10n.commonAnonymous : s.userLabel}'
-                    '${s.locationLabel.isNotEmpty ? ' · ${s.locationLabel}' : (s.countryCode.isNotEmpty ? ' · ${s.countryCode}' : '')}'
-                    '${s.hasCoordinates ? ' (${s.coordinatesLabel})' : ''}'
-                    '${s.ip.isEmpty ? '' : ' · ${s.ip}'} · ${s.platformCategory}'
-                    '${s.deviceLabel.isEmpty ? '' : ' · ${s.deviceLabel}'} · ${s.osName}'
-                    '${s.osVersion.isNotEmpty ? ' ${s.osVersion}' : ''}'
-                    '${s.isLinuxDesktop && s.kernelVersion.isNotEmpty ? ' (${s.kernel} ${s.kernelVersion})' : ''}'
-                    '${s.isWeb && s.browserName.isNotEmpty ? ' · ${s.browserName}${s.browserVersion.isNotEmpty ? ' ${s.browserVersion}' : ''}' : ''}'
-                    '${s.release.isEmpty ? '' : ' · v${s.release}'} · '
-                    '${context.fmt.dateTime(s.startedAt)}',
+                  ),
+                ],
+              ),
+              const Gap(12),
+              SessionHeader(
+                session: s,
                 actions: [
                   if (firstError != null)
                     OutlineButton(
@@ -221,12 +253,24 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                       ),
                       onPressed: () {
                         _player.seekTo(firstError.ts);
-                        setState(() => _selected = firstError);
+                        setState(() {
+                          _selected = firstError;
+                          _tab = 0;
+                        });
                       },
                       child: Text(
                         '${context.l10n.sessionJumpToError} · '
-                        '${context.fmt.clock(firstError.ts)}',
+                        '${replayClock(firstError.ts.difference(_player.t0!))}',
                       ),
+                    ),
+                  if (firstError?.issueId != null)
+                    PrimaryButton(
+                      size: ButtonSize.small,
+                      trailing: const Icon(LucideIcons.arrowRight, size: 14),
+                      onPressed: () => context.go(
+                        '/projects/${widget.projectId}/issues/${firstError!.issueId}',
+                      ),
+                      child: Text(context.l10n.sessionOpenIssue),
                     ),
                   GhostButton(
                     size: ButtonSize.small,
@@ -237,22 +281,31 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                   ),
                 ],
               ),
-              const Gap(12),
-              ClientEnvironmentCard(session: s),
-              const Gap(12),
+              const Gap(16),
               if (isNarrow) ...[
                 player,
                 const Gap(12),
-                timeline,
+                side,
               ] else
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(flex: 3, child: player),
                     const Gap(12),
-                    Expanded(flex: 2, child: timeline),
+                    Expanded(flex: 2, child: side),
                   ],
                 ),
+              if (routes.length > 1) ...[
+                const Gap(12),
+                RouteFlow(
+                  stops: routes,
+                  current: _player.current,
+                  onSeek: (t) {
+                    _player.seekTo(t);
+                    setState(() {});
+                  },
+                ),
+              ],
               if (detailPanel != null) ...[const Gap(12), detailPanel],
             ],
           ),
@@ -672,64 +725,14 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
           Expanded(child: Center(child: viewport))
         else
           viewport,
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: Tokens.border)),
-          ),
-          child: Row(
-            children: [
-              IconButton.primary(
-                size: ButtonSize.small,
-                icon: Icon(
-                  c.playing ? LucideIcons.pause : LucideIcons.play,
-                  size: 14,
-                ),
-                onPressed: dom.isEmpty ? null : c.toggle,
-              ),
-              const Gap(10),
-              Expanded(
-                child: Scrubber(
-                  value: c.total.inMilliseconds > 0
-                      ? c.position.inMilliseconds / c.total.inMilliseconds
-                      : 0.0,
-                  marks: [
-                    for (final it in dom)
-                      if (c.total.inMilliseconds > 0 && c.t0 != null)
-                        it.ts.difference(c.t0!).inMilliseconds /
-                            c.total.inMilliseconds,
-                  ],
-                  errorMarks: c.errorMarks,
-                  onChanged: (v) => c.seek(
-                    Duration(
-                      milliseconds: (v * c.total.inMilliseconds).round(),
-                    ),
-                  ),
-                ),
-              ),
-              const Gap(10),
-              Text(
-                context.l10n.replayPosition(
-                  (c.position.inMilliseconds / 1000).toStringAsFixed(1),
-                  (c.total.inMilliseconds / 1000).toStringAsFixed(1),
-                ),
-                style: AppTheme.mono(size: 11, color: Tokens.textMuted),
-              ),
-              const Gap(8),
-              for (final s in const [1.0, 2.0, 4.0])
-                c.speed == s
-                    ? SecondaryButton(
-                        size: ButtonSize.xSmall,
-                        onPressed: () {},
-                        child: Text('${s.toInt()}×'),
-                      )
-                    : GhostButton(
-                        size: ButtonSize.xSmall,
-                        onPressed: () => c.setSpeed(s),
-                        child: Text('${s.toInt()}×'),
-                      ),
-            ],
-          ),
+        ReplayControls(
+          controller: c,
+          enabled: dom.isNotEmpty,
+          marks: [
+            for (final it in dom)
+              if (c.total.inMilliseconds > 0 && c.t0 != null)
+                it.ts.difference(c.t0!).inMilliseconds / c.total.inMilliseconds,
+          ],
         ),
       ],
     );
@@ -808,75 +811,90 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
   /// A frame at the device's own size times the zoom, in a letterbox as wide as
   /// the panel, so a phone is not blown up to the panel's width.
   Widget _sizedFrame(BuildContext context, Frame f, Widget content) {
-    return Container(
-      color: const Color(0xFF000000),
-      padding: const EdgeInsets.all(12),
-      child: LayoutBuilder(
-        builder: (context, box) {
-          final natural = deviceFrameSize(f.width, f.height, widget.screen);
-          final scale = replayScale(
-            natural,
-            zoom: _zoom,
-            maxWidth: box.maxWidth,
-            maxHeight: MediaQuery.sizeOf(context).height * 0.75,
-          );
-          final atWidth = scale >= box.maxWidth / natural.width - 1e-6;
-          final zoomIn = atWidth ? null : nextZoomStep(scale, up: true);
-          final zoomOut = nextZoomStep(scale, up: false);
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton.ghost(
-                      size: ButtonSize.small,
-                      icon: const Icon(LucideIcons.zoomOut, size: 14),
-                      onPressed: zoomOut == null
-                          ? null
-                          : () => setState(() => _zoom = zoomOut),
-                    ),
-                    // The percentage goes back to the device's own size.
-                    GhostButton(
-                      size: ButtonSize.xSmall,
-                      onPressed: () => setState(() => _zoom = 1),
-                      child: Text(
-                        context.fmt.percent((scale * 100).round() / 100),
-                        style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+    return CustomPaint(
+      painter: const _DotGridPainter(),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 24),
+        child: LayoutBuilder(
+          builder: (context, box) {
+            final natural = deviceFrameSize(f.width, f.height, widget.screen);
+            // A portrait screen is a phone: drawn inside a bezel, whose width
+            // comes off what the frame may take.
+            final phone = natural.height > natural.width;
+            final bezel = phone ? _bezel * 2 + 2 : 0.0;
+            final scale = replayScale(
+              natural,
+              zoom: _zoom,
+              maxWidth: box.maxWidth - bezel,
+              maxHeight: MediaQuery.sizeOf(context).height * 0.75,
+            );
+            final atWidth =
+                scale >= (box.maxWidth - bezel) / natural.width - 1e-6;
+            final zoomIn = atWidth ? null : nextZoomStep(scale, up: true);
+            final zoomOut = nextZoomStep(scale, up: false);
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton.ghost(
+                        size: ButtonSize.small,
+                        icon: const Icon(LucideIcons.zoomOut, size: 14),
+                        onPressed: zoomOut == null
+                            ? null
+                            : () => setState(() => _zoom = zoomOut),
                       ),
-                    ),
-                    IconButton.ghost(
-                      size: ButtonSize.small,
-                      icon: const Icon(LucideIcons.zoomIn, size: 14),
-                      onPressed: zoomIn == null
-                          ? null
-                          : () => setState(() => _zoom = zoomIn),
-                    ),
-                    IconButton.ghost(
-                      size: ButtonSize.small,
-                      icon: const Icon(LucideIcons.scan, size: 14),
-                      onPressed: () => setState(() => _zoom = null),
-                    ),
-                  ],
+                      // The percentage goes back to the device's own size.
+                      GhostButton(
+                        size: ButtonSize.xSmall,
+                        onPressed: () => setState(() => _zoom = 1),
+                        child: Text(
+                          context.fmt.percent((scale * 100).round() / 100),
+                          style: AppTheme.mono(
+                            size: 11,
+                            color: Tokens.textMuted,
+                          ),
+                        ),
+                      ),
+                      IconButton.ghost(
+                        size: ButtonSize.small,
+                        icon: const Icon(LucideIcons.zoomIn, size: 14),
+                        onPressed: zoomIn == null
+                            ? null
+                            : () => setState(() => _zoom = zoomIn),
+                      ),
+                      IconButton.ghost(
+                        size: ButtonSize.small,
+                        icon: const Icon(LucideIcons.scan, size: 14),
+                        onPressed: () => setState(() => _zoom = null),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const Gap(6),
-              Center(
-                child: SizedBox(
-                  key: const ValueKey('replay-frame'),
-                  width: natural.width * scale,
-                  height: natural.height * scale,
-                  child: content,
+                const Gap(6),
+                Center(
+                  child: _PhoneBezel(
+                    enabled: phone,
+                    child: SizedBox(
+                      key: const ValueKey('replay-frame'),
+                      width: natural.width * scale,
+                      height: natural.height * scale,
+                      child: content,
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }
+
+  static const _bezel = _PhoneBezel.thickness;
 
   @override
   Widget build(BuildContext context) {
@@ -959,78 +977,18 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
           Expanded(child: Center(child: frameBox))
         else
           frameBox,
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-          decoration: const BoxDecoration(
-            border: Border(top: BorderSide(color: Tokens.border)),
-          ),
-          child: Row(
-            children: [
-              IconButton.primary(
-                size: ButtonSize.small,
-                icon: Icon(
-                  c.playing ? LucideIcons.pause : LucideIcons.play,
-                  size: 14,
-                ),
-                onPressed: c.frames.isEmpty || !ready ? null : c.toggle,
-              ),
-              const Gap(10),
-              if (pf != null && pf.urls.isNotEmpty) ...[
-                BufferBadge(prefetcher: pf, stalled: !frameCached && c.playing),
-                const Gap(10),
-              ],
-              Expanded(
-                child: Scrubber(
-                  value: c.position.inMilliseconds / c.total.inMilliseconds,
-                  marks: [
-                    for (final fr in c.frames)
-                      fr.ts.difference(c.t0!).inMilliseconds /
-                          c.total.inMilliseconds,
-                  ],
-                  errorMarks: c.errorMarks,
-                  onChanged: (v) => c.seek(
-                    Duration(
-                      milliseconds: (v * c.total.inMilliseconds).round(),
-                    ),
-                  ),
-                ),
-              ),
-              const Gap(10),
-              Text(
-                context.l10n.replayPosition(
-                  (c.position.inMilliseconds / 1000).toStringAsFixed(1),
-                  (c.total.inMilliseconds / 1000).toStringAsFixed(1),
-                ),
-                style: AppTheme.mono(size: 11, color: Tokens.textMuted),
-              ),
-              const Gap(8),
-              for (final s in const [1.0, 2.0, 4.0])
-                c.speed == s
-                    ? SecondaryButton(
-                        size: ButtonSize.xSmall,
-                        onPressed: () {},
-                        child: Text('${s.toInt()}×'),
-                      )
-                    : GhostButton(
-                        size: ButtonSize.xSmall,
-                        onPressed: () => c.setSpeed(s),
-                        child: Text('${s.toInt()}×'),
-                      ),
-              if (widget.onToggleFullscreen != null) ...[
-                const Gap(6),
-                IconButton.ghost(
-                  size: ButtonSize.small,
-                  icon: Icon(
-                    widget.fullscreen
-                        ? LucideIcons.minimize2
-                        : LucideIcons.maximize2,
-                    size: 14,
-                  ),
-                  onPressed: widget.onToggleFullscreen,
-                ),
-              ],
-            ],
-          ),
+        ReplayControls(
+          controller: c,
+          enabled: c.frames.isNotEmpty && ready,
+          marks: [
+            for (final fr in c.frames)
+              fr.ts.difference(c.t0!).inMilliseconds / c.total.inMilliseconds,
+          ],
+          buffer: pf != null && pf.urls.isNotEmpty
+              ? BufferBadge(prefetcher: pf, stalled: !frameCached && c.playing)
+              : null,
+          fullscreen: widget.fullscreen,
+          onToggleFullscreen: widget.onToggleFullscreen,
         ),
       ],
     );
@@ -1290,6 +1248,205 @@ class TapMarker extends StatelessWidget {
 }
 
 /// A simple scrubber; [marks] are the frame positions.
+/// The stage behind a replayed frame: a faint dot grid, so the frame's own
+/// edges stay visible against it.
+class _DotGridPainter extends CustomPainter {
+  const _DotGridPainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = Tokens.surface);
+    final dot = Paint()..color = Tokens.hairline;
+    for (var y = 8.0; y < size.height; y += 16) {
+      for (var x = 8.0; x < size.width; x += 16) {
+        canvas.drawCircle(Offset(x, y), 1, dot);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DotGridPainter old) => false;
+}
+
+/// A phone's body around a portrait frame, so a replay reads as the device it
+/// came from. Adds [thickness] on every side plus a 1 px border.
+class _PhoneBezel extends StatelessWidget {
+  const _PhoneBezel({required this.enabled, required this.child});
+  final bool enabled;
+  final Widget child;
+
+  static const thickness = 8.0;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!enabled) return child;
+    return Container(
+      padding: const EdgeInsets.all(thickness),
+      decoration: BoxDecoration(
+        color: Tokens.raised,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: Tokens.chip),
+      ),
+      child: ClipRRect(borderRadius: BorderRadius.circular(22), child: child),
+    );
+  }
+}
+
+/// mm:ss, or h:mm:ss past an hour — a replay position, not a clock time.
+String replayClock(Duration d) {
+  final h = d.inHours, m = d.inMinutes % 60, sec = d.inSeconds % 60;
+  String two(int v) => v.toString().padLeft(2, '0');
+  return h > 0 ? '$h:${two(m)}:${two(sec)}' : '${two(m)}:${two(sec)}';
+}
+
+/// The bar under both players: the scrubber, then back 5 s / play / forward
+/// 5 s, the position, the buffer, the speed and fullscreen. Wraps onto two
+/// lines when the player is narrow.
+class ReplayControls extends StatelessWidget {
+  const ReplayControls({
+    super.key,
+    required this.controller,
+    required this.enabled,
+    required this.marks,
+    this.buffer,
+    this.fullscreen = false,
+    this.onToggleFullscreen,
+  });
+  final ReplayController controller;
+  final bool enabled;
+  final List<double> marks;
+  final Widget? buffer;
+  final bool fullscreen;
+  final VoidCallback? onToggleFullscreen;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = controller;
+    final total = c.total.inMilliseconds;
+    void skip(int seconds) => c.seek(c.position + Duration(seconds: seconds));
+    Widget tip(String text, Widget child) => Tooltip(
+      tooltip: (_) => TooltipContainer(child: Text(text)),
+      child: child,
+    );
+    return Container(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Tokens.border)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Scrubber(
+            value: total > 0 ? c.position.inMilliseconds / total : 0.0,
+            marks: marks,
+            errorMarks: c.errorMarks,
+            onChanged: (v) =>
+                c.seek(Duration(milliseconds: (v * total).round())),
+          ),
+          const Gap(8),
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  tip(
+                    context.l10n.replaySkipBack,
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: const Icon(LucideIcons.rotateCcw, size: 15),
+                      onPressed: enabled ? () => skip(-5) : null,
+                    ),
+                  ),
+                  const Gap(4),
+                  IconButton.primary(
+                    shape: ButtonShape.circle,
+                    icon: Icon(
+                      c.playing ? LucideIcons.pause : LucideIcons.play,
+                      size: 16,
+                    ),
+                    onPressed: enabled ? c.toggle : null,
+                  ),
+                  const Gap(4),
+                  tip(
+                    context.l10n.replaySkipForward,
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: const Icon(LucideIcons.rotateCw, size: 15),
+                      onPressed: enabled ? () => skip(5) : null,
+                    ),
+                  ),
+                  const Gap(10),
+                  Text(
+                    replayClock(c.position),
+                    style: AppTheme.mono(size: 13, color: Tokens.textStrong),
+                  ),
+                  Text(
+                    ' / ${replayClock(c.total)}',
+                    style: AppTheme.mono(size: 13, color: Tokens.textMuted),
+                  ),
+                  if (buffer != null) ...[const Gap(12), buffer!],
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Tokens.border),
+                      borderRadius: BorderRadius.circular(Tokens.radius),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final s in const [1.0, 2.0, 4.0])
+                          c.speed == s
+                              ? SecondaryButton(
+                                  size: ButtonSize.xSmall,
+                                  onPressed: () {},
+                                  child: Text('${s.toInt()}×'),
+                                )
+                              : GhostButton(
+                                  size: ButtonSize.xSmall,
+                                  onPressed: () => c.setSpeed(s),
+                                  child: Text(
+                                    '${s.toInt()}×',
+                                    style: const TextStyle(
+                                      color: Tokens.textMuted,
+                                    ),
+                                  ),
+                                ),
+                      ],
+                    ),
+                  ),
+                  if (onToggleFullscreen != null) ...[
+                    const Gap(6),
+                    IconButton.ghost(
+                      size: ButtonSize.small,
+                      icon: Icon(
+                        fullscreen
+                            ? LucideIcons.minimize2
+                            : LucideIcons.maximize2,
+                        size: 14,
+                      ),
+                      onPressed: onToggleFullscreen,
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class Scrubber extends StatelessWidget {
   const Scrubber({
     super.key,
@@ -1381,16 +1538,277 @@ class _ScrubberPainter extends CustomPainter {
       !listEquals(old.errorMarks, errorMarks);
 }
 
+/// Who the session belongs to, how it went, and on what: the avatar and name,
+/// an error badge, and one chip per known fact about the device and run.
+class SessionHeader extends StatelessWidget {
+  const SessionHeader({
+    super.key,
+    required this.session,
+    this.actions = const [],
+  });
+  final Session session;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = session;
+    final l = context.l10n;
+    final fmt = context.fmt;
+    final name = s.userLabel.isEmpty ? l.commonAnonymous : s.userLabel;
+    final os = '${s.osName} ${s.osVersion}'.trim();
+    final browser = s.isWeb
+        ? '${s.browserName} ${s.browserVersion}'.trim()
+        : '';
+    final location = s.locationLabel.isNotEmpty
+        ? s.locationLabel
+        : s.countryCode;
+    final chips = <(String, String)>[
+      if (s.deviceLabel.isNotEmpty) (l.clientDevice, s.deviceLabel),
+      if (os.isNotEmpty) (l.clientOS, os),
+      if (browser.isNotEmpty) (l.clientBrowser, browser),
+      if (s.release.isNotEmpty) (l.colRelease, s.release),
+      if (location.isNotEmpty) (l.clientLocation, location),
+      if (s.ip.isNotEmpty) (l.colIp, s.ip),
+      (l.colDuration, fmt.duration(s.duration)),
+      (l.colStart, fmt.dateTime(s.startedAt)),
+    ];
+    final identity = Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Avatar(
+          initials: s.userLabel.isEmpty ? '—' : initialsOf(s.userLabel),
+          size: 40,
+          backgroundColor: Tokens.chip,
+        ),
+        const Gap(12),
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
+                      name,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        height: 1.25,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: -0.3,
+                        color: Tokens.textStrong,
+                      ),
+                    ),
+                  ),
+                  if (s.errorCount > 0) ...[
+                    const Gap(10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Tokens.danger.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        l.sessionErrorBadge(s.errorCount),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Tokens.danger,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              Text(
+                l.sessionHeader(fmt.shortId(s.id)),
+                style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        LayoutBuilder(
+          builder: (context, box) {
+            final buttons = Wrap(spacing: 8, runSpacing: 8, children: actions);
+            if (box.maxWidth < 760) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [identity, const Gap(12), buttons],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: identity),
+                const Gap(16),
+                buttons,
+              ],
+            );
+          },
+        ),
+        const Gap(12),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            for (final (k, v) in chips)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
+                decoration: BoxDecoration(
+                  color: Tokens.panel,
+                  border: Border.all(color: Tokens.border),
+                  borderRadius: BorderRadius.circular(Tokens.radius),
+                ),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '$k  ',
+                        style: const TextStyle(color: Tokens.textMuted),
+                      ),
+                      TextSpan(
+                        text: v,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Tokens.textStrong,
+                        ),
+                      ),
+                    ],
+                  ),
+                  style: const TextStyle(fontSize: 12),
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// A route the user arrived at, and when.
+typedef RouteStop = ({String route, DateTime ts});
+
+/// The navigation breadcrumbs in order, a repeat of the same route folded
+/// into one stop. The SDK's observer writes `{from, to}` in `data` and
+/// "push /x" as the message; older items have only the message.
+List<RouteStop> routeStops(List<TimelineItem> items) {
+  final stops = <RouteStop>[];
+  for (final it in items) {
+    if (it.type != 'breadcrumb' || it.name != 'navigation') continue;
+    final data = it.body['data'];
+    var route = data is Map ? '${data['to'] ?? ''}' : '';
+    if (route.isEmpty) {
+      final msg = '${it.body['message'] ?? ''}'.trim();
+      route = msg.contains(' ') ? msg.substring(msg.lastIndexOf(' ') + 1) : msg;
+    }
+    if (route.isEmpty) continue;
+    if (stops.isNotEmpty && stops.last.route == route) continue;
+    stops.add((route: route, ts: it.ts));
+  }
+  return stops;
+}
+
+/// The routes of the session as a strip of chips; the one on screen at the
+/// cursor is highlighted, and a chip seeks to its arrival.
+class RouteFlow extends StatelessWidget {
+  const RouteFlow({
+    super.key,
+    required this.stops,
+    required this.current,
+    required this.onSeek,
+  });
+  final List<RouteStop> stops;
+  final DateTime current;
+  final ValueChanged<DateTime> onSeek;
+
+  @override
+  Widget build(BuildContext context) {
+    var at = 0;
+    for (var i = 0; i < stops.length; i++) {
+      if (!stops[i].ts.isAfter(current)) at = i;
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Tokens.panel,
+        border: Border.all(color: Tokens.border),
+        borderRadius: BorderRadius.circular(Tokens.radius),
+      ),
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: Text(
+              context.l10n.sessionRouteFlow,
+              style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+            ),
+          ),
+          for (var i = 0; i < stops.length; i++) ...[
+            if (i > 0)
+              const Icon(
+                LucideIcons.chevronRight,
+                size: 13,
+                color: Tokens.textDim,
+              ),
+            i == at
+                ? SecondaryButton(
+                    size: ButtonSize.xSmall,
+                    onPressed: () => onSeek(stops[i].ts),
+                    child: Text(
+                      stops[i].route,
+                      style: AppTheme.mono(size: 12, color: Tokens.textStrong),
+                    ),
+                  )
+                : OutlineButton(
+                    size: ButtonSize.xSmall,
+                    onPressed: () => onSeek(stops[i].ts),
+                    child: Text(
+                      stops[i].route,
+                      style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                    ),
+                  ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class TimelineRow extends StatelessWidget {
   const TimelineRow({
     super.key,
     required this.item,
     required this.active,
     required this.onTap,
+    this.start,
+    this.upcoming = false,
   });
   final TimelineItem item;
   final bool active;
   final VoidCallback onTap;
+
+  /// The session's first moment: the row shows its offset from it, the way
+  /// the player does. Without it, the wall-clock time.
+  final DateTime? start;
+
+  /// Not reached by the cursor yet: drawn dimmer.
+  final bool upcoming;
 
   static Color colorOf(TimelineItem i) => switch (i.type) {
     'error' => Tokens.danger,
@@ -1398,50 +1816,129 @@ class TimelineRow extends StatelessWidget {
     _ => i.name == 'navigation' ? Tokens.info : Tokens.textDim,
   };
 
+  /// The headline: an event's name without its properties, which go below.
+  static String titleOf(TimelineItem i) =>
+      i.type == 'event' && '${i.body['name'] ?? ''}'.isNotEmpty
+      ? '${i.body['name']}'
+      : i.message;
+
+  /// The second line: where an error was thrown, an event's properties, a
+  /// navigation's origin, or a breadcrumb's data.
+  static String detailOf(TimelineItem i) {
+    String encode(Object? v) {
+      try {
+        return jsonEncode(v);
+      } catch (_) {
+        return '$v';
+      }
+    }
+
+    final data = i.body['data'];
+    switch (i.type) {
+      case 'error':
+        final f = i.frames.where((f) => f.resolved).firstOrNull;
+        if (f != null) return '${f.function} · ${f.location}';
+        final stack = '${i.body['stack'] ?? ''}'.trim();
+        return stack.isEmpty ? '' : stack.split('\n').first.trim();
+      case 'event':
+        final props = i.body['props'];
+        return props is Map && props.isNotEmpty ? encode(props) : '';
+      default:
+        if (i.name == 'navigation' && data is Map) {
+          final from = '${data['from'] ?? ''}';
+          return from.isEmpty ? '' : '$from → ${data['to'] ?? ''}';
+        }
+        return data is Map && data.isNotEmpty ? encode(data) : '';
+    }
+  }
+
   @override
-  Widget build(BuildContext context) => GhostButton(
-    density: ButtonDensity.compact,
-    alignment: Alignment.centerLeft,
-    onPressed: onTap,
-    child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-      decoration: BoxDecoration(
-        color: active ? Tokens.raised : null,
-        border: const Border(bottom: BorderSide(color: Tokens.hairline)),
-      ),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 62,
-            child: Text(
-              context.fmt.clock(item.ts),
-              style: AppTheme.mono(size: 11, color: Tokens.textDim),
-            ),
+  Widget build(BuildContext context) {
+    final color = colorOf(item);
+    final detail = detailOf(item);
+    final t0 = start;
+    final time = t0 == null
+        ? context.fmt.clock(item.ts)
+        : replayClock(
+            item.ts.isBefore(t0) ? Duration.zero : item.ts.difference(t0),
+          );
+    return GhostButton(
+      density: ButtonDensity.compact,
+      alignment: Alignment.centerLeft,
+      onPressed: onTap,
+      child: Opacity(
+        opacity: upcoming && !active ? 0.6 : 1,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          decoration: BoxDecoration(
+            color: active ? Tokens.raised : null,
+            borderRadius: BorderRadius.circular(Tokens.radius),
+            border: active ? Border.all(color: Tokens.chip) : null,
           ),
-          SizedBox(
-            width: 84,
-            child: Text(
-              item.category,
-              style: TextStyle(
-                fontSize: 11,
-                color: colorOf(item),
-                fontWeight: FontWeight.w600,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 52,
+                child: Text(
+                  time,
+                  style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                ),
               ),
-              overflow: TextOverflow.ellipsis,
-            ),
+              Container(
+                width: 8,
+                height: 8,
+                margin: const EdgeInsets.only(top: 4, right: 10),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          context.fmt.upper(item.category),
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                            color: color,
+                          ),
+                        ),
+                        const Gap(8),
+                        Expanded(
+                          child: Text(
+                            titleOf(item),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: item.type == 'error'
+                                  ? Tokens.danger
+                                  : Tokens.textStrong,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (detail.isNotEmpty)
+                      Text(
+                        detail,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            child: Text(
-              item.message,
-              style: const TextStyle(fontSize: 12, color: Tokens.text),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
-          ),
-        ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
 
 /// The detail of the selected item: for an error, the stack trace and the
