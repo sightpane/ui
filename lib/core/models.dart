@@ -2092,6 +2092,7 @@ class SurveyTargeting {
     this.eventTrigger = '',
     this.sampleRate = 1.0,
     this.delaySeconds = 0,
+    this.serverScheduled = false,
   });
 
   /// The most the backend accepts for [delaySeconds]: an hour.
@@ -2105,11 +2106,17 @@ class SurveyTargeting {
   /// 0 is at once.
   final int delaySeconds;
 
+  /// The backend times the delay from the stored trigger event: the survey
+  /// shows even if the person changed page meanwhile, and on their next launch
+  /// within a day. Needs an [eventTrigger].
+  final bool serverScheduled;
+
   factory SurveyTargeting.fromJson(Map<String, Object?> j) => SurveyTargeting(
     urlPattern: _s(j['url_pattern']),
     eventTrigger: _s(j['event_trigger']),
     sampleRate: j.containsKey('sample_rate') ? _d(j['sample_rate']) : 1.0,
     delaySeconds: _i(j['delay_seconds']),
+    serverScheduled: j['server_scheduled'] == true,
   );
 
   Map<String, Object?> toJson() => {
@@ -2117,6 +2124,7 @@ class SurveyTargeting {
     if (eventTrigger.isNotEmpty) 'event_trigger': eventTrigger,
     'sample_rate': sampleRate,
     if (delaySeconds > 0) 'delay_seconds': delaySeconds,
+    if (serverScheduled) 'server_scheduled': true,
   };
 }
 

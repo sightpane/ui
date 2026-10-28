@@ -1961,6 +1961,16 @@ class LEn extends L {
   }
 
   @override
+  String get surveyServerScheduled => 'Show even if the page changed';
+
+  @override
+  String get surveyServerScheduledHint =>
+      'The server times the delay: the survey is shown even if the person changed page meanwhile, or closed the app and opens it again within 24 hours. Needs an event trigger.';
+
+  @override
+  String get surveyServerScheduledChip => 'server-timed';
+
+  @override
   String get navCrons => 'Crons & Heartbeats';
 
   @override

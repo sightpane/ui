@@ -3409,6 +3409,24 @@ abstract class L {
   /// **'{seconds} sn sonra'**
   String surveyDelayChip(int seconds);
 
+  /// No description provided for @surveyServerScheduled.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa değişse de göster'**
+  String get surveyServerScheduled;
+
+  /// No description provided for @surveyServerScheduledHint.
+  ///
+  /// In tr, this message translates to:
+  /// **'Gecikmeyi sunucu sayar: kişi bu arada sayfa değiştirse de, uygulamayı kapatıp 24 saat içinde yeniden açsa da anket gösterilir. Bir olay tetikleyicisi gerekir.'**
+  String get surveyServerScheduledHint;
+
+  /// No description provided for @surveyServerScheduledChip.
+  ///
+  /// In tr, this message translates to:
+  /// **'sunucu zamanlar'**
+  String get surveyServerScheduledChip;
+
   /// No description provided for @navCrons.
   ///
   /// In tr, this message translates to:

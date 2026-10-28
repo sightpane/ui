@@ -59,6 +59,13 @@ void main() {
     expect(t.toJson()['delay_seconds'], 30);
     expect(SurveyTargeting.fromJson(const {}).delaySeconds, 0);
     expect(const SurveyTargeting().toJson().containsKey('delay_seconds'), false);
+    final server = SurveyTargeting.fromJson(const {
+      'event_trigger': 'purchase',
+      'server_scheduled': true,
+    });
+    expect(server.serverScheduled, true);
+    expect(server.toJson()['server_scheduled'], true);
+    expect(t.toJson().containsKey('server_scheduled'), false);
   });
 
   test('models parse backend json', () {

@@ -38,6 +38,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
   late String _type;
   late List<TextEditingController> _choiceCtrls;
   late bool _active;
+  late bool _serverScheduled;
   bool _saving = false;
   String? _error;
 
@@ -55,6 +56,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
 
     _type = s?.type ?? 'nps';
     _active = s?.active ?? true;
+    _serverScheduled = s?.targeting.serverScheduled ?? false;
 
     if (s != null && s.choices.isNotEmpty) {
       _choiceCtrls = s.choices.map((c) => TextEditingController(text: c)).toList();
@@ -144,6 +146,9 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
         eventTrigger: _eventTriggerCtrl.text.trim(),
         sampleRate: 1.0,
         delaySeconds: delay,
+        // The backend can only time a trigger it sees: an event.
+        serverScheduled:
+            _serverScheduled && _eventTriggerCtrl.text.trim().isNotEmpty,
       );
 
       if (widget.survey == null) {
@@ -368,6 +373,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
               TextField(
                 controller: _eventTriggerCtrl,
                 placeholder: const Text('e.g. purchase_success or signup_completed'),
+                onChanged: (_) => setState(() {}),
               ),
               const SizedBox(height: 14),
 
@@ -387,6 +393,33 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
               const SizedBox(height: 4),
               Text(
                 context.l10n.surveyDelayHint,
+                style: const TextStyle(fontSize: 11, color: Tokens.textMuted),
+              ),
+              const SizedBox(height: 12),
+
+              // Server-timed: needs an event trigger
+              Row(
+                children: [
+                  Switch(
+                    key: const ValueKey('survey-server-scheduled'),
+                    value: _serverScheduled &&
+                        _eventTriggerCtrl.text.trim().isNotEmpty,
+                    onChanged: _eventTriggerCtrl.text.trim().isEmpty
+                        ? null
+                        : (v) => setState(() => _serverScheduled = v),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      context.l10n.surveyServerScheduled,
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                context.l10n.surveyServerScheduledHint,
                 style: const TextStyle(fontSize: 11, color: Tokens.textMuted),
               ),
               const SizedBox(height: 16),
