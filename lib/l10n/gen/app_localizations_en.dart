@@ -1945,6 +1945,22 @@ class LEn extends L {
   String get surveysInactive => 'Inactive';
 
   @override
+  String get surveyDelayLabel => 'Show delay (seconds)';
+
+  @override
+  String get surveyDelayHint =>
+      'How long to wait after the trigger (event or page); 0 shows it at once';
+
+  @override
+  String get surveyDelayInvalid =>
+      'The delay must be a whole number between 0 and 3600 seconds.';
+
+  @override
+  String surveyDelayChip(int seconds) {
+    return 'after ${seconds}s';
+  }
+
+  @override
   String get navCrons => 'Crons & Heartbeats';
 
   @override

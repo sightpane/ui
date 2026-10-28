@@ -50,6 +50,17 @@ void main() {
     expect(phone({'os': 'Ubuntu'}).deviceLabel, '');
   });
 
+  test('the survey delay after the trigger round-trips, absent when zero', () {
+    final t = SurveyTargeting.fromJson(const {
+      'event_trigger': 'purchase',
+      'delay_seconds': 30,
+    });
+    expect(t.delaySeconds, 30);
+    expect(t.toJson()['delay_seconds'], 30);
+    expect(SurveyTargeting.fromJson(const {}).delaySeconds, 0);
+    expect(const SurveyTargeting().toJson().containsKey('delay_seconds'), false);
+  });
+
   test('models parse backend json', () {
     final s = Session.fromJson({
       'id': 'abc',

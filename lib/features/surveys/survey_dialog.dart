@@ -3,11 +3,13 @@
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../app/theme/tokens.dart';
 import '../../core/api.dart';
+import '../../core/format.dart';
 import '../../core/models.dart';
 import '../../core/providers.dart';
 
@@ -31,6 +33,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
   late final TextEditingController _descCtrl;
   late final TextEditingController _urlPatternCtrl;
   late final TextEditingController _eventTriggerCtrl;
+  late final TextEditingController _delayCtrl;
 
   late String _type;
   late List<TextEditingController> _choiceCtrls;
@@ -47,6 +50,8 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
     _descCtrl = TextEditingController(text: s?.description ?? '');
     _urlPatternCtrl = TextEditingController(text: s?.targeting.urlPattern ?? '');
     _eventTriggerCtrl = TextEditingController(text: s?.targeting.eventTrigger ?? '');
+    final delay = s?.targeting.delaySeconds ?? 0;
+    _delayCtrl = TextEditingController(text: delay > 0 ? '$delay' : '');
 
     _type = s?.type ?? 'nps';
     _active = s?.active ?? true;
@@ -68,6 +73,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
     _descCtrl.dispose();
     _urlPatternCtrl.dispose();
     _eventTriggerCtrl.dispose();
+    _delayCtrl.dispose();
     for (final c in _choiceCtrls) {
       c.dispose();
     }
@@ -117,6 +123,15 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
       }
     }
 
+    // Empty is no delay; anything else must be a whole number of seconds the
+    // backend accepts.
+    final delayText = _delayCtrl.text.trim();
+    final delay = delayText.isEmpty ? 0 : int.tryParse(delayText);
+    if (delay == null || delay < 0 || delay > SurveyTargeting.maxDelaySeconds) {
+      setState(() => _error = context.l10n.surveyDelayInvalid);
+      return;
+    }
+
     setState(() {
       _saving = true;
       _error = null;
@@ -128,6 +143,7 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
         urlPattern: _urlPatternCtrl.text.trim(),
         eventTrigger: _eventTriggerCtrl.text.trim(),
         sampleRate: 1.0,
+        delaySeconds: delay,
       );
 
       if (widget.survey == null) {
@@ -352,6 +368,26 @@ class _SurveyDialogState extends ConsumerState<SurveyDialog> {
               TextField(
                 controller: _eventTriggerCtrl,
                 placeholder: const Text('e.g. purchase_success or signup_completed'),
+              ),
+              const SizedBox(height: 14),
+
+              // Delay after the trigger
+              Text(
+                context.l10n.surveyDelayLabel,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 6),
+              TextField(
+                key: const ValueKey('survey-delay'),
+                controller: _delayCtrl,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                placeholder: const Text('0'),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                context.l10n.surveyDelayHint,
+                style: const TextStyle(fontSize: 11, color: Tokens.textMuted),
               ),
               const SizedBox(height: 16),
 

@@ -1824,6 +1824,22 @@ class LTr extends L {
   String get surveysInactive => 'Pasif';
 
   @override
+  String get surveyDelayLabel => 'Gösterme gecikmesi (saniye)';
+
+  @override
+  String get surveyDelayHint =>
+      'Tetikleyiciden (olay ya da sayfa) sonra beklenecek süre; 0 hemen gösterir';
+
+  @override
+  String get surveyDelayInvalid =>
+      'Gecikme 0 ile 3600 saniye arasında bir tam sayı olmalı.';
+
+  @override
+  String surveyDelayChip(int seconds) {
+    return '$seconds sn sonra';
+  }
+
+  @override
   String get navCrons => 'Cron & Heartbeat';
 
   @override

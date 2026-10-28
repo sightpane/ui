@@ -304,6 +304,28 @@ class _SurveysPageState extends ConsumerState<SurveysPage> {
                   ),
                   const SizedBox(width: 10),
                 ],
+                if (s.targeting.delaySeconds > 0) ...[
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: Tokens.surface,
+                      borderRadius: BorderRadius.circular(6),
+                      border: Border.all(color: Tokens.border),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(LucideIcons.timer, size: 12),
+                        const SizedBox(width: 5),
+                        Text(
+                          context.l10n.surveyDelayChip(s.targeting.delaySeconds),
+                          style: const TextStyle(fontSize: 11),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
                 Text(
                   context.fmt.dateTime(s.createdAt),
                   style: TextStyle(fontSize: 11, color: Tokens.textMuted),
