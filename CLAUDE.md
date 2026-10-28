@@ -102,7 +102,7 @@ table of `key: (tr, en, placeholders)` that emits `lib/l10n/app_tr.arb` (templat
   or they drift. Below 20 logical pixels the mark drops its horizontal mullion
   by itself; the top bar relies on that. The wordmark is two weights in one
   `Text.rich`, so `find.text('sightpane')` still matches it.
-- `lib/main.dart` carries the AGPL SPDX header. AGPL §13: the sign-in page and the top bar show the source address — keep them when touching either screen.
+- `lib/main.dart` carries the AGPL SPDX header. AGPL §13: the sign-in page, the top bar and the project sidebar's foot show the source address — keep them when touching any of these. Inside a project on a wide screen there is no top bar (`ProjectSidebar` in `shell/app_shell.dart` carries brand, account and source); the project list and phones keep `TopBar`.
 - Tests assert against the **Turkish** locale (`find.text('Projeler')`); `testContainer(api, locale: …)` pins the language and `test/i18n_test.dart` is where English is exercised. Translating one side of such an assertion breaks the test.
 - The roadmap for all three repositories lives in [sightpane/sightpane](https://github.com/sightpane/sightpane) under `future-todo-files/`.
 - **Commit on issue/task completion**: Whenever an issue, bug fix, or UI task is finished, run the `/code-auditor` skill on modified files, resolve all findings, verify static checks and tests (`flutter analyze`, `flutter test`), then create a descriptive conventional commit explaining what was changed and why. Do not run `git push` unless explicitly asked.

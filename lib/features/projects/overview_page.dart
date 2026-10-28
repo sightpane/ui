@@ -12,8 +12,9 @@ import '../../core/models.dart';
 import '../../core/providers.dart';
 import '../../shared/widgets.dart';
 
-/// Project overview: KPIs, the daily chart, the most frequent issues,
-/// platforms.
+/// Project overview: KPIs with their trend, the daily chart beside who is in
+/// the app right now, the most frequent issues, platforms / releases / events,
+/// and a reliability strip (uptime, crons, metric alerts).
 class OverviewPage extends ConsumerStatefulWidget {
   const OverviewPage({super.key, required this.projectId});
   final int projectId;
@@ -46,29 +47,23 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
   Widget build(BuildContext context) {
     final pid = widget.projectId;
     final stats = ref.watch(statsProvider((project: pid, days: _days)));
-    final live = ref.watch(liveProvider(pid));
+    final live = ref.watch(liveProvider(pid)).value;
     final project = ref.watch(projectProvider(pid)).value;
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.fromLTRB(28, 24, 28, 40),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           PageHeader(
             title: project?.name ?? context.l10n.navOverview,
-            subtitle: context.l10n.overviewSubtitle(_days),
+            subtitle:
+                '${context.l10n.overviewSubtitle(_days)} · ${context.l10n.liveRefreshNote}',
             actions: [
-              for (final d in const [7, 14, 30, 90])
-                _days == d
-                    ? SecondaryButton(
-                        size: ButtonSize.small,
-                        onPressed: () {},
-                        child: Text(context.l10n.overviewDaysShort(d)),
-                      )
-                    : GhostButton(
-                        size: ButtonSize.small,
-                        onPressed: () => setState(() => _days = d),
-                        child: Text(context.l10n.overviewDaysShort(d)),
-                      ),
+              _LivePill(count: live?.count),
+              _RangeSwitch(
+                days: _days,
+                onChanged: (d) => setState(() => _days = d),
+              ),
               GhostButton(
                 size: ButtonSize.small,
                 leading: const Icon(LucideIcons.refreshCw, size: 14),
@@ -77,7 +72,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
               ),
             ],
           ),
-          const Gap(14),
+          const Gap(16),
           stats.when(
             skipLoadingOnReload: true,
             loading: () => PanelMessage(context.l10n.overviewStatsLoading),
@@ -85,7 +80,7 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
               context.l10n.overviewStatsFailed(describeError(context.l10n, e)),
               color: Tokens.danger,
             ),
-            data: (s) => _body(context, s, live.value),
+            data: (s) => _body(context, s, live),
           ),
         ],
       ),
@@ -94,119 +89,33 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
 
   Widget _body(BuildContext context, ProjectStats s, LiveStatus? live) {
     final pid = widget.projectId;
-    final labels = [for (final d in s.daily) context.fmt.day(d.day)];
-    final isNarrow = MediaQuery.sizeOf(context).width < Tokens.mobileBreakpoint;
-    final left = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PanelCard(
-          title: context.l10n.overviewSessionsAndErrors,
-          subtitle: context.l10n.overviewSessionsAndErrorsNote,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-            child: BarChart(
-              values: [for (final d in s.daily) d.sessions],
-              secondary: [for (final d in s.daily) d.errors],
-              labels: labels,
-            ),
-          ),
-        ),
-        const Gap(12),
-        PanelCard(
-          title: context.l10n.overviewEvents,
-          subtitle: context.l10n.overviewByDay,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
-            child: BarChart(
-              values: [for (final d in s.daily) d.events],
-              labels: labels,
-              color: Tokens.info,
-              height: 80,
-            ),
-          ),
-        ),
-      ],
+    final fmt = context.fmt;
+    final l10n = context.l10n;
+    final daily = s.daily;
+    final isNarrow = MediaQuery.sizeOf(context).width < 1200;
+
+    final chart = PanelCard(
+      title: l10n.overviewSessionsAndErrors,
+      subtitle: l10n.overviewSessionsAndErrorsNote,
+      action: const _Legend(),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 16, 14, 12),
+        child: daily.isEmpty
+            ? PanelMessage(l10n.commonNoData)
+            : DailyChart(
+                values: [for (final d in daily) d.sessions],
+                lower: [for (final d in daily) d.errors],
+                labels: [for (final d in daily) fmt.day(d.day)],
+                tooltip: (i) =>
+                    '${fmt.day(daily[i].day)} · ${l10n.kpiSessions} ${fmt.integer(daily[i].sessions)} · ${l10n.overviewErrorSessions} ${fmt.integer(daily[i].errors)}',
+              ),
+      ),
     );
-    final right = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        PanelCard(
-          title: context.l10n.overviewTopIssues,
-          action: GhostButton(
-            size: ButtonSize.small,
-            onPressed: () => context.go('/projects/$pid/issues'),
-            child: Text(context.l10n.commonAll),
-          ),
-          child: s.topIssues.isEmpty
-              ? PanelMessage(context.l10n.overviewNoOpenIssues)
-              : Column(
-                  children: [
-                    for (final i in s.topIssues)
-                      GhostButton(
-                        density: ButtonDensity.compact,
-                        alignment: Alignment.centerLeft,
-                        onPressed: () =>
-                            context.go('/projects/$pid/issues/${i.id}'),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 4,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  i.title,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Tokens.text,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              const Gap(8),
-                              Text(
-                                context.fmt.integer(i.count),
-                                style: AppTheme.mono(
-                                  size: 12,
-                                  weight: FontWeight.w600,
-                                  color: Tokens.danger,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-        ),
-        const Gap(12),
-        PanelCard(
-          title: context.l10n.overviewPlatforms,
-          child: _NameCounts(s.platforms, total: s.sessions),
-        ),
-        const Gap(12),
-        PanelCard(
-          title: context.l10n.overviewReleases,
-          child: _NameCounts(s.releases, total: s.sessions),
-        ),
-        const Gap(12),
-        PanelCard(
-          title: context.l10n.overviewTopEvents,
-          action: GhostButton(
-            size: ButtonSize.small,
-            onPressed: () => context.go('/projects/$pid/events'),
-            child: Text(context.l10n.commonAll),
-          ),
-          child: _NameCounts(s.topEvents, total: s.events, color: Tokens.info),
-        ),
-      ],
-    );
+    final liveCard = _LiveCard(live: live, projectId: pid);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        LivePanel(live: live, projectId: pid),
-        const Gap(14),
         if (s.dropped > 0) ...[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -217,11 +126,15 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
             ),
             child: Row(
               children: [
-                const Icon(LucideIcons.triangleAlert, size: 16, color: Tokens.warning),
+                const Icon(
+                  LucideIcons.triangleAlert,
+                  size: 16,
+                  color: Tokens.warning,
+                ),
                 const Gap(8),
                 Expanded(
                   child: Text(
-                    'Ingest quota exceeded: ${context.fmt.integer(s.dropped)} items dropped due to rate limit.',
+                    l10n.overviewDropped(fmt.integer(s.dropped)),
                     style: const TextStyle(fontSize: 13, color: Tokens.warning),
                   ),
                 ),
@@ -232,46 +145,534 @@ class _OverviewPageState extends ConsumerState<OverviewPage> {
         ],
         KpiRow([
           KpiTile(
-            label: context.l10n.kpiSessions,
-            value: context.fmt.integer(s.sessions),
-            note: context.l10n.kpiVisitorsNote(context.fmt.integer(s.users)),
+            label: l10n.kpiSessions,
+            value: fmt.integer(s.sessions),
+            note: l10n.kpiVisitorsNote(fmt.integer(s.users)),
+            trend: [for (final d in daily) d.sessions],
           ),
           KpiTile(
-            label: context.l10n.kpiErrors,
-            value: context.fmt.integer(s.errors),
-            note: context.l10n.kpiOpenGroupsNote(
-              context.fmt.integer(s.openIssues),
-            ),
-            valueColor: s.errors > 0 ? Tokens.danger : Tokens.textStrong,
-          ),
-          KpiTile(
-            label: context.l10n.kpiCrashFree,
-            value: context.fmt.percent(s.crashFree),
+            label: l10n.kpiCrashFree,
+            value: fmt.percent(s.crashFree),
             valueColor: s.crashFree >= 0.99
                 ? Tokens.ok
                 : (s.crashFree >= 0.9 ? Tokens.accentSoft : Tokens.danger),
+            trend: [
+              for (final d in daily)
+                d.sessions == 0 ? 1 : 1 - d.errors / d.sessions,
+            ],
+            trendColor: Tokens.ok,
           ),
           KpiTile(
-            label: context.l10n.kpiEvents,
-            value: context.fmt.integer(s.events),
-            note: context.l10n.kpiFramesNote(context.fmt.integer(s.frames)),
+            label: l10n.kpiErrors,
+            value: fmt.integer(s.errors),
+            note: l10n.kpiOpenGroupsNote(fmt.integer(s.openIssues)),
+            valueColor: s.errors > 0 ? Tokens.danger : Tokens.textStrong,
+            trend: [for (final d in daily) d.errors],
+            trendColor: Tokens.danger,
+          ),
+          KpiTile(
+            label: l10n.kpiEvents,
+            value: fmt.integer(s.events),
+            note: l10n.kpiFramesNote(fmt.integer(s.frames)),
+            trend: [for (final d in daily) d.events],
+            trendColor: Tokens.info,
           ),
         ]),
-        const Gap(14),
+        const Gap(12),
         if (isNarrow) ...[
-          left,
+          chart,
           const Gap(12),
-          right,
+          liveCard,
         ] else
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(flex: 3, child: left),
-              const Gap(12),
-              Expanded(flex: 2, child: right),
-            ],
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(flex: 5, child: chart),
+                const Gap(12),
+                Expanded(flex: 3, child: liveCard),
+              ],
+            ),
           ),
+        const Gap(12),
+        _TopIssues(issues: s.topIssues, projectId: pid),
+        const Gap(12),
+        _ResponsiveRow(
+          narrow: isNarrow,
+          children: [
+            PanelCard(
+              title: l10n.overviewPlatforms,
+              child: _NameCounts(s.platforms, total: s.sessions),
+            ),
+            PanelCard(
+              title: l10n.overviewReleases,
+              child: _NameCounts(
+                s.releases,
+                total: s.sessions,
+                color: Tokens.textDim,
+              ),
+            ),
+            PanelCard(
+              title: l10n.overviewTopEvents,
+              action: GhostButton(
+                size: ButtonSize.small,
+                onPressed: () => context.go('/projects/$pid/events'),
+                child: Text(l10n.commonAll),
+              ),
+              child: _NameCounts(
+                s.topEvents,
+                total: s.events,
+                color: Tokens.info,
+              ),
+            ),
+          ],
+        ),
+        const Gap(12),
+        _Reliability(projectId: pid, narrow: isNarrow),
       ],
+    );
+  }
+}
+
+/// Equal columns on a wide screen, stacked on a narrow one.
+class _ResponsiveRow extends StatelessWidget {
+  const _ResponsiveRow({required this.narrow, required this.children});
+  final bool narrow;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    if (narrow) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) const Gap(12),
+            children[i],
+          ],
+        ],
+      );
+    }
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) const Gap(12),
+            Expanded(child: children[i]),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _RangeSwitch extends StatelessWidget {
+  const _RangeSwitch({required this.days, required this.onChanged});
+  final int days;
+  final ValueChanged<int> onChanged;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(2),
+    decoration: BoxDecoration(
+      color: Tokens.panel,
+      border: Border.all(color: Tokens.border),
+      borderRadius: BorderRadius.circular(Tokens.radius + 2),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (final d in const [7, 14, 30, 90])
+          days == d
+              ? SecondaryButton(
+                  size: ButtonSize.small,
+                  density: ButtonDensity.compact,
+                  onPressed: () {},
+                  child: Text(context.l10n.overviewDaysShort(d)),
+                )
+              : GhostButton(
+                  size: ButtonSize.small,
+                  density: ButtonDensity.compact,
+                  onPressed: () => onChanged(d),
+                  child: Text(
+                    context.l10n.overviewDaysShort(d),
+                    style: const TextStyle(color: Tokens.textMuted),
+                  ),
+                ),
+      ],
+    ),
+  );
+}
+
+/// "23 live" — green while anyone is in the app.
+class _LivePill extends StatelessWidget {
+  const _LivePill({required this.count});
+  final int? count;
+
+  @override
+  Widget build(BuildContext context) {
+    final n = count ?? 0;
+    final c = n > 0 ? Tokens.ok : Tokens.textMuted;
+    return Container(
+      height: 30,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: c.withValues(alpha: 0.1),
+        border: Border.all(color: c.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(color: c, shape: BoxShape.circle),
+          ),
+          const Gap(8),
+          Text(
+            context.l10n.overviewLivePill(n),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: c,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Legend extends StatelessWidget {
+  const _Legend();
+
+  @override
+  Widget build(BuildContext context) {
+    Widget item(Color c, String label) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 9,
+          height: 9,
+          decoration: BoxDecoration(
+            color: c,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const Gap(6),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, color: Tokens.textMuted),
+        ),
+      ],
+    );
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        item(Tokens.accent, context.l10n.kpiSessions),
+        const Gap(12),
+        item(Tokens.danger, context.l10n.overviewErrorSessions),
+      ],
+    );
+  }
+}
+
+/// Who is in the app right now (heartbeat in the last 60 s) and on which
+/// page; a row opens that session.
+class _LiveCard extends StatelessWidget {
+  const _LiveCard({required this.live, required this.projectId});
+  final LiveStatus? live;
+  final int projectId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = live;
+    final l10n = context.l10n;
+    return PanelCard(
+      title: l10n.overviewLiveNow,
+      subtitle: l == null ? null : l10n.liveWindow(l.windowSeconds),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 4),
+            child: Text(
+              l == null
+                  ? l10n.liveWaiting
+                  : l10n.liveSummary(l.count, l.visitors),
+              key: const ValueKey('live-summary'),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: (l?.count ?? 0) > 0 ? Tokens.ok : Tokens.textMuted,
+              ),
+            ),
+          ),
+          if (l == null || l.viewers.isEmpty)
+            PanelMessage(l10n.liveNoOpenSessions)
+          else ...[
+            for (final v in l.viewers.take(6))
+              GhostButton(
+                density: ButtonDensity.compact,
+                alignment: Alignment.centerLeft,
+                onPressed: () =>
+                    context.go('/projects/$projectId/sessions/${v.sessionId}'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 3,
+                  ),
+                  child: Row(
+                    children: [
+                      Avatar(
+                        initials: v.userLabel.isEmpty
+                            ? '—'
+                            : initialsOf(v.userLabel),
+                        size: 26,
+                        backgroundColor: Tokens.chip,
+                      ),
+                      const Gap(10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              v.userLabel.isEmpty
+                                  ? l10n.commonAnonymous
+                                  : v.userLabel,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Tokens.text,
+                              ),
+                            ),
+                            Text(
+                              v.route.isEmpty ? l10n.commonEmpty : v.route,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTheme.mono(
+                                size: 11,
+                                color: Tokens.textMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(8),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '${v.browser} · ${v.ip}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Tokens.textMuted,
+                            ),
+                          ),
+                          Text(
+                            context.fmt.duration(
+                              DateTime.now().difference(v.startedAt),
+                            ),
+                            style: AppTheme.mono(size: 11, color: Tokens.text),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (l.viewers.length > 6)
+              PanelMessage(l10n.liveMore(l.viewers.length - 6)),
+          ],
+          if (l != null && l.routes.isNotEmpty)
+            Container(
+              margin: const EdgeInsets.only(top: 6),
+              padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+              decoration: const BoxDecoration(
+                border: Border(top: BorderSide(color: Tokens.hairline)),
+              ),
+              child: Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  for (final r in l.routes.take(8))
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Tokens.raised,
+                        borderRadius: BorderRadius.circular(Tokens.radius),
+                      ),
+                      child: Text(
+                        '${r.name.isEmpty ? l10n.liveNoRoute : r.name} · ${l10n.livePeopleCount(r.count)}',
+                        style: AppTheme.mono(size: 11, color: Tokens.text),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// The most frequent open issues as a table: what, how often, in which
+/// release, when last.
+class _TopIssues extends StatelessWidget {
+  const _TopIssues({required this.issues, required this.projectId});
+  final List<Issue> issues;
+  final int projectId;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final fmt = context.fmt;
+    const head = TextStyle(
+      fontSize: 10.5,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.5,
+      color: Tokens.textMuted,
+    );
+    return PanelCard(
+      title: l10n.overviewTopIssues,
+      subtitle: l10n.issuesGroupingNote,
+      action: GhostButton(
+        size: ButtonSize.small,
+        onPressed: () => context.go('/projects/$projectId/issues'),
+        child: Text(l10n.commonAll),
+      ),
+      child: issues.isEmpty
+          ? PanelMessage(l10n.overviewNoOpenIssues)
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 8, 18, 6),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(fmt.upper(l10n.commonError), style: head),
+                      ),
+                      SizedBox(
+                        width: 80,
+                        child: Text(
+                          fmt.upper(l10n.kpiEvents),
+                          textAlign: TextAlign.right,
+                          style: head,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 100,
+                        child: Text(
+                          fmt.upper(l10n.issueReleaseLast),
+                          textAlign: TextAlign.right,
+                          style: head,
+                        ),
+                      ),
+                      SizedBox(
+                        width: 110,
+                        child: Text(
+                          fmt.upper(l10n.colLastSeen),
+                          textAlign: TextAlign.right,
+                          style: head,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                for (final i in issues)
+                  Container(
+                    decoration: const BoxDecoration(
+                      border: Border(top: BorderSide(color: Tokens.hairline)),
+                    ),
+                    child: GhostButton(
+                      density: ButtonDensity.compact,
+                      alignment: Alignment.centerLeft,
+                      onPressed: () =>
+                          context.go('/projects/$projectId/issues/${i.id}'),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    i.title,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: Tokens.textStrong,
+                                    ),
+                                  ),
+                                  if (i.exception.isNotEmpty &&
+                                      i.exception != i.title)
+                                    Text(
+                                      i.exception,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTheme.mono(
+                                        size: 11,
+                                        color: Tokens.danger,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: 80,
+                              child: Text(
+                                fmt.integer(i.count),
+                                textAlign: TextAlign.right,
+                                style: AppTheme.mono(
+                                  size: 13,
+                                  weight: FontWeight.w600,
+                                  color: Tokens.textStrong,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: Text(
+                                i.lastRelease.isEmpty
+                                    ? l10n.commonEmpty
+                                    : i.lastRelease,
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTheme.mono(
+                                  size: 12,
+                                  color: Tokens.textMuted,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 110,
+                              child: Text(
+                                fmt.relative(i.lastSeen),
+                                textAlign: TextAlign.right,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Tokens.textMuted,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
     );
   }
 }
@@ -290,44 +691,46 @@ class _NameCounts extends StatelessWidget {
     if (items.isEmpty) return PanelMessage(context.l10n.commonNoData);
     final max = items.fold<int>(1, (m, i) => i.count > m ? i.count : m);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
       child: Column(
         children: [
           for (final i in items)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: Row(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  SizedBox(
-                    width: 90,
-                    child: Text(
-                      i.name,
-                      style: const TextStyle(fontSize: 12, color: Tokens.text),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: FractionallySizedBox(
-                        widthFactor: i.count / max,
-                        child: Container(
-                          height: 8,
-                          decoration: BoxDecoration(
-                            color: color,
-                            borderRadius: BorderRadius.circular(2),
-                          ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          i.name,
+                          style: AppTheme.mono(size: 12, color: Tokens.text),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
+                      Text(
+                        '${context.fmt.integer(i.count)} · ${context.fmt.percent(total == 0 ? 0 : (i.count / total * 100).round() / 100)}',
+                        style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                      ),
+                    ],
                   ),
-                  const Gap(8),
-                  SizedBox(
-                    width: 60,
-                    child: Text(
-                      '${context.fmt.integer(i.count)} · ${total == 0 ? 0 : (100 * i.count / total).round()}%',
-                      textAlign: TextAlign.right,
-                      style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                  const Gap(4),
+                  Container(
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Tokens.chip,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                    alignment: Alignment.centerLeft,
+                    child: FractionallySizedBox(
+                      widthFactor: i.count / max,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -339,191 +742,199 @@ class _NameCounts extends StatelessWidget {
   }
 }
 
-/// Who is on which page right now: open sessions whose heartbeat arrived in
-/// the last 60 s.
-class LivePanel extends StatelessWidget {
-  const LivePanel({super.key, required this.live, required this.projectId});
-  final LiveStatus? live;
+/// Uptime checks, cron monitors and metric alerts in one row: one square per
+/// monitor or rule, coloured by its state, and a link to the page.
+class _Reliability extends ConsumerWidget {
+  const _Reliability({required this.projectId, required this.narrow});
   final int projectId;
+  final bool narrow;
 
   @override
-  Widget build(BuildContext context) {
-    final l = live;
-    final isNarrow = MediaQuery.sizeOf(context).width < Tokens.mobileBreakpoint;
-    final routes = PanelCard(
-      title: context.l10n.livePages,
-      subtitle: l == null ? null : context.l10n.liveRouteCount(l.routes.length),
-      child: l == null || l.routes.isEmpty
-          ? PanelMessage(context.l10n.liveNoPages)
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(14, 8, 14, 10),
-              child: Column(
-                children: [
-                  for (final r in l.routes)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              r.name.isEmpty
-                                  ? context.l10n.liveNoRoute
-                                  : r.name,
-                              style: AppTheme.mono(
-                                size: 12,
-                                color: Tokens.text,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const Gap(8),
-                          Text(
-                            context.l10n.livePeopleCount(r.count),
-                            style: AppTheme.mono(
-                              size: 12,
-                              weight: FontWeight.w600,
-                              color: Tokens.accentSoft,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                ],
-              ),
-            ),
-    );
-    final viewers = PanelCard(
-      title: context.l10n.liveViewers,
-      subtitle: l == null ? null : context.l10n.liveWindow(l.windowSeconds),
-      child: l == null || l.viewers.isEmpty
-          ? PanelMessage(context.l10n.liveNoOpenSessions)
-          : Column(
-              children: [
-                for (final v in l.viewers.take(20))
-                  GhostButton(
-                    density: ButtonDensity.compact,
-                    alignment: Alignment.centerLeft,
-                    onPressed: () => context.go(
-                      '/projects/$projectId/sessions/${v.sessionId}',
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 7,
-                            height: 7,
-                            decoration: const BoxDecoration(
-                              color: Tokens.ok,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          const Gap(8),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              v.userLabel.isEmpty
-                                  ? context.l10n.commonAnonymous
-                                  : v.userLabel,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Tokens.text,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              '${v.browser} · ${v.ip}',
-                              style: AppTheme.mono(
-                                size: 11,
-                                color: Tokens.textDim,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Text(
-                              v.route.isEmpty
-                                  ? context.l10n.commonEmpty
-                                  : v.route,
-                              style: AppTheme.mono(
-                                size: 11,
-                                color: Tokens.info,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Text(
-                            context.fmt.duration(
-                              DateTime.now().difference(v.startedAt),
-                            ),
-                            style: AppTheme.mono(
-                              size: 11,
-                              color: Tokens.textDim,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                if (l.viewers.length > 20)
-                  PanelMessage(context.l10n.liveMore(l.viewers.length - 20)),
-              ],
-            ),
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final uptime = ref.watch(uptimeMonitorsProvider(projectId)).value;
+    final crons = ref.watch(cronMonitorsProvider(projectId)).value;
+    final rules = ref.watch(metricAlertRulesProvider(projectId)).value;
+
+    Color uptimeColor(String s) => switch (s) {
+      'up' => Tokens.ok,
+      'degraded' => Tokens.warning,
+      'down' => Tokens.danger,
+      _ => Tokens.chip,
+    };
+    Color cronColor(String s) => switch (s) {
+      'ok' => Tokens.ok,
+      'in_progress' => Tokens.info,
+      'error' || 'missed' => Tokens.danger,
+      _ => Tokens.chip,
+    };
+    Color ruleColor(String s) => switch (s) {
+      'firing' => Tokens.danger,
+      'warning' => Tokens.warning,
+      _ => Tokens.ok,
+    };
+
+    final activeRules = rules?.where((r) => r.isActive).toList();
+    final firing =
+        activeRules?.where((r) => r.currentStatus == 'firing').length ?? 0;
+    final failingCrons =
+        crons
+            ?.where((c) => c.status == 'error' || c.status == 'missed')
+            .length ??
+        0;
+    final up = uptime?.where((m) => m.status == 'up').length ?? 0;
+    final avg = uptime == null || uptime.isEmpty
+        ? 0.0
+        : uptime.map((m) => m.uptimePercentage).reduce((a, b) => a + b) /
+              uptime.length;
+
+    return PanelCard(
+      title: l10n.navGroupReliability,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: _ResponsiveRow(
+          narrow: narrow,
           children: [
-            Container(
-              width: 9,
-              height: 9,
-              decoration: BoxDecoration(
-                color: (l?.count ?? 0) > 0 ? Tokens.ok : Tokens.textFaint,
-                shape: BoxShape.circle,
-              ),
+            _HealthTile(
+              title: l10n.navUptime,
+              icon: LucideIcons.activity,
+              headline: uptime == null || uptime.isEmpty
+                  ? l10n.overviewNoneConfigured
+                  : l10n.overviewUptimeUp(up, uptime.length),
+              ok: uptime == null || up == uptime.length,
+              note: uptime == null || uptime.isEmpty
+                  ? null
+                  : l10n.overviewUptimeAvg(context.fmt.percent(avg / 100)),
+              dots: [
+                for (final m in uptime ?? const <UptimeMonitor>[])
+                  uptimeColor(m.status),
+              ],
+              onOpen: () => context.go('/projects/$projectId/uptime'),
             ),
-            const Gap(8),
-            Text(
-              l == null
-                  ? context.l10n.liveWaiting
-                  : context.l10n.liveSummary(l.count, l.visitors),
-              key: const ValueKey('live-summary'),
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Tokens.textStrong,
-              ),
+            _HealthTile(
+              title: l10n.navCrons,
+              icon: LucideIcons.timer,
+              headline: crons == null || crons.isEmpty
+                  ? l10n.overviewNoneConfigured
+                  : l10n.overviewCronsOk(
+                      crons.where((c) => c.status == 'ok').length,
+                      crons.length,
+                    ),
+              ok: failingCrons == 0,
+              note: failingCrons == 0
+                  ? null
+                  : l10n.overviewCronsFailing(failingCrons),
+              dots: [
+                for (final c in crons ?? const <CronMonitor>[])
+                  cronColor(c.status),
+              ],
+              onOpen: () => context.go('/projects/$projectId/crons'),
             ),
-            const Gap(8),
-            Text(
-              context.l10n.liveRefreshNote,
-              style: const TextStyle(fontSize: 11, color: Tokens.textDim),
+            _HealthTile(
+              title: l10n.navAlerts,
+              icon: LucideIcons.bellRing,
+              headline: activeRules == null || activeRules.isEmpty
+                  ? l10n.overviewNoneConfigured
+                  : (firing > 0
+                        ? l10n.overviewAlertsFiring(firing)
+                        : l10n.overviewAlertsQuiet),
+              ok: firing == 0,
+              note: activeRules == null || activeRules.isEmpty
+                  ? null
+                  : l10n.overviewAlertRules(activeRules.length),
+              dots: [
+                for (final r in activeRules ?? const <MetricAlertRule>[])
+                  ruleColor(r.currentStatus),
+              ],
+              onOpen: () => context.go('/projects/$projectId/alerts'),
             ),
           ],
         ),
-        const Gap(8),
-        if (isNarrow) ...[
-          viewers,
-          const Gap(12),
-          routes,
-        ] else
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(flex: 3, child: viewers),
-              const Gap(12),
-              Expanded(flex: 2, child: routes),
-            ],
-          ),
-      ],
+      ),
     );
   }
+}
+
+class _HealthTile extends StatelessWidget {
+  const _HealthTile({
+    required this.title,
+    required this.icon,
+    required this.headline,
+    required this.ok,
+    required this.dots,
+    required this.onOpen,
+    this.note,
+  });
+  final String title, headline;
+  final String? note;
+  final IconData icon;
+  final bool ok;
+  final List<Color> dots;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) => GhostButton(
+    onPressed: onOpen,
+    alignment: Alignment.topLeft,
+    child: Padding(
+      padding: const EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 14, color: Tokens.textMuted),
+              const Gap(6),
+              Expanded(
+                child: Text(
+                  title,
+                  style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: ok ? Tokens.ok : Tokens.danger,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
+          ),
+          const Gap(6),
+          Text(
+            headline,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Tokens.textStrong,
+            ),
+          ),
+          if (note != null)
+            Text(
+              note!,
+              style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+            ),
+          if (dots.isNotEmpty) ...[
+            const Gap(8),
+            Wrap(
+              spacing: 3,
+              runSpacing: 3,
+              children: [
+                for (final c in dots.take(40))
+                  Container(
+                    width: 10,
+                    height: 14,
+                    decoration: BoxDecoration(
+                      color: c,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    ),
+  );
 }

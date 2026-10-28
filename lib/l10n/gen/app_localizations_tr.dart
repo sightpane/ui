@@ -220,6 +220,38 @@ class LTr extends L {
   }
 
   @override
+  String get navGroupMonitoring => 'İzleme';
+
+  @override
+  String get navGroupProduct => 'Ürün analitiği';
+
+  @override
+  String get navGroupRelease => 'Yayın';
+
+  @override
+  String get navGroupReliability => 'Güvenilirlik';
+
+  @override
+  String get shellSearch => 'Ara veya git…';
+
+  @override
+  String get shellSearchPages => 'Sayfa ara';
+
+  @override
+  String get shellNoResults => 'Sonuç yok.';
+
+  @override
+  String get shellSwitchProject => 'Proje değiştir';
+
+  @override
+  String get shellAllProjects => 'Tüm projeler';
+
+  @override
+  String shellLiveBadge(int count) {
+    return '$count canlı oturum';
+  }
+
+  @override
   String get shellSignOut => 'Çıkış';
 
   @override
@@ -387,7 +419,59 @@ class LTr extends L {
 
   @override
   String get overviewSessionsAndErrorsNote =>
-      'gün bazında · amber oturum, kırmızı hata';
+      'gün bazında · hatalar kendi ölçeğinde';
+
+  @override
+  String get overviewErrorSessions => 'Hatalı oturum';
+
+  @override
+  String get overviewLiveNow => 'Şu an uygulamada';
+
+  @override
+  String overviewLivePill(int count) {
+    return '$count canlı';
+  }
+
+  @override
+  String overviewDropped(String count) {
+    return 'Alım kotası aşıldı: hız sınırı yüzünden $count öğe atıldı.';
+  }
+
+  @override
+  String overviewUptimeUp(int up, int total) {
+    return '$up/$total çalışıyor';
+  }
+
+  @override
+  String overviewUptimeAvg(String pct) {
+    return 'ortalama erişilebilirlik $pct';
+  }
+
+  @override
+  String overviewCronsOk(int ok, int total) {
+    return '$ok/$total zamanında';
+  }
+
+  @override
+  String overviewCronsFailing(int count) {
+    return '$count hatalı veya kaçırılmış';
+  }
+
+  @override
+  String overviewAlertsFiring(int count) {
+    return '$count uyarı tetiklendi';
+  }
+
+  @override
+  String get overviewAlertsQuiet => 'Tetiklenen uyarı yok';
+
+  @override
+  String overviewAlertRules(int count) {
+    return '$count etkin kural';
+  }
+
+  @override
+  String get overviewNoneConfigured => 'Henüz tanımlı değil';
 
   @override
   String get overviewEvents => 'Olaylar';
@@ -648,6 +732,20 @@ class LTr extends L {
   }
 
   @override
+  String get issueAffectedSessions => 'Etkilenen oturum';
+
+  @override
+  String issueSampleNote(int count) {
+    return 'son $count oluşuma göre';
+  }
+
+  @override
+  String get issueLast14Days => 'Son 14 gün';
+
+  @override
+  String get issueBreakdown => 'Dağılım';
+
+  @override
   String get colTime => 'Zaman';
 
   @override
@@ -791,6 +889,17 @@ class LTr extends L {
 
   @override
   String get sessionTimeline => 'Zaman çizgisi';
+
+  @override
+  String get sessionFilterBreadcrumbs => 'Breadcrumb';
+
+  @override
+  String sessionFilterLabel(String label, int count) {
+    return '$label · $count';
+  }
+
+  @override
+  String get sessionJumpToError => 'Hataya git';
 
   @override
   String sessionItemCount(int count) {

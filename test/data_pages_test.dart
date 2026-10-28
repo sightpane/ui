@@ -64,7 +64,9 @@ void main() {
     expect(r.state.uri.toString(), isNot(contains('q=browser%3AChrome')));
   });
 
-  testWidgets('sessions search autocomplete suggests keys and values', (tester) async {
+  testWidgets('sessions search autocomplete suggests keys and values', (
+    tester,
+  ) async {
     final r = await go(tester, '/projects/1/sessions');
     final searchField = find.byType(FilterSearchField);
     expect(searchField, findsOneWidget);
@@ -167,9 +169,42 @@ void main() {
   );
 
   testWidgets(
+    'session detail: timeline filters by type and jumps to the error',
+    (tester) async {
+      await go(
+        tester,
+        '/projects/1/sessions/abcdef12-3456',
+        size: tallDesktopSize,
+      );
+      await settle(tester);
+      final page = tester.state(find.byType(SessionDetailPage)) as dynamic;
+      final ReplayController rc = page.controllerForTest;
+      // The one error is marked on the scrubber.
+      expect(rc.errorMarks, hasLength(1));
+      expect(find.byType(TimelineRow), findsNWidgets(3));
+      await tester.tap(find.text('Olaylar · 1'));
+      await settle(tester);
+      expect(find.byType(TimelineRow), findsOneWidget);
+      expect(find.text('push /cashier'), findsNothing);
+      await tester.tap(find.text('Tümü · 3'));
+      await settle(tester);
+      expect(find.byType(TimelineRow), findsNWidgets(3));
+      // "Hataya git" seeks to the error and opens its detail.
+      await tester.tap(find.textContaining('Hataya git'));
+      await settle(tester);
+      expect(rc.current, DateTime(2026, 9, 7, 10, 0, 4));
+      expect(find.text('Hata grubu #7'), findsOneWidget);
+    },
+  );
+
+  testWidgets(
     'session detail: a phone replays at its own screen size and zooms',
     (tester) async {
-      await go(tester, '/projects/1/sessions/iphone-7f3a', size: tallDesktopSize);
+      await go(
+        tester,
+        '/projects/1/sessions/iphone-7f3a',
+        size: tallDesktopSize,
+      );
       await settle(tester);
       // Which phone it was, in the header and the environment card.
       expect(find.text('Cihaz:'), findsOneWidget);
@@ -201,21 +236,29 @@ void main() {
     },
   );
 
-  testWidgets(
-    'session detail: dom replay player is picked for dom sessions',
-    (tester) async {
-      await go(
-        tester,
-        '/projects/1/sessions/dom-session',
-        size: tallDesktopSize,
-      );
-      expect(find.byType(DomReplayPlayer), findsOneWidget);
-      expect(find.text('DOM Replay'), findsOneWidget);
-      expect(find.text('DOM Kaydı (2 olay)'), findsOneWidget);
-      expect(find.text('SNAPSHOT'), findsOneWidget);
-      expect(find.text('https://app.local/shop'), findsOneWidget);
-    },
-  );
+  testWidgets('session detail: dom replay player is picked for dom sessions', (
+    tester,
+  ) async {
+    await go(tester, '/projects/1/sessions/dom-session', size: tallDesktopSize);
+    expect(find.byType(DomReplayPlayer), findsOneWidget);
+    expect(find.text('DOM Replay'), findsOneWidget);
+    expect(find.text('DOM Kaydı (2 olay)'), findsOneWidget);
+    expect(find.text('SNAPSHOT'), findsOneWidget);
+    expect(find.text('https://app.local/shop'), findsOneWidget);
+  });
+
+  testWidgets('issue detail shows counts, history and tag breakdown', (
+    tester,
+  ) async {
+    await go(tester, '/projects/1/issues/7', size: tallDesktopSize);
+    await settle(tester);
+    expect(find.text('Etkilenen oturum'), findsOneWidget);
+    expect(find.text('Son 14 gün'), findsOneWidget);
+    expect(find.text('Dağılım'), findsOneWidget);
+    // The fixture has one occurrence: one session, its browser at 100 %.
+    expect(find.text('son 1 oluşuma göre'), findsWidgets);
+    expect(find.text('Chrome'), findsWidgets);
+  });
 
   testWidgets('issues list toggles resolved; detail resolves and reopens', (
     tester,
@@ -247,7 +290,7 @@ void main() {
   testWidgets('issue detail assignment, snooze, ignore and comments workflow', (
     tester,
   ) async {
-    await go(tester, '/projects/1/issues/7');
+    await go(tester, '/projects/1/issues/7', size: const Size(1440, 3600));
     expect(find.byType(IssueDetailPage), findsOneWidget);
 
     // Client & environment info
@@ -293,7 +336,6 @@ void main() {
     await dismissToasts(tester);
   });
 
-
   testWidgets('events page aggregates per name with day columns', (
     tester,
   ) async {
@@ -304,39 +346,48 @@ void main() {
     expect(find.text('login'), findsOneWidget);
   });
 
-  testWidgets('releases page renders release health table with crash-free rate', (
-    tester,
-  ) async {
-    await go(tester, '/projects/1/releases');
-    expect(find.text('Sürümler'), findsWidgets);
-    expect(find.text('1.0.0'), findsOneWidget);
-    expect(find.text('90.0%'), findsOneWidget);
-    expect(find.text('0.9.0'), findsOneWidget);
-    expect(find.text('100.0%'), findsOneWidget);
-    expect(api.calls, contains('releases 1'));
-  });
+  testWidgets(
+    'releases page renders release health table with crash-free rate',
+    (tester) async {
+      await go(tester, '/projects/1/releases');
+      expect(find.text('Sürümler'), findsWidgets);
+      expect(find.text('1.0.0'), findsOneWidget);
+      expect(find.text('90.0%'), findsOneWidget);
+      expect(find.text('0.9.0'), findsOneWidget);
+      expect(find.text('100.0%'), findsOneWidget);
+      expect(api.calls, contains('releases 1'));
+    },
+  );
 
-  testWidgets('performance page renders transactions, filter and detail modal with slowest samples', (tester) async {
-    await go(tester, '/projects/1/performance');
-    expect(find.text('Performans'), findsWidgets);
-    expect(find.text('route:/dashboard'), findsOneWidget);
-    expect(find.text('GET /api/v1/sessions'), findsOneWidget);
-    expect(api.calls, contains('performance 1 days=14 op='));
+  testWidgets(
+    'performance page renders transactions, filter and detail modal with slowest samples',
+    (tester) async {
+      await go(tester, '/projects/1/performance');
+      expect(find.text('Performans'), findsWidgets);
+      expect(find.text('route:/dashboard'), findsOneWidget);
+      expect(find.text('GET /api/v1/sessions'), findsOneWidget);
+      expect(api.calls, contains('performance 1 days=14 op='));
 
-    // Tap on transaction to open detail page
-    await tester.tap(find.text('route:/dashboard'));
-    await tester.pumpAndSettle();
+      // Tap on transaction to open detail page
+      await tester.tap(find.text('route:/dashboard'));
+      await tester.pumpAndSettle();
 
-    expect(find.byType(TransactionDetailPage), findsOneWidget);
-    expect(find.text('En Yavaş Örnekler'), findsOneWidget);
-    expect(find.text('Kaydı Aç'), findsOneWidget);
-    expect(api.calls, contains('transactionDetail 1 name=route:/dashboard op=navigation days=14'));
+      expect(find.byType(TransactionDetailPage), findsOneWidget);
+      expect(find.text('En Yavaş Örnekler'), findsOneWidget);
+      expect(find.text('Kaydı Aç'), findsOneWidget);
+      expect(
+        api.calls,
+        contains(
+          'transactionDetail 1 name=route:/dashboard op=navigation days=14',
+        ),
+      );
 
-    // Tap "Kaydı Aç" to navigate to session
-    await tester.tap(find.text('Kaydı Aç'));
-    await tester.pumpAndSettle();
-    expect(find.byType(SessionDetailPage), findsOneWidget);
-  });
+      // Tap "Kaydı Aç" to navigate to session
+      await tester.tap(find.text('Kaydı Aç'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SessionDetailPage), findsOneWidget);
+    },
+  );
 
   testWidgets('mobile layout shows the horizontal project nav', (tester) async {
     await go(tester, '/projects/1/issues', size: mobileSize);
@@ -375,27 +426,28 @@ void main() {
     },
   );
 
-  testWidgets(
-    'client environment card renders "-" when cpu_cores is absent',
-    (tester) async {
-      final session = Session(
-        id: 'ffff0000-2222',
-        projectId: 1,
-        startedAt: DateTime(2026, 9, 7, 11),
-        lastSeenAt: DateTime(2026, 9, 7, 11, 1),
-        platform: 'web',
-        device: const {
-          'platform_category': 'web',
-          'os': 'Linux',
-          'browser': 'Chrome',
-        },
-      );
-      await pumpWidgetWithL10n(tester, ClientEnvironmentCard(session: session));
-      expect(find.text('-'), findsOneWidget);
-    },
-  );
+  testWidgets('client environment card renders "-" when cpu_cores is absent', (
+    tester,
+  ) async {
+    final session = Session(
+      id: 'ffff0000-2222',
+      projectId: 1,
+      startedAt: DateTime(2026, 9, 7, 11),
+      lastSeenAt: DateTime(2026, 9, 7, 11, 1),
+      platform: 'web',
+      device: const {
+        'platform_category': 'web',
+        'os': 'Linux',
+        'browser': 'Chrome',
+      },
+    );
+    await pumpWidgetWithL10n(tester, ClientEnvironmentCard(session: session));
+    expect(find.text('-'), findsOneWidget);
+  });
 
-  testWidgets('users page renders KPIs, DAU chart, users table and navigates', (tester) async {
+  testWidgets('users page renders KPIs, DAU chart, users table and navigates', (
+    tester,
+  ) async {
     final r = await go(tester, '/projects/1/users');
     expect(find.byType(UsersPage), findsOneWidget);
     expect(find.text('Kullanıcılar'), findsWidgets);
@@ -442,5 +494,3 @@ void main() {
     expect(r.state.uri.toString(), '/projects/1/users');
   });
 }
-
-

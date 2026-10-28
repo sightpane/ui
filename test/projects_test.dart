@@ -99,6 +99,20 @@ void main() {
   );
 
   testWidgets(
+    'overview shows the reliability strip from uptime, crons and alerts',
+    (tester) async {
+      await go(tester, '/projects/1', size: tallDesktopSize);
+      expect(find.text('Güvenilirlik'), findsOneWidget);
+      expect(find.text('1/1 çalışıyor'), findsOneWidget);
+      expect(find.text('1 uyarı tetiklendi'), findsOneWidget);
+      expect(api.calls, containsAll(['cronMonitors 1', 'metricAlertRules 1']));
+      await tester.tap(find.text('1/1 çalışıyor'));
+      await settle(tester);
+      expect(find.byType(OverviewPage), findsNothing);
+    },
+  );
+
+  testWidgets(
     'settings: rename, rotate key with confirmation, add member, delete',
     (tester) async {
       await go(tester, '/projects/1/settings', size: tallDesktopSize);

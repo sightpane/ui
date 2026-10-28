@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show listEquals;
+
 import 'package:flutter/services.dart'
     show HardwareKeyboard, KeyDownEvent, KeyEvent, LogicalKeyboardKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,6 +38,9 @@ class SessionDetailPage extends ConsumerStatefulWidget {
 
 class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
   TimelineItem? _selected;
+
+  /// The timeline filter: '' for everything, otherwise an item type.
+  String _filter = '';
   final _player = ReplayController();
   FramePrefetcher? _prefetcher;
 
@@ -71,7 +76,8 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
         final isNarrow =
             MediaQuery.sizeOf(context).width < Tokens.mobileBreakpoint;
         final isDomSession =
-            d.hasDom || (d.frames.isEmpty && d.items.any((it) => it.type == 'dom'));
+            d.hasDom ||
+            (d.frames.isEmpty && d.items.any((it) => it.type == 'dom'));
         final domItems = d.items.where((it) => it.type == 'dom').toList();
         final player = PanelCard(
           title: context.l10n.sessionReplay,
@@ -108,29 +114,68 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                   ),
                 ),
         );
+        final shown = _filter.isEmpty
+            ? d.items
+            : d.items.where((it) => it.type == _filter).toList();
+        int countOf(String type) =>
+            d.items.where((it) => it.type == type).length;
+        final filters = <(String, String)>[
+          ('', context.l10n.commonAll),
+          ('error', context.l10n.navIssues),
+          ('event', context.l10n.navEvents),
+          ('breadcrumb', context.l10n.sessionFilterBreadcrumbs),
+        ];
         final timeline = PanelCard(
           title: context.l10n.sessionTimeline,
           subtitle: context.l10n.sessionItemCount(d.items.length),
           child: d.items.isEmpty
               ? PanelMessage(context.l10n.sessionNoItems)
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: d.items.length,
-                  itemBuilder: (context, i) {
-                    final it = d.items[i];
-                    final active = _player.isCurrent(it.ts);
-                    return TimelineRow(
-                      item: it,
-                      active: active || _selected == it,
-                      onTap: () {
-                        _player.seekTo(it.ts);
-                        setState(() => _selected = it);
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
+                      child: Wrap(
+                        spacing: 6,
+                        runSpacing: 6,
+                        children: [
+                          for (final (type, label) in filters)
+                            if (type.isEmpty || countOf(type) > 0)
+                              QuickFilterChip(
+                                token: context.l10n.sessionFilterLabel(
+                                  label,
+                                  type.isEmpty ? d.items.length : countOf(type),
+                                ),
+                                selected: _filter == type,
+                                onTap: () => setState(() => _filter = type),
+                              ),
+                        ],
+                      ),
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: shown.length,
+                      itemBuilder: (context, i) {
+                        final it = shown[i];
+                        final active = _player.isCurrent(it.ts);
+                        return TimelineRow(
+                          item: it,
+                          active: active || _selected == it,
+                          onTap: () {
+                            _player.seekTo(it.ts);
+                            setState(() => _selected = it);
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ],
                 ),
         );
+        final firstError = d.items
+            .where((it) => it.type == 'error')
+            .firstOrNull;
         final detailPanel = _selected == null
             ? null
             : ItemDetail(item: _selected!, projectId: widget.projectId);
@@ -147,8 +192,9 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                       path: '/projects/${widget.projectId}/sessions',
                     ),
                     BreadcrumbItem(
-                      label:
-                          context.l10n.sessionHeader(context.fmt.shortId(s.id)),
+                      label: context.l10n.sessionHeader(
+                        context.fmt.shortId(s.id),
+                      ),
                     ),
                   ],
                 ),
@@ -165,6 +211,23 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
                     '${s.release.isEmpty ? '' : ' · v${s.release}'} · '
                     '${context.fmt.dateTime(s.startedAt)}',
                 actions: [
+                  if (firstError != null)
+                    OutlineButton(
+                      size: ButtonSize.small,
+                      leading: const Icon(
+                        LucideIcons.circleAlert,
+                        size: 14,
+                        color: Tokens.danger,
+                      ),
+                      onPressed: () {
+                        _player.seekTo(firstError.ts);
+                        setState(() => _selected = firstError);
+                      },
+                      child: Text(
+                        '${context.l10n.sessionJumpToError} · '
+                        '${context.fmt.clock(firstError.ts)}',
+                      ),
+                    ),
                   GhostButton(
                     size: ButtonSize.small,
                     leading: const Icon(LucideIcons.chevronLeft, size: 14),
@@ -203,6 +266,7 @@ class _SessionDetailPageState extends ConsumerState<SessionDetailPage> {
 class ReplayController extends ChangeNotifier {
   List<Frame> frames = const [];
   List<PointerSample> pointer = const [];
+  List<DateTime> errorTimes = const [];
   DateTime? t0, t1;
   Duration position = Duration.zero;
   bool playing = false;
@@ -215,6 +279,10 @@ class ReplayController extends ChangeNotifier {
     _loadedId = d.session.id;
     frames = d.frames;
     pointer = d.pointer;
+    errorTimes = [
+      for (final i in d.items)
+        if (i.type == 'error') i.ts,
+    ];
     final times = [
       d.session.startedAt,
       ...d.frames.map((f) => f.ts),
@@ -227,6 +295,13 @@ class ReplayController extends ChangeNotifier {
         : t0!.add(const Duration(seconds: 1));
     position = Duration.zero;
   }
+
+  /// Where the errors fall on the scrubber, 0–1.
+  List<double> get errorMarks => [
+    if (t0 != null && total.inMilliseconds > 0)
+      for (final t in errorTimes)
+        t.difference(t0!).inMilliseconds / total.inMilliseconds,
+  ];
 
   Duration get total =>
       t1 == null ? const Duration(seconds: 1) : t1!.difference(t0!);
@@ -434,21 +509,31 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                   const Gap(16),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: const Color(0xFF1E1E1E),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Row(
                         children: [
-                          const Icon(LucideIcons.globe, size: 12, color: Tokens.textMuted),
+                          const Icon(
+                            LucideIcons.globe,
+                            size: 12,
+                            color: Tokens.textMuted,
+                          ),
                           const Gap(6),
                           Expanded(
                             child: Text(
                               widget.detail.session.currentRoute.isEmpty
                                   ? 'https://app.local/'
                                   : widget.detail.session.currentRoute,
-                              style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                              style: AppTheme.mono(
+                                size: 11,
+                                color: Tokens.textMuted,
+                              ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -458,14 +543,21 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                   ),
                   const Gap(12),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Tokens.brand.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: const Text(
                       'DOM Replay',
-                      style: TextStyle(fontSize: 10, color: Tokens.brand, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: Tokens.brand,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
@@ -479,7 +571,10 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                     child: active == null
                         ? Text(
                             context.l10n.replayNoFramesGeneric,
-                            style: const TextStyle(fontSize: 12, color: Tokens.textDim),
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Tokens.textDim,
+                            ),
                           )
                         : Padding(
                             padding: const EdgeInsets.all(16),
@@ -490,7 +585,10 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: active.name == 'snapshot'
                                             ? const Color(0x33C084FC)
@@ -511,23 +609,34 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                                     const Gap(8),
                                     Text(
                                       context.fmt.clock(active.ts),
-                                      style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+                                      style: AppTheme.mono(
+                                        size: 12,
+                                        color: Tokens.textMuted,
+                                      ),
                                     ),
                                   ],
                                 ),
                                 const Gap(12),
                                 Container(
-                                  constraints: const BoxConstraints(maxWidth: 480, maxHeight: 180),
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 480,
+                                    maxHeight: 180,
+                                  ),
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF141414),
-                                    border: Border.all(color: const Color(0xFF333333)),
+                                    border: Border.all(
+                                      color: const Color(0xFF333333),
+                                    ),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: SingleChildScrollView(
                                     child: SelectableText(
                                       jsonEncode(active.body),
-                                      style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                                      style: AppTheme.mono(
+                                        size: 11,
+                                        color: Tokens.textMuted,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -559,7 +668,10 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
       children: [
-        if (widget.expand) Expanded(child: Center(child: viewport)) else viewport,
+        if (widget.expand)
+          Expanded(child: Center(child: viewport))
+        else
+          viewport,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: const BoxDecoration(
@@ -584,8 +696,10 @@ class _DomReplayPlayerState extends State<DomReplayPlayer> {
                   marks: [
                     for (final it in dom)
                       if (c.total.inMilliseconds > 0 && c.t0 != null)
-                        it.ts.difference(c.t0!).inMilliseconds / c.total.inMilliseconds,
+                        it.ts.difference(c.t0!).inMilliseconds /
+                            c.total.inMilliseconds,
                   ],
+                  errorMarks: c.errorMarks,
                   onChanged: (v) => c.seek(
                     Duration(
                       milliseconds: (v * c.total.inMilliseconds).round(),
@@ -873,6 +987,7 @@ class _ReplayPlayerState extends State<ReplayPlayer> {
                       fr.ts.difference(c.t0!).inMilliseconds /
                           c.total.inMilliseconds,
                   ],
+                  errorMarks: c.errorMarks,
                   onChanged: (v) => c.seek(
                     Duration(
                       milliseconds: (v * c.total.inMilliseconds).round(),
@@ -1181,9 +1296,13 @@ class Scrubber extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.marks = const [],
+    this.errorMarks = const [],
   });
   final double value;
   final List<double> marks;
+
+  /// Error moments, drawn taller and in red above the other marks.
+  final List<double> errorMarks;
   final ValueChanged<double> onChanged;
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -1196,7 +1315,11 @@ class Scrubber extends StatelessWidget {
         child: SizedBox(
           height: 24,
           child: CustomPaint(
-            painter: _ScrubberPainter(value: value.clamp(0, 1), marks: marks),
+            painter: _ScrubberPainter(
+              value: value.clamp(0, 1),
+              marks: marks,
+              errorMarks: errorMarks,
+            ),
           ),
         ),
       );
@@ -1205,9 +1328,13 @@ class Scrubber extends StatelessWidget {
 }
 
 class _ScrubberPainter extends CustomPainter {
-  _ScrubberPainter({required this.value, required this.marks});
+  _ScrubberPainter({
+    required this.value,
+    required this.marks,
+    this.errorMarks = const [],
+  });
   final double value;
-  final List<double> marks;
+  final List<double> marks, errorMarks;
   @override
   void paint(Canvas canvas, Size size) {
     final y = size.height / 2;
@@ -1222,6 +1349,15 @@ class _ScrubberPainter extends CustomPainter {
       canvas.drawRect(
         Rect.fromLTWH(m * size.width, y - 5, 1.5, 10),
         Paint()..color = Tokens.textFaint,
+      );
+    }
+    for (final m in errorMarks) {
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(m * size.width - 1.5, y - 8, 3, 16),
+          const Radius.circular(1.5),
+        ),
+        Paint()..color = Tokens.danger,
       );
     }
     canvas.drawRRect(
@@ -1240,7 +1376,9 @@ class _ScrubberPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ScrubberPainter old) =>
-      old.value != value || old.marks != marks;
+      old.value != value ||
+      old.marks != marks ||
+      !listEquals(old.errorMarks, errorMarks);
 }
 
 class TimelineRow extends StatelessWidget {
@@ -1346,10 +1484,7 @@ class ItemDetail extends StatelessWidget {
                   style: AppTheme.mono(size: 11, color: Tokens.textDim),
                 ),
               const Gap(8),
-              StackTraceView(
-                stack: '${b['stack'] ?? ''}',
-                frames: item.frames,
-              ),
+              StackTraceView(stack: '${b['stack'] ?? ''}', frames: item.frames),
               if (crumbs.isNotEmpty) ...[
                 const Gap(10),
                 Text(
@@ -1406,7 +1541,11 @@ class ItemDetail extends StatelessWidget {
 /// behind a fold, because a wrong map is otherwise invisible. With no frames it
 /// is what it always was: the stack as it arrived.
 class StackTraceView extends StatefulWidget {
-  const StackTraceView({super.key, required this.stack, this.frames = const []});
+  const StackTraceView({
+    super.key,
+    required this.stack,
+    this.frames = const [],
+  });
   final String stack;
   final List<SourceFrame> frames;
 
@@ -1430,7 +1569,9 @@ class _StackTraceViewState extends State<StackTraceView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CodeBlock(
-            text: widget.stack.isEmpty ? context.l10n.issueNoStack : widget.stack,
+            text: widget.stack.isEmpty
+                ? context.l10n.issueNoStack
+                : widget.stack,
           ),
           if (StackTraceView.looksMinified(widget.stack)) ...[
             const Gap(6),

@@ -145,6 +145,23 @@
       }
     }
   },
+  "navGroupMonitoring": "İzleme",
+  "navGroupProduct": "Ürün analitiği",
+  "navGroupRelease": "Yayın",
+  "navGroupReliability": "Güvenilirlik",
+  "shellSearch": "Ara veya git…",
+  "shellSearchPages": "Sayfa ara",
+  "shellNoResults": "Sonuç yok.",
+  "shellSwitchProject": "Proje değiştir",
+  "shellAllProjects": "Tüm projeler",
+  "shellLiveBadge": "{count} canlı oturum",
+  "@shellLiveBadge": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "shellSignOut": "Çıkış",
   "shellLanguage": "Dil",
   "languageTurkish": "Türkçe",
@@ -256,7 +273,81 @@
     }
   },
   "overviewSessionsAndErrors": "Oturumlar ve hatalar",
-  "overviewSessionsAndErrorsNote": "gün bazında · amber oturum, kırmızı hata",
+  "overviewSessionsAndErrorsNote": "gün bazında · hatalar kendi ölçeğinde",
+  "overviewErrorSessions": "Hatalı oturum",
+  "overviewLiveNow": "Şu an uygulamada",
+  "overviewLivePill": "{count} canlı",
+  "@overviewLivePill": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewDropped": "Alım kotası aşıldı: hız sınırı yüzünden {count} öğe atıldı.",
+  "@overviewDropped": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "overviewUptimeUp": "{up}/{total} çalışıyor",
+  "@overviewUptimeUp": {
+    "placeholders": {
+      "up": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewUptimeAvg": "ortalama erişilebilirlik {pct}",
+  "@overviewUptimeAvg": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "overviewCronsOk": "{ok}/{total} zamanında",
+  "@overviewCronsOk": {
+    "placeholders": {
+      "ok": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewCronsFailing": "{count} hatalı veya kaçırılmış",
+  "@overviewCronsFailing": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewAlertsFiring": "{count} uyarı tetiklendi",
+  "@overviewAlertsFiring": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewAlertsQuiet": "Tetiklenen uyarı yok",
+  "overviewAlertRules": "{count} etkin kural",
+  "@overviewAlertRules": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewNoneConfigured": "Henüz tanımlı değil",
   "overviewEvents": "Olaylar",
   "overviewByDay": "gün bazında",
   "overviewTopIssues": "En sık hatalar",
@@ -434,6 +525,17 @@
       }
     }
   },
+  "issueAffectedSessions": "Etkilenen oturum",
+  "issueSampleNote": "son {count} oluşuma göre",
+  "@issueSampleNote": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "issueLast14Days": "Son 14 gün",
+  "issueBreakdown": "Dağılım",
   "colTime": "Zaman",
   "colSession": "Oturum",
   "colRoute": "Rota",
@@ -516,6 +618,19 @@
     }
   },
   "sessionTimeline": "Zaman çizgisi",
+  "sessionFilterBreadcrumbs": "Breadcrumb",
+  "sessionFilterLabel": "{label} · {count}",
+  "@sessionFilterLabel": {
+    "placeholders": {
+      "label": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sessionJumpToError": "Hataya git",
   "sessionItemCount": "{count} öğe",
   "@sessionItemCount": {
     "placeholders": {
