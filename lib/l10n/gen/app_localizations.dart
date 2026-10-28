@@ -475,6 +475,66 @@ abstract class L {
   /// **'Kaynak kodu: {url}'**
   String shellSourceTooltip(String url);
 
+  /// No description provided for @navGroupMonitoring.
+  ///
+  /// In tr, this message translates to:
+  /// **'İzleme'**
+  String get navGroupMonitoring;
+
+  /// No description provided for @navGroupProduct.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ürün analitiği'**
+  String get navGroupProduct;
+
+  /// No description provided for @navGroupRelease.
+  ///
+  /// In tr, this message translates to:
+  /// **'Yayın'**
+  String get navGroupRelease;
+
+  /// No description provided for @navGroupReliability.
+  ///
+  /// In tr, this message translates to:
+  /// **'Güvenilirlik'**
+  String get navGroupReliability;
+
+  /// No description provided for @shellSearch.
+  ///
+  /// In tr, this message translates to:
+  /// **'Ara veya git…'**
+  String get shellSearch;
+
+  /// No description provided for @shellSearchPages.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sayfa ara'**
+  String get shellSearchPages;
+
+  /// No description provided for @shellNoResults.
+  ///
+  /// In tr, this message translates to:
+  /// **'Sonuç yok.'**
+  String get shellNoResults;
+
+  /// No description provided for @shellSwitchProject.
+  ///
+  /// In tr, this message translates to:
+  /// **'Proje değiştir'**
+  String get shellSwitchProject;
+
+  /// No description provided for @shellAllProjects.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tüm projeler'**
+  String get shellAllProjects;
+
+  /// No description provided for @shellLiveBadge.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} canlı oturum'**
+  String shellLiveBadge(int count);
+
   /// No description provided for @shellSignOut.
   ///
   /// In tr, this message translates to:
@@ -778,8 +838,80 @@ abstract class L {
   /// No description provided for @overviewSessionsAndErrorsNote.
   ///
   /// In tr, this message translates to:
-  /// **'gün bazında · amber oturum, kırmızı hata'**
+  /// **'gün bazında · hatalar kendi ölçeğinde'**
   String get overviewSessionsAndErrorsNote;
+
+  /// No description provided for @overviewErrorSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hatalı oturum'**
+  String get overviewErrorSessions;
+
+  /// No description provided for @overviewLiveNow.
+  ///
+  /// In tr, this message translates to:
+  /// **'Şu an uygulamada'**
+  String get overviewLiveNow;
+
+  /// No description provided for @overviewLivePill.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} canlı'**
+  String overviewLivePill(int count);
+
+  /// No description provided for @overviewDropped.
+  ///
+  /// In tr, this message translates to:
+  /// **'Alım kotası aşıldı: hız sınırı yüzünden {count} öğe atıldı.'**
+  String overviewDropped(String count);
+
+  /// No description provided for @overviewUptimeUp.
+  ///
+  /// In tr, this message translates to:
+  /// **'{up}/{total} çalışıyor'**
+  String overviewUptimeUp(int up, int total);
+
+  /// No description provided for @overviewUptimeAvg.
+  ///
+  /// In tr, this message translates to:
+  /// **'ortalama erişilebilirlik {pct}'**
+  String overviewUptimeAvg(String pct);
+
+  /// No description provided for @overviewCronsOk.
+  ///
+  /// In tr, this message translates to:
+  /// **'{ok}/{total} zamanında'**
+  String overviewCronsOk(int ok, int total);
+
+  /// No description provided for @overviewCronsFailing.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} hatalı veya kaçırılmış'**
+  String overviewCronsFailing(int count);
+
+  /// No description provided for @overviewAlertsFiring.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} uyarı tetiklendi'**
+  String overviewAlertsFiring(int count);
+
+  /// No description provided for @overviewAlertsQuiet.
+  ///
+  /// In tr, this message translates to:
+  /// **'Tetiklenen uyarı yok'**
+  String get overviewAlertsQuiet;
+
+  /// No description provided for @overviewAlertRules.
+  ///
+  /// In tr, this message translates to:
+  /// **'{count} etkin kural'**
+  String overviewAlertRules(int count);
+
+  /// No description provided for @overviewNoneConfigured.
+  ///
+  /// In tr, this message translates to:
+  /// **'Henüz tanımlı değil'**
+  String get overviewNoneConfigured;
 
   /// No description provided for @overviewEvents.
   ///
@@ -1243,6 +1375,30 @@ abstract class L {
   /// **'son {count}'**
   String issueOccurrencesNote(int count);
 
+  /// No description provided for @issueAffectedSessions.
+  ///
+  /// In tr, this message translates to:
+  /// **'Etkilenen oturum'**
+  String get issueAffectedSessions;
+
+  /// No description provided for @issueSampleNote.
+  ///
+  /// In tr, this message translates to:
+  /// **'son {count} oluşuma göre'**
+  String issueSampleNote(int count);
+
+  /// No description provided for @issueLast14Days.
+  ///
+  /// In tr, this message translates to:
+  /// **'Son 14 gün'**
+  String get issueLast14Days;
+
+  /// No description provided for @issueBreakdown.
+  ///
+  /// In tr, this message translates to:
+  /// **'Dağılım'**
+  String get issueBreakdown;
+
   /// No description provided for @colTime.
   ///
   /// In tr, this message translates to:
@@ -1506,6 +1662,24 @@ abstract class L {
   /// In tr, this message translates to:
   /// **'Zaman çizgisi'**
   String get sessionTimeline;
+
+  /// No description provided for @sessionFilterBreadcrumbs.
+  ///
+  /// In tr, this message translates to:
+  /// **'Breadcrumb'**
+  String get sessionFilterBreadcrumbs;
+
+  /// No description provided for @sessionFilterLabel.
+  ///
+  /// In tr, this message translates to:
+  /// **'{label} · {count}'**
+  String sessionFilterLabel(String label, int count);
+
+  /// No description provided for @sessionJumpToError.
+  ///
+  /// In tr, this message translates to:
+  /// **'Hataya git'**
+  String get sessionJumpToError;
 
   /// No description provided for @sessionItemCount.
   ///

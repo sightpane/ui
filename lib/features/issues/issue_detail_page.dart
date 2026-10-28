@@ -353,6 +353,8 @@ class _IssueDetailPageState extends ConsumerState<IssueDetailPage> {
               ],
 
               const Gap(12),
+              _IssueStats(issue: i, occurrences: d.occurrences),
+              const Gap(12),
               PanelCard(
                 title: context.l10n.issueStack,
                 subtitle: i.exception,
@@ -718,6 +720,192 @@ class _AssignDialog extends ConsumerWidget {
           child: Text(context.l10n.commonCancel),
         ),
       ],
+    );
+  }
+}
+
+/// Counts and spread of an issue: totals from the issue itself, sessions,
+/// the 14-day histogram and the tag breakdown from the occurrences the
+/// backend returned (a recent sample, so the note says how many).
+class _IssueStats extends StatelessWidget {
+  const _IssueStats({required this.issue, required this.occurrences});
+  final Issue issue;
+  final List<TimelineItem> occurrences;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final fmt = context.fmt;
+    final sample = l10n.issueSampleNote(occurrences.length);
+    final sessions = {
+      for (final o in occurrences)
+        if (o.sessionId.isNotEmpty) o.sessionId,
+    };
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final days = [
+      for (var k = 13; k >= 0; k--) today.subtract(Duration(days: k)),
+    ];
+    final perDay = [
+      for (final d in days)
+        occurrences
+            .where(
+              (o) =>
+                  o.ts.year == d.year &&
+                  o.ts.month == d.month &&
+                  o.ts.day == d.day,
+            )
+            .length,
+    ];
+    final isNarrow = MediaQuery.sizeOf(context).width < 1100;
+
+    final kpis = KpiRow([
+      KpiTile(label: l10n.kpiEvents, value: fmt.integer(issue.count)),
+      KpiTile(
+        label: l10n.issueAffectedSessions,
+        value: fmt.integer(sessions.length),
+        note: sample,
+      ),
+      KpiTile(
+        label: l10n.colFirstSeen,
+        value: fmt.relative(issue.firstSeen),
+        note: fmt.dateTime(issue.firstSeen),
+      ),
+      KpiTile(
+        label: l10n.colLastSeen,
+        value: fmt.relative(issue.lastSeen),
+        note: fmt.dateTime(issue.lastSeen),
+      ),
+    ]);
+    final histogram = PanelCard(
+      title: l10n.issueLast14Days,
+      subtitle: sample,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 8),
+        child: BarChart(
+          values: perDay,
+          labels: [for (final d in days) fmt.day(d.toIso8601String())],
+          color: Tokens.danger,
+          height: 70,
+        ),
+      ),
+    );
+    final breakdown = PanelCard(
+      title: l10n.issueBreakdown,
+      subtitle: sample,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),
+        child: Column(
+          children: [
+            _TagRow(
+              label: l10n.colRelease,
+              values: [for (final o in occurrences) o.release],
+            ),
+            _TagRow(
+              label: l10n.clientPlatform,
+              values: [for (final o in occurrences) o.platform],
+            ),
+            _TagRow(
+              label: l10n.clientBrowser,
+              values: [for (final o in occurrences) o.browser],
+            ),
+            _TagRow(
+              label: l10n.colRoute,
+              values: [for (final o in occurrences) '${o.body['route'] ?? ''}'],
+            ),
+          ],
+        ),
+      ),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        kpis,
+        if (occurrences.isNotEmpty) ...[
+          const Gap(12),
+          if (isNarrow) ...[
+            histogram,
+            const Gap(12),
+            breakdown,
+          ] else
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(flex: 3, child: histogram),
+                  const Gap(12),
+                  Expanded(flex: 2, child: breakdown),
+                ],
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+/// One tag: its most common value and that value's share of [values].
+class _TagRow extends StatelessWidget {
+  const _TagRow({required this.label, required this.values});
+  final String label;
+  final List<String> values;
+
+  @override
+  Widget build(BuildContext context) {
+    final counts = <String, int>{};
+    for (final v in values) {
+      if (v.isNotEmpty) counts[v] = (counts[v] ?? 0) + 1;
+    }
+    if (counts.isEmpty || values.isEmpty) return const SizedBox.shrink();
+    final top = counts.entries.reduce((a, b) => b.value > a.value ? b : a);
+    final share = top.value / values.length;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, color: Tokens.textMuted),
+              ),
+              const Gap(8),
+              Expanded(
+                child: Text(
+                  top.key,
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTheme.mono(size: 12, color: Tokens.textStrong),
+                ),
+              ),
+              const Gap(8),
+              Text(
+                context.fmt.percent((share * 100).round() / 100),
+                style: AppTheme.mono(size: 12, color: Tokens.textMuted),
+              ),
+            ],
+          ),
+          const Gap(4),
+          Container(
+            height: 4,
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              color: Tokens.chip,
+              borderRadius: BorderRadius.circular(2),
+            ),
+            child: FractionallySizedBox(
+              widthFactor: share,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Tokens.info,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

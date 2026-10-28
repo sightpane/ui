@@ -23,6 +23,6 @@ abstract final class Tokens {
   static const ok = Color(0xFF4ADE80);
   static const danger = Color(0xFFF87171);
   static const radius = 6.0;
-  static const sidebarWidth = 220.0;
+  static const sidebarWidth = 248.0;
   static const mobileBreakpoint = 900.0;
 }

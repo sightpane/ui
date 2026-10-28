@@ -246,6 +246,44 @@ class LEn extends L {
   }
 
   @override
+  String get navGroupMonitoring => 'Monitoring';
+
+  @override
+  String get navGroupProduct => 'Product analytics';
+
+  @override
+  String get navGroupRelease => 'Release';
+
+  @override
+  String get navGroupReliability => 'Reliability';
+
+  @override
+  String get shellSearch => 'Search or jump to…';
+
+  @override
+  String get shellSearchPages => 'Search pages';
+
+  @override
+  String get shellNoResults => 'No results.';
+
+  @override
+  String get shellSwitchProject => 'Switch project';
+
+  @override
+  String get shellAllProjects => 'All projects';
+
+  @override
+  String shellLiveBadge(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count live sessions',
+      one: '1 live session',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get shellSignOut => 'Sign out';
 
   @override
@@ -421,7 +459,71 @@ class LEn extends L {
 
   @override
   String get overviewSessionsAndErrorsNote =>
-      'by day · amber sessions, red errors';
+      'by day · errors on their own scale';
+
+  @override
+  String get overviewErrorSessions => 'Sessions with errors';
+
+  @override
+  String get overviewLiveNow => 'In the app right now';
+
+  @override
+  String overviewLivePill(int count) {
+    return '$count live';
+  }
+
+  @override
+  String overviewDropped(String count) {
+    return 'Ingest quota exceeded: $count items dropped due to rate limit.';
+  }
+
+  @override
+  String overviewUptimeUp(int up, int total) {
+    return '$up of $total up';
+  }
+
+  @override
+  String overviewUptimeAvg(String pct) {
+    return 'average availability $pct';
+  }
+
+  @override
+  String overviewCronsOk(int ok, int total) {
+    return '$ok of $total on time';
+  }
+
+  @override
+  String overviewCronsFailing(int count) {
+    return '$count failed or missed';
+  }
+
+  @override
+  String overviewAlertsFiring(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count alerts firing',
+      one: '1 alert firing',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get overviewAlertsQuiet => 'No alert firing';
+
+  @override
+  String overviewAlertRules(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count active rules',
+      one: '1 active rule',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get overviewNoneConfigured => 'None set up yet';
 
   @override
   String get overviewEvents => 'Events';
@@ -702,6 +804,26 @@ class LEn extends L {
   }
 
   @override
+  String get issueAffectedSessions => 'Affected sessions';
+
+  @override
+  String issueSampleNote(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'from the last $count occurrences',
+      one: 'from the last occurrence',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get issueLast14Days => 'Last 14 days';
+
+  @override
+  String get issueBreakdown => 'Breakdown';
+
+  @override
   String get colTime => 'Time';
 
   @override
@@ -851,6 +973,17 @@ class LEn extends L {
 
   @override
   String get sessionTimeline => 'Timeline';
+
+  @override
+  String get sessionFilterBreadcrumbs => 'Breadcrumbs';
+
+  @override
+  String sessionFilterLabel(String label, int count) {
+    return '$label · $count';
+  }
+
+  @override
+  String get sessionJumpToError => 'Jump to error';
 
   @override
   String sessionItemCount(int count) {

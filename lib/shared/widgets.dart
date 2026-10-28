@@ -10,6 +10,7 @@ export 'widgets/bar_chart.dart';
 export 'widgets/breadcrumb.dart';
 export 'widgets/confirm_dialog.dart';
 export 'widgets/copy_field.dart';
+export 'widgets/daily_chart.dart';
 export 'widgets/data_table.dart';
 export 'widgets/field_error.dart';
 export 'widgets/field_label.dart';
