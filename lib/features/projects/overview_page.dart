@@ -415,75 +415,7 @@ class _LiveCard extends StatelessWidget {
             PanelMessage(l10n.liveNoOpenSessions)
           else ...[
             for (final v in l.viewers.take(6))
-              GhostButton(
-                density: ButtonDensity.compact,
-                alignment: Alignment.centerLeft,
-                onPressed: () =>
-                    context.go('/projects/$projectId/sessions/${v.sessionId}'),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4,
-                    vertical: 3,
-                  ),
-                  child: Row(
-                    children: [
-                      Avatar(
-                        initials: v.userLabel.isEmpty
-                            ? '—'
-                            : initialsOf(v.userLabel),
-                        size: 26,
-                        backgroundColor: Tokens.chip,
-                      ),
-                      const Gap(10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              v.userLabel.isEmpty
-                                  ? l10n.commonAnonymous
-                                  : v.userLabel,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Tokens.text,
-                              ),
-                            ),
-                            Text(
-                              v.route.isEmpty ? l10n.commonEmpty : v.route,
-                              overflow: TextOverflow.ellipsis,
-                              style: AppTheme.mono(
-                                size: 11,
-                                color: Tokens.textMuted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const Gap(8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${v.browser} · ${v.ip}',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              color: Tokens.textMuted,
-                            ),
-                          ),
-                          Text(
-                            context.fmt.duration(
-                              DateTime.now().difference(v.startedAt),
-                            ),
-                            style: AppTheme.mono(size: 11, color: Tokens.text),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
+              _LiveRow(viewer: v, projectId: projectId),
             if (l.viewers.length > 6)
               PanelMessage(l10n.liveMore(l.viewers.length - 6)),
           ],
@@ -517,6 +449,96 @@ class _LiveCard extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+/// One person in the live card: titled by name when the SDK sent one, the
+/// email beside it, the route under it — the way the sessions list shows them.
+class _LiveRow extends StatelessWidget {
+  const _LiveRow({required this.viewer, required this.projectId});
+  final LiveViewer viewer;
+  final int projectId;
+
+  @override
+  Widget build(BuildContext context) {
+    final v = viewer;
+    final l10n = context.l10n;
+    final label = v.userName.isNotEmpty ? v.userName : v.userLabel;
+    final email = v.userName.isNotEmpty ? v.userEmail : '';
+    final client = [v.browser, v.ip].where((p) => p.isNotEmpty).join(' · ');
+    return GhostButton(
+      density: ButtonDensity.compact,
+      alignment: Alignment.centerLeft,
+      onPressed: () =>
+          context.go('/projects/$projectId/sessions/${v.sessionId}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+        child: Row(
+          children: [
+            Avatar(
+              initials: label.isEmpty ? '—' : initialsOf(label),
+              size: 26,
+              backgroundColor: Tokens.chip,
+            ),
+            const Gap(10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: label.isEmpty ? l10n.commonAnonymous : label,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Tokens.text,
+                          ),
+                        ),
+                        if (email.isNotEmpty)
+                          TextSpan(
+                            text: '  $email',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              color: Tokens.textMuted,
+                            ),
+                          ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                  Text(
+                    v.route.isEmpty ? l10n.commonEmpty : v.route,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTheme.mono(size: 11, color: Tokens.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            const Gap(8),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (client.isNotEmpty)
+                  Text(
+                    client,
+                    style: const TextStyle(
+                      fontSize: 11,
+                      color: Tokens.textMuted,
+                    ),
+                  ),
+                Text(
+                  context.fmt.duration(DateTime.now().difference(v.startedAt)),
+                  style: AppTheme.mono(size: 11, color: Tokens.text),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
