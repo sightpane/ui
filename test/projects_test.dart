@@ -79,6 +79,9 @@ void main() {
       );
       expect(find.text('/cashier'), findsWidgets);
       expect(find.text('Chrome · 10.1.2.3'), findsOneWidget);
+      // A viewer with a name is titled by it, the email beside it.
+      expect(find.textContaining('Kasa Operatörü'), findsOneWidget);
+      expect(find.textContaining('Kasa Operatörü  ops@casino.local'), findsOneWidget);
       final liveCalls = api.calls.where((c) => c.startsWith('live')).length;
       await tester.pump(const Duration(seconds: 2));
       await settle(tester);

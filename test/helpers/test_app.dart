@@ -549,6 +549,8 @@ class FakeApi implements SightpaneApi {
       LiveViewer(
         sessionId: 'abcdef12-3456',
         userLabel: 'ops@casino.local',
+        userName: 'Kasa Operatörü',
+        userEmail: 'ops@casino.local',
         ip: '10.1.2.3',
         browser: 'Chrome',
         platform: 'web',

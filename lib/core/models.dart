@@ -983,12 +983,20 @@ class LiveViewer {
     required this.route,
     required this.lastSeen,
     required this.startedAt,
+    this.userName = '',
+    this.userEmail = '',
   });
   final String sessionId, userLabel, ip, browser, platform, route;
+
+  /// The parts [userLabel] picks from (it prefers the email), so the live view
+  /// can title a viewer by name the way the sessions list does.
+  final String userName, userEmail;
   final DateTime lastSeen, startedAt;
   factory LiveViewer.fromJson(Map<String, Object?> j) => LiveViewer(
     sessionId: _s(j['session_id']),
     userLabel: _s(j['user_label']),
+    userName: _s(j['user_name']),
+    userEmail: _s(j['user_email']),
     ip: _s(j['ip']),
     browser: _s(j['browser']),
     platform: _s(j['platform']),
