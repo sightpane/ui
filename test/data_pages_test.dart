@@ -234,6 +234,12 @@ void main() {
         size: tallDesktopSize,
       );
       await settle(tester);
+      // The person by name, the email under it — not the email as the title.
+      expect(find.text('Mustafa Us'), findsOneWidget);
+      expect(
+        find.textContaining('mustafa@privaterelay.appleid.com · Oturum'),
+        findsOneWidget,
+      );
       // Which phone it was, in the header and the environment card.
       expect(find.textContaining('Apple iPhone 16'), findsOneWidget);
       await tester.tap(find.text('Cihaz ve ortam'));
