@@ -1554,7 +1554,11 @@ class SessionHeader extends StatelessWidget {
     final s = session;
     final l = context.l10n;
     final fmt = context.fmt;
-    final name = s.userLabel.isEmpty ? l.commonAnonymous : s.userLabel;
+    // The person the way the sessions list and the Users page show them: the
+    // name when the SDK sent one, the email under it.
+    final label = s.userName.isNotEmpty ? s.userName : s.userLabel;
+    final name = label.isEmpty ? l.commonAnonymous : label;
+    final email = s.userName.isNotEmpty ? s.userEmail : '';
     final os = '${s.osName} ${s.osVersion}'.trim();
     final browser = s.isWeb
         ? '${s.browserName} ${s.browserVersion}'.trim()
@@ -1576,7 +1580,7 @@ class SessionHeader extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Avatar(
-          initials: s.userLabel.isEmpty ? '—' : initialsOf(s.userLabel),
+          initials: label.isEmpty ? '—' : initialsOf(label),
           size: 40,
           backgroundColor: Tokens.chip,
         ),
@@ -1626,7 +1630,11 @@ class SessionHeader extends StatelessWidget {
                 ],
               ),
               Text(
-                l.sessionHeader(fmt.shortId(s.id)),
+                [
+                  if (email.isNotEmpty) email,
+                  l.sessionHeader(fmt.shortId(s.id)),
+                ].join(' · '),
+                overflow: TextOverflow.ellipsis,
                 style: AppTheme.mono(size: 12, color: Tokens.textMuted),
               ),
             ],
